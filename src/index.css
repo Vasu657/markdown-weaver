@@ -2,95 +2,110 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import 'katex/dist/katex.min.css';
+@import 'highlight.js/styles/github-dark.css';
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --foreground: 220 15% 15%;
+    
+    --card: 0 0% 98%;
+    --card-foreground: 220 15% 15%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
+    --popover-foreground: 220 15% 15%;
+    
+    --primary: 172 66% 40%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 15% 94%;
+    --secondary-foreground: 220 15% 25%;
+    
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%;
+    
+    --accent: 172 66% 95%;
+    --accent-foreground: 172 66% 25%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 172 66% 40%;
+    
     --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Editor-specific tokens */
+    --editor-bg: 220 15% 98%;
+    --editor-line-number: 220 10% 60%;
+    --editor-gutter: 220 15% 95%;
+    --editor-selection: 172 66% 90%;
+    --editor-cursor: 172 66% 40%;
+    
+    /* Preview tokens */
+    --preview-bg: 0 0% 100%;
+    --preview-code-bg: 220 15% 96%;
+    --preview-blockquote: 172 66% 40%;
+    --preview-link: 172 66% 35%;
+    --preview-table-border: 220 15% 85%;
+    
+    /* Toolbar tokens */
+    --toolbar-bg: 0 0% 100%;
+    --toolbar-border: 220 15% 90%;
+    --toolbar-hover: 220 15% 96%;
+    --toolbar-active: 172 66% 95%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 222 20% 8%;
+    --foreground: 220 15% 90%;
+    
+    --card: 222 20% 10%;
+    --card-foreground: 220 15% 90%;
+    
+    --popover: 222 20% 10%;
+    --popover-foreground: 220 15% 90%;
+    
+    --primary: 172 66% 50%;
+    --primary-foreground: 222 20% 8%;
+    
+    --secondary: 222 20% 15%;
+    --secondary-foreground: 220 15% 85%;
+    
+    --muted: 222 20% 12%;
+    --muted-foreground: 220 10% 55%;
+    
+    --accent: 172 40% 15%;
+    --accent-foreground: 172 66% 70%;
+    
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 222 20% 18%;
+    --input: 222 20% 18%;
+    --ring: 172 66% 50%;
+    
+    /* Editor-specific tokens */
+    --editor-bg: 222 20% 6%;
+    --editor-line-number: 220 10% 40%;
+    --editor-gutter: 222 20% 10%;
+    --editor-selection: 172 40% 20%;
+    --editor-cursor: 172 66% 50%;
+    
+    /* Preview tokens */
+    --preview-bg: 222 20% 10%;
+    --preview-code-bg: 222 20% 14%;
+    --preview-blockquote: 172 66% 50%;
+    --preview-link: 172 66% 60%;
+    --preview-table-border: 222 20% 25%;
+    
+    /* Toolbar tokens */
+    --toolbar-bg: 222 20% 10%;
+    --toolbar-border: 222 20% 18%;
+    --toolbar-hover: 222 20% 15%;
+    --toolbar-active: 172 40% 15%;
   }
 }
 
@@ -100,6 +115,179 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .editor-textarea {
+    @apply w-full h-full resize-none bg-transparent outline-none;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.7;
+    tab-size: 2;
+  }
+
+  .editor-textarea::selection {
+    background-color: hsl(var(--editor-selection));
+  }
+
+  .markdown-preview {
+    @apply prose prose-neutral dark:prose-invert max-w-none;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .markdown-preview h1 {
+    @apply text-3xl font-bold border-b border-border pb-3 mb-4;
+  }
+
+  .markdown-preview h2 {
+    @apply text-2xl font-semibold border-b border-border pb-2 mb-3 mt-8;
+  }
+
+  .markdown-preview h3 {
+    @apply text-xl font-semibold mb-2 mt-6;
+  }
+
+  .markdown-preview h4, .markdown-preview h5, .markdown-preview h6 {
+    @apply font-semibold mb-2 mt-4;
+  }
+
+  .markdown-preview p {
+    @apply mb-4 leading-relaxed;
+  }
+
+  .markdown-preview a {
+    @apply text-[hsl(var(--preview-link))] hover:underline font-medium;
+  }
+
+  .markdown-preview code:not(pre code) {
+    @apply bg-[hsl(var(--preview-code-bg))] px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  .markdown-preview pre {
+    @apply bg-[hsl(var(--preview-code-bg))] p-4 rounded-lg overflow-x-auto my-4;
+  }
+
+  .markdown-preview pre code {
+    @apply text-sm font-mono leading-relaxed;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .markdown-preview blockquote {
+    @apply border-l-4 border-[hsl(var(--preview-blockquote))] pl-4 italic my-4 text-muted-foreground;
+  }
+
+  .markdown-preview ul {
+    @apply list-disc pl-6 mb-4 space-y-1;
+  }
+
+  .markdown-preview ol {
+    @apply list-decimal pl-6 mb-4 space-y-1;
+  }
+
+  .markdown-preview li {
+    @apply leading-relaxed;
+  }
+
+  .markdown-preview table {
+    @apply w-full border-collapse my-4;
+  }
+
+  .markdown-preview th, .markdown-preview td {
+    @apply border border-[hsl(var(--preview-table-border))] px-4 py-2 text-left;
+  }
+
+  .markdown-preview th {
+    @apply bg-muted font-semibold;
+  }
+
+  .markdown-preview tr:nth-child(even) {
+    @apply bg-muted/30;
+  }
+
+  .markdown-preview input[type="checkbox"] {
+    @apply mr-2 accent-primary;
+  }
+
+  .markdown-preview hr {
+    @apply border-border my-6;
+  }
+
+  .markdown-preview img {
+    @apply max-w-full h-auto rounded-lg my-4;
+  }
+
+  .markdown-preview del {
+    @apply text-muted-foreground;
+  }
+
+  /* Mermaid diagrams */
+  .mermaid {
+    @apply my-4 flex justify-center;
+  }
+
+  /* Math blocks */
+  .katex-display {
+    @apply my-4 overflow-x-auto;
+  }
+
+  /* Scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full hover:bg-muted-foreground/30;
+  }
+
+  /* Toolbar button */
+  .toolbar-btn {
+    @apply p-2 rounded-md transition-colors duration-150;
+    @apply hover:bg-[hsl(var(--toolbar-hover))] active:bg-[hsl(var(--toolbar-active))];
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/30;
+  }
+
+  .toolbar-btn.active {
+    @apply bg-[hsl(var(--toolbar-active))] text-primary;
+  }
+
+  /* Split pane resize handle */
+  .resize-handle {
+    @apply w-1 bg-border hover:bg-primary/50 transition-colors cursor-col-resize;
+  }
+
+  .resize-handle:hover, .resize-handle:active {
+    @apply bg-primary/60;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.2s ease-out;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from { 
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
