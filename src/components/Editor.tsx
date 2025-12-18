@@ -23,22 +23,28 @@ export const Editor: React.FC<EditorProps> = ({
   const lineCount = lines.length;
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Handle keyboard shortcuts
+    // Handle custom keyboard shortcuts (Ctrl+B, Ctrl+I, Ctrl+K)
+    // Let browser handle Ctrl+V, Ctrl+Z, Ctrl+Y, Ctrl+A, Ctrl+C, Ctrl+X natively
     if (e.ctrlKey || e.metaKey) {
-      switch (e.key.toLowerCase()) {
-        case 'b':
-          e.preventDefault();
-          onInsert('**', '**');
-          break;
-        case 'i':
-          e.preventDefault();
-          onInsert('*', '*');
-          break;
-        case 'k':
-          e.preventDefault();
-          onInsert('[', '](url)');
-          break;
+      const key = e.key.toLowerCase();
+      
+      // Only intercept specific markdown shortcuts
+      if (key === 'b') {
+        e.preventDefault();
+        onInsert('**', '**');
+        return;
       }
+      if (key === 'i') {
+        e.preventDefault();
+        onInsert('*', '*');
+        return;
+      }
+      if (key === 'k') {
+        e.preventDefault();
+        onInsert('[', '](url)');
+        return;
+      }
+      // All other Ctrl/Cmd shortcuts (v, z, y, a, c, x, etc.) work natively
     }
 
     // Handle Tab for indentation
