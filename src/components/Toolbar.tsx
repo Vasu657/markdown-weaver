@@ -12,7 +12,6 @@ import {
   Quote,
   Code,
   Link,
-  Image,
   Table,
   Minus,
   Download,
@@ -22,8 +21,8 @@ import {
   Columns,
   PanelLeft,
   PanelRight,
-  Settings,
   FileText,
+  FileCode2,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -101,7 +100,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const iconSize = 18;
 
   return (
-    <div className="flex items-center gap-0.5 px-3 py-2 bg-toolbar-bg border-b border-toolbar-border overflow-x-auto">
+    <div className="flex items-center gap-0.5 px-2 sm:px-3 py-2 bg-toolbar-bg border-b border-toolbar-border overflow-x-auto">
+      {/* Logo/Brand */}
+      <div className="flex items-center gap-2 mr-2 sm:mr-4 flex-shrink-0">
+        <FileCode2 size={22} className="text-primary" />
+        <span className="font-bold text-sm sm:text-base text-foreground hidden sm:inline">MarkdownPro</span>
+      </div>
+      
+      <Divider />
+      
       {/* Text Formatting */}
       <ToolbarButton
         icon={<Bold size={iconSize} />}
@@ -185,17 +192,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       
       <Divider />
       
-      {/* Links & Images */}
+      {/* Links */}
       <ToolbarButton
         icon={<Link size={iconSize} />}
         label="Link"
         shortcut="Ctrl+K"
         onClick={() => onInsert('[', '](url)')}
-      />
-      <ToolbarButton
-        icon={<Image size={iconSize} />}
-        label="Image"
-        onClick={() => onInsert('![alt text](', ')')}
       />
       
       <div className="flex-1" />

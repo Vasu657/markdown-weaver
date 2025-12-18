@@ -174,14 +174,15 @@ export const MarkdownEditor: React.FC = () => {
       {/* Main editor area */}
       <div 
         id="editor-container"
-        className="flex-1 flex overflow-hidden"
+        className="flex-1 flex flex-col md:flex-row overflow-hidden"
       >
         {(viewMode === 'split' || viewMode === 'editor') && (
           <div 
-            className="h-full overflow-hidden"
+            className="h-1/2 md:h-full overflow-hidden"
             style={{ 
-              width: viewMode === 'split' ? `${splitPosition}%` : '100%',
-              minWidth: viewMode === 'split' ? '200px' : undefined,
+              width: viewMode === 'split' ? undefined : '100%',
+              flex: viewMode === 'split' ? `0 0 ${splitPosition}%` : undefined,
+              minWidth: viewMode === 'split' ? '150px' : undefined,
             }}
           >
             <Editor
@@ -198,7 +199,7 @@ export const MarkdownEditor: React.FC = () => {
         
         {viewMode === 'split' && (
           <div
-            className="resize-handle"
+            className="resize-handle hidden md:block"
             onMouseDown={handleMouseDown}
             role="separator"
             aria-label="Resize editor and preview"
@@ -207,10 +208,11 @@ export const MarkdownEditor: React.FC = () => {
         
         {(viewMode === 'split' || viewMode === 'preview') && (
           <div 
-            className="h-full overflow-hidden border-l border-border"
+            className="h-1/2 md:h-full overflow-hidden border-t md:border-t-0 md:border-l border-border"
             style={{ 
-              width: viewMode === 'split' ? `${100 - splitPosition}%` : '100%',
-              minWidth: viewMode === 'split' ? '200px' : undefined,
+              width: viewMode === 'split' ? undefined : '100%',
+              flex: viewMode === 'split' ? `0 0 ${100 - splitPosition}%` : undefined,
+              minWidth: viewMode === 'split' ? '150px' : undefined,
             }}
           >
             <Preview content={content} previewRef={previewRef} />
