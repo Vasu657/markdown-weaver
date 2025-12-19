@@ -7,7 +7,6 @@ interface EditorProps {
   showLineNumbers: boolean;
   editorRef: React.RefObject<HTMLTextAreaElement>;
   onScroll: () => void;
-  onInsert: (before: string, after?: string) => void;
 }
 
 export const Editor: React.FC<EditorProps> = ({
@@ -17,37 +16,12 @@ export const Editor: React.FC<EditorProps> = ({
   showLineNumbers,
   editorRef,
   onScroll,
-  onInsert,
 }) => {
   const lines = content.split('\n');
   const lineCount = lines.length;
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Handle custom keyboard shortcuts (Ctrl+B, Ctrl+I, Ctrl+K)
-    // Let browser handle Ctrl+V, Ctrl+Z, Ctrl+Y, Ctrl+A, Ctrl+C, Ctrl+X natively
-    if (e.ctrlKey || e.metaKey) {
-      const key = e.key.toLowerCase();
-      
-      // Only intercept specific markdown shortcuts
-      if (key === 'b') {
-        e.preventDefault();
-        onInsert('**', '**');
-        return;
-      }
-      if (key === 'i') {
-        e.preventDefault();
-        onInsert('*', '*');
-        return;
-      }
-      if (key === 'k') {
-        e.preventDefault();
-        onInsert('[', '](url)');
-        return;
-      }
-      // All other Ctrl/Cmd shortcuts (v, z, y, a, c, x, etc.) work natively
-    }
-
-    // Handle Tab for indentation
+    // Handle Tab for indentation only
     if (e.key === 'Tab') {
       e.preventDefault();
       const textarea = e.currentTarget;
@@ -61,7 +35,7 @@ export const Editor: React.FC<EditorProps> = ({
         textarea.selectionStart = textarea.selectionEnd = start + 2;
       }, 0);
     }
-  }, [content, onChange, onInsert]);
+  }, [content, onChange]);
 
   return (
     <div className="flex h-full bg-editor-bg">
