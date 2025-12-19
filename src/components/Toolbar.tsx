@@ -1,19 +1,9 @@
 import React from 'react';
 import {
-  Bold,
-  Italic,
-  Strikethrough,
   Heading1,
   Heading2,
   Heading3,
-  List,
-  ListOrdered,
-  CheckSquare,
-  Quote,
   Code,
-  Link,
-  Table,
-  Minus,
   Download,
   Copy,
   Sun,
@@ -33,7 +23,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ViewMode } from '@/hooks/useMarkdownEditor';
@@ -51,7 +40,6 @@ interface ToolbarProps {
 interface ToolbarButtonProps {
   icon: React.ReactNode;
   label: string;
-  shortcut?: string;
   onClick: () => void;
   active?: boolean;
 }
@@ -59,7 +47,6 @@ interface ToolbarButtonProps {
 const ToolbarButton: React.FC<ToolbarButtonProps> = ({ 
   icon, 
   label, 
-  shortcut, 
   onClick,
   active 
 }) => (
@@ -73,13 +60,8 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
         {icon}
       </button>
     </TooltipTrigger>
-    <TooltipContent side="bottom" className="flex items-center gap-2">
+    <TooltipContent side="bottom">
       <span>{label}</span>
-      {shortcut && (
-        <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded font-mono">
-          {shortcut}
-        </kbd>
-      )}
     </TooltipContent>
   </Tooltip>
 );
@@ -109,27 +91,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       
       <Divider />
       
-      {/* Text Formatting */}
-      <ToolbarButton
-        icon={<Bold size={iconSize} />}
-        label="Bold"
-        shortcut="Ctrl+B"
-        onClick={() => onInsert('**', '**')}
-      />
-      <ToolbarButton
-        icon={<Italic size={iconSize} />}
-        label="Italic"
-        shortcut="Ctrl+I"
-        onClick={() => onInsert('*', '*')}
-      />
-      <ToolbarButton
-        icon={<Strikethrough size={iconSize} />}
-        label="Strikethrough"
-        onClick={() => onInsert('~~', '~~')}
-      />
-      
-      <Divider />
-      
       {/* Headings */}
       <ToolbarButton
         icon={<Heading1 size={iconSize} />}
@@ -149,55 +110,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       
       <Divider />
       
-      {/* Lists */}
-      <ToolbarButton
-        icon={<List size={iconSize} />}
-        label="Unordered List"
-        onClick={() => onInsert('- ')}
-      />
-      <ToolbarButton
-        icon={<ListOrdered size={iconSize} />}
-        label="Ordered List"
-        onClick={() => onInsert('1. ')}
-      />
-      <ToolbarButton
-        icon={<CheckSquare size={iconSize} />}
-        label="Task List"
-        onClick={() => onInsert('- [ ] ')}
-      />
-      
-      <Divider />
-      
-      {/* Blocks */}
-      <ToolbarButton
-        icon={<Quote size={iconSize} />}
-        label="Blockquote"
-        onClick={() => onInsert('> ')}
-      />
+      {/* Code Block */}
       <ToolbarButton
         icon={<Code size={iconSize} />}
         label="Code Block"
         onClick={() => onInsert('```\n', '\n```')}
-      />
-      <ToolbarButton
-        icon={<Table size={iconSize} />}
-        label="Table"
-        onClick={() => onInsert('| Column 1 | Column 2 |\n|----------|----------|\n| Cell 1   | Cell 2   |')}
-      />
-      <ToolbarButton
-        icon={<Minus size={iconSize} />}
-        label="Horizontal Rule"
-        onClick={() => onInsert('\n---\n')}
-      />
-      
-      <Divider />
-      
-      {/* Links */}
-      <ToolbarButton
-        icon={<Link size={iconSize} />}
-        label="Link"
-        shortcut="Ctrl+K"
-        onClick={() => onInsert('[', '](url)')}
       />
       
       <div className="flex-1" />

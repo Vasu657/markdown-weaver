@@ -48,7 +48,6 @@ export const MarkdownEditor: React.FC = () => {
       const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
       saveAs(blob, 'document.md');
     } else {
-      // Simple HTML export
       const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -150,7 +149,6 @@ export const MarkdownEditor: React.FC = () => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
-      {/* Drag overlay */}
       {isDragOver && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm border-2 border-dashed border-primary rounded-lg m-4">
           <div className="flex flex-col items-center gap-3 text-primary">
@@ -160,7 +158,6 @@ export const MarkdownEditor: React.FC = () => {
         </div>
       )}
       
-      {/* Toolbar */}
       <Toolbar
         onInsert={insertText}
         viewMode={viewMode}
@@ -171,7 +168,6 @@ export const MarkdownEditor: React.FC = () => {
         onCopy={handleCopy}
       />
       
-      {/* Main editor area */}
       <div 
         id="editor-container"
         className="flex-1 flex flex-col md:flex-row overflow-hidden"
@@ -192,7 +188,6 @@ export const MarkdownEditor: React.FC = () => {
               showLineNumbers={showLineNumbers}
               editorRef={editorRef}
               onScroll={handleEditorScroll}
-              onInsert={insertText}
             />
           </div>
         )}
@@ -220,7 +215,6 @@ export const MarkdownEditor: React.FC = () => {
         )}
       </div>
       
-      {/* Status bar */}
       <StatusBar
         stats={stats}
         fontSize={fontSize}
