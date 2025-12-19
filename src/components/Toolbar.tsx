@@ -1,9 +1,5 @@
 import React from 'react';
 import {
-  Heading1,
-  Heading2,
-  Heading3,
-  Code,
   Download,
   Copy,
   Sun,
@@ -13,6 +9,8 @@ import {
   PanelRight,
   FileText,
   FileCode2,
+  Code,
+  HelpCircle,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -26,9 +24,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ViewMode } from '@/hooks/useMarkdownEditor';
+import { useNavigate } from 'react-router-dom';
 
 interface ToolbarProps {
-  onInsert: (before: string, after?: string) => void;
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   theme: 'light' | 'dark';
@@ -71,7 +69,6 @@ const Divider = () => (
 );
 
 export const Toolbar: React.FC<ToolbarProps> = ({
-  onInsert,
   viewMode,
   onViewModeChange,
   theme,
@@ -80,6 +77,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onCopy,
 }) => {
   const iconSize = 18;
+  const navigate = useNavigate();
 
   return (
     <div className="flex items-center gap-0.5 px-2 sm:px-3 py-2 bg-toolbar-bg border-b border-toolbar-border overflow-x-auto">
@@ -90,34 +88,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       </div>
       
       <Divider />
-      
-      {/* Headings */}
-      <ToolbarButton
-        icon={<Heading1 size={iconSize} />}
-        label="Heading 1"
-        onClick={() => onInsert('# ')}
-      />
-      <ToolbarButton
-        icon={<Heading2 size={iconSize} />}
-        label="Heading 2"
-        onClick={() => onInsert('## ')}
-      />
-      <ToolbarButton
-        icon={<Heading3 size={iconSize} />}
-        label="Heading 3"
-        onClick={() => onInsert('### ')}
-      />
-      
-      <Divider />
-      
-      {/* Code Block */}
-      <ToolbarButton
-        icon={<Code size={iconSize} />}
-        label="Code Block"
-        onClick={() => onInsert('```\n', '\n```')}
-      />
-      
-      <div className="flex-1" />
       
       {/* View Mode */}
       <div className="flex items-center bg-muted rounded-md p-0.5">
@@ -141,7 +111,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         />
       </div>
       
-      <Divider />
+      <div className="flex-1" />
       
       {/* Actions */}
       <ToolbarButton
@@ -173,6 +143,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      
+      <Divider />
+      
+      <ToolbarButton
+        icon={<HelpCircle size={iconSize} />}
+        label="Help"
+        onClick={() => navigate('/help')}
+      />
     </div>
   );
 };

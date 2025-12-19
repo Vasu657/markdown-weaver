@@ -159,7 +159,6 @@ export const MarkdownEditor: React.FC = () => {
       )}
       
       <Toolbar
-        onInsert={insertText}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         theme={theme}
