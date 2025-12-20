@@ -25,6 +25,7 @@ interface StatusBarProps {
   onShowLineNumbersChange: (show: boolean) => void;
   syncScroll: boolean;
   onSyncScrollChange: (sync: boolean) => void;
+  saveIndicator?: React.ReactNode;
 }
 
 export const StatusBar: React.FC<StatusBarProps> = ({
@@ -35,11 +36,16 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   onShowLineNumbersChange,
   syncScroll,
   onSyncScrollChange,
+  saveIndicator,
 }) => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 bg-muted border-t border-border text-xs sm:text-sm text-muted-foreground gap-2 sm:gap-0">
       {/* Stats */}
       <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">
+        {saveIndicator}
+        
+        <div className="w-px h-4 bg-border hidden sm:block" />
+        
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-1">
