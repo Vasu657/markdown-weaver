@@ -78,13 +78,7 @@ export function useMarkdownEditor() {
   const previewRef = useRef<HTMLDivElement>(null);
   const [syncScroll, setSyncScroll] = useState(true);
 
-  // Save to localStorage with debounce
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      localStorage.setItem(STORAGE_KEY, content);
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [content]);
+  // Note: Auto-save is now handled by useAutoSave hook in MarkdownEditor
 
   const handleEditorScroll = useCallback(() => {
     if (!syncScroll || !editorRef.current || !previewRef.current) return;

@@ -8,7 +8,7 @@ import mermaid from 'mermaid';
 
 interface PreviewProps {
   content: string;
-  previewRef: React.RefObject<HTMLDivElement>;
+  previewRef?: React.RefObject<HTMLDivElement>;
 }
 
 // Initialize mermaid

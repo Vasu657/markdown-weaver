@@ -11,6 +11,10 @@ import {
   FileCode2,
   Code,
   HelpCircle,
+  Share2,
+  Focus,
+  Sparkles,
+  Files,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -22,9 +26,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { ViewMode } from '@/hooks/useMarkdownEditor';
 import { useNavigate } from 'react-router-dom';
+import { templates } from '@/lib/templates';
 
 interface ToolbarProps {
   viewMode: ViewMode;
@@ -33,6 +39,12 @@ interface ToolbarProps {
   onThemeToggle: () => void;
   onExport: (format: 'markdown' | 'html') => void;
   onCopy: () => void;
+  onShare: () => void;
+  onTemplateSelect: (content: string) => void;
+  focusMode: boolean;
+  onFocusModeToggle: () => void;
+  zenMode: boolean;
+  onZenModeToggle: () => void;
 }
 
 interface ToolbarButtonProps {
@@ -75,6 +87,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onThemeToggle,
   onExport,
   onCopy,
+  onShare,
+  onTemplateSelect,
+  focusMode,
+  onFocusModeToggle,
+  zenMode,
+  onZenModeToggle,
 }) => {
   const iconSize = 18;
   const navigate = useNavigate();
@@ -86,6 +104,31 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         <FileCode2 size={22} className="text-primary" />
         <span className="font-bold text-sm sm:text-base text-foreground hidden sm:inline">MarkdownPro</span>
       </div>
+      
+      <Divider />
+      
+      {/* Templates */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="toolbar-btn" aria-label="Templates">
+            <Files size={iconSize} />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {templates.map((template) => (
+            <DropdownMenuItem 
+              key={template.id}
+              onClick={() => onTemplateSelect(template.content)}
+            >
+              <FileText size={16} className="mr-2" />
+              <div className="flex flex-col">
+                <span>{template.name}</span>
+                <span className="text-xs text-muted-foreground">{template.description}</span>
+              </div>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
       
       <Divider />
       
@@ -111,6 +154,22 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         />
       </div>
       
+      <Divider />
+      
+      {/* Focus/Zen Modes */}
+      <ToolbarButton
+        icon={<Focus size={iconSize} />}
+        label="Focus Mode (Esc to exit)"
+        onClick={onFocusModeToggle}
+        active={focusMode}
+      />
+      <ToolbarButton
+        icon={<Sparkles size={iconSize} />}
+        label="Zen Mode (Esc to exit)"
+        onClick={onZenModeToggle}
+        active={zenMode}
+      />
+      
       <div className="flex-1" />
       
       {/* Actions */}
@@ -118,6 +177,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         icon={theme === 'dark' ? <Sun size={iconSize} /> : <Moon size={iconSize} />}
         label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
         onClick={onThemeToggle}
+      />
+      
+      <ToolbarButton
+        icon={<Share2 size={iconSize} />}
+        label="Share Preview Link"
+        onClick={onShare}
       />
       
       <ToolbarButton

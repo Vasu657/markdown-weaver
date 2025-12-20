@@ -1,13 +1,18 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { saveAs } from 'file-saver';
 import { Upload } from 'lucide-react';
 import { Toolbar } from './Toolbar';
 import { Editor } from './Editor';
 import { Preview } from './Preview';
 import { StatusBar } from './StatusBar';
+import { SaveIndicator } from './SaveIndicator';
+import { LintPanel } from './LintPanel';
 import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { useMarkdownLint } from '@/hooks/useMarkdownLint';
+import { generateShareUrl, copyToClipboard } from '@/lib/shareUtils';
 
 export const MarkdownEditor: React.FC = () => {
   const {
@@ -30,10 +35,65 @@ export const MarkdownEditor: React.FC = () => {
 
   const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
+  const saveStatus = useAutoSave(content);
+  const { warnings, dismissHint, dismissAll } = useMarkdownLint(content);
   
   const [isDragOver, setIsDragOver] = useState(false);
   const [splitPosition, setSplitPosition] = useState(50);
+  const [focusMode, setFocusMode] = useState(false);
+  const [zenMode, setZenMode] = useState(false);
   const isResizing = useRef(false);
+
+  // Handle Escape key to exit focus/zen mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (zenMode) setZenMode(false);
+        else if (focusMode) setFocusMode(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [focusMode, zenMode]);
+
+  const handleFocusModeToggle = useCallback(() => {
+    setFocusMode(prev => !prev);
+    if (!focusMode) {
+      setViewMode('editor');
+    }
+  }, [focusMode, setViewMode]);
+
+  const handleZenModeToggle = useCallback(() => {
+    setZenMode(prev => !prev);
+    if (!zenMode) {
+      setViewMode('editor');
+    }
+  }, [zenMode, setViewMode]);
+
+  const handleShare = useCallback(async () => {
+    const shareUrl = generateShareUrl(content);
+    try {
+      await copyToClipboard(shareUrl);
+      toast({
+        title: 'Share link copied!',
+        description: 'The read-only preview link has been copied to your clipboard.',
+      });
+    } catch {
+      toast({
+        title: 'Failed to copy',
+        description: 'Could not copy the share link.',
+        variant: 'destructive',
+      });
+    }
+  }, [content, toast]);
+
+  const handleTemplateSelect = useCallback((templateContent: string) => {
+    setContent(templateContent);
+    toast({
+      title: 'Template loaded!',
+      description: 'Start editing your new document.',
+    });
+  }, [setContent, toast]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content);
@@ -142,9 +202,33 @@ export const MarkdownEditor: React.FC = () => {
     };
   }, [handleMouseMove, handleMouseUp]);
 
+  // Zen mode: full screen editor with no UI
+  if (zenMode) {
+    return (
+      <div 
+        className="fixed inset-0 z-50 bg-background"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+      >
+        <Editor
+          content={content}
+          onChange={setContent}
+          fontSize={fontSize + 2}
+          showLineNumbers={false}
+          editorRef={editorRef}
+          onScroll={handleEditorScroll}
+        />
+        <div className="absolute bottom-4 right-4 text-xs text-muted-foreground/50">
+          Press Esc to exit Zen Mode
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div 
-      className="flex flex-col h-screen bg-background"
+      className={`flex flex-col h-screen bg-background ${focusMode ? 'fixed inset-0 z-50' : ''}`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -159,25 +243,31 @@ export const MarkdownEditor: React.FC = () => {
       )}
       
       <Toolbar
-        viewMode={viewMode}
+        viewMode={focusMode ? 'editor' : viewMode}
         onViewModeChange={setViewMode}
         theme={theme}
         onThemeToggle={toggleTheme}
         onExport={handleExport}
         onCopy={handleCopy}
+        onShare={handleShare}
+        onTemplateSelect={handleTemplateSelect}
+        focusMode={focusMode}
+        onFocusModeToggle={handleFocusModeToggle}
+        zenMode={zenMode}
+        onZenModeToggle={handleZenModeToggle}
       />
       
       <div 
         id="editor-container"
-        className="flex-1 flex flex-col md:flex-row overflow-hidden"
+        className="flex-1 flex flex-col md:flex-row overflow-hidden relative"
       >
-        {(viewMode === 'split' || viewMode === 'editor') && (
+        {((!focusMode && viewMode === 'split') || viewMode === 'editor' || focusMode) && (
           <div 
-            className="h-1/2 md:h-full overflow-hidden"
+            className="h-1/2 md:h-full overflow-hidden relative"
             style={{ 
-              width: viewMode === 'split' ? undefined : '100%',
-              flex: viewMode === 'split' ? `0 0 ${splitPosition}%` : undefined,
-              minWidth: viewMode === 'split' ? '150px' : undefined,
+              width: (!focusMode && viewMode === 'split') ? undefined : '100%',
+              flex: (!focusMode && viewMode === 'split') ? `0 0 ${splitPosition}%` : undefined,
+              minWidth: (!focusMode && viewMode === 'split') ? '150px' : undefined,
             }}
           >
             <Editor
@@ -188,10 +278,16 @@ export const MarkdownEditor: React.FC = () => {
               editorRef={editorRef}
               onScroll={handleEditorScroll}
             />
+            {/* Lint Panel */}
+            <LintPanel
+              warnings={warnings}
+              onDismiss={dismissHint}
+              onDismissAll={dismissAll}
+            />
           </div>
         )}
         
-        {viewMode === 'split' && (
+        {!focusMode && viewMode === 'split' && (
           <div
             className="resize-handle hidden md:block"
             onMouseDown={handleMouseDown}
@@ -200,7 +296,7 @@ export const MarkdownEditor: React.FC = () => {
           />
         )}
         
-        {(viewMode === 'split' || viewMode === 'preview') && (
+        {!focusMode && (viewMode === 'split' || viewMode === 'preview') && (
           <div 
             className="h-1/2 md:h-full overflow-hidden border-t md:border-t-0 md:border-l border-border"
             style={{ 
@@ -222,7 +318,14 @@ export const MarkdownEditor: React.FC = () => {
         onShowLineNumbersChange={setShowLineNumbers}
         syncScroll={syncScroll}
         onSyncScrollChange={setSyncScroll}
+        saveIndicator={<SaveIndicator status={saveStatus} />}
       />
+
+      {focusMode && (
+        <div className="absolute bottom-16 right-4 text-xs text-muted-foreground/50">
+          Press Esc to exit Focus Mode
+        </div>
+      )}
     </div>
   );
 };
