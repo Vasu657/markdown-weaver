@@ -6,12 +6,10 @@ import { Editor } from './Editor';
 import { Preview } from './Preview';
 import { StatusBar } from './StatusBar';
 import { SaveIndicator } from './SaveIndicator';
-import { LintPanel } from './LintPanel';
 import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/hooks/useAutoSave';
-import { useMarkdownLint } from '@/hooks/useMarkdownLint';
 import { generateShareUrl, copyToClipboard } from '@/lib/shareUtils';
 
 export const MarkdownEditor: React.FC = () => {
@@ -36,7 +34,6 @@ export const MarkdownEditor: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
   const saveStatus = useAutoSave(content);
-  const { warnings, dismissHint, dismissAll } = useMarkdownLint(content);
   
   const [isDragOver, setIsDragOver] = useState(false);
   const [splitPosition, setSplitPosition] = useState(50);
@@ -277,12 +274,6 @@ export const MarkdownEditor: React.FC = () => {
               showLineNumbers={showLineNumbers}
               editorRef={editorRef}
               onScroll={handleEditorScroll}
-            />
-            {/* Lint Panel */}
-            <LintPanel
-              warnings={warnings}
-              onDismiss={dismissHint}
-              onDismissAll={dismissAll}
             />
           </div>
         )}

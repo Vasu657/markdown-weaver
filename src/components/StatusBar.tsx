@@ -39,9 +39,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   saveIndicator,
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 bg-muted border-t border-border text-xs sm:text-sm text-muted-foreground gap-2 sm:gap-0">
+    <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-1.5 sm:py-2 bg-muted border-t border-border text-xs text-muted-foreground gap-1.5 sm:gap-0">
       {/* Stats */}
-      <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">
+      <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center sm:justify-start">
         {saveIndicator}
         
         <div className="w-px h-4 bg-border hidden sm:block" />

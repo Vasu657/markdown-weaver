@@ -245,11 +245,15 @@
     @apply bg-border rounded-full hover:bg-muted-foreground/30;
   }
 
-  /* Toolbar button */
+  /* Toolbar button - Touch-optimized */
   .toolbar-btn {
-    @apply p-2 rounded-md transition-colors duration-150;
+    @apply p-2 sm:p-1.5 rounded-md transition-colors duration-150;
     @apply hover:bg-[hsl(var(--toolbar-hover))] active:bg-[hsl(var(--toolbar-active))];
     @apply focus:outline-none focus:ring-2 focus:ring-primary/30;
+    @apply min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px];
+    @apply flex items-center justify-center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .toolbar-btn.active {
