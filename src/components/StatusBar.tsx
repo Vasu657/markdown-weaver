@@ -1,5 +1,6 @@
 import React from 'react';
-import { FileText, Hash, Type, ToggleLeft, ToggleRight } from 'lucide-react';
+import { FileText, Hash, Type, ToggleLeft, ToggleRight, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   Tooltip,
   TooltipContent,
@@ -38,6 +39,8 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   onSyncScrollChange,
   saveIndicator,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-1.5 sm:py-2 bg-muted border-t border-border text-xs text-muted-foreground gap-1.5 sm:gap-0">
       {/* Stats */}
@@ -113,6 +116,20 @@ export const StatusBar: React.FC<StatusBarProps> = ({
             </SelectContent>
           </Select>
         </div>
+        
+        {/* Privacy Link */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => navigate('/privacy')}
+              className="flex items-center gap-1 hover:text-foreground transition-colors"
+            >
+              <Shield size={14} />
+              <span className="hidden sm:inline">Privacy</span>
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Privacy & Legal</TooltipContent>
+        </Tooltip>
         
         {/* Developed by */}
         <div className="hidden md:flex items-center gap-1 text-muted-foreground/70 border-l border-border pl-3">
