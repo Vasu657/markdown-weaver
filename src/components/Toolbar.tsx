@@ -12,10 +12,10 @@ import {
   Code,
   HelpCircle,
   Share2,
-  Focus,
-  Sparkles,
   Files,
   MoreHorizontal,
+  Undo2,
+  Redo2,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -42,10 +42,10 @@ interface ToolbarProps {
   onCopy: () => void;
   onShare: () => void;
   onTemplateSelect: (content: string) => void;
-  focusMode: boolean;
-  onFocusModeToggle: () => void;
-  zenMode: boolean;
-  onZenModeToggle: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
 interface ToolbarButtonProps {
@@ -53,6 +53,7 @@ interface ToolbarButtonProps {
   label: string;
   onClick: () => void;
   active?: boolean;
+  disabled?: boolean;
   className?: string;
 }
 
@@ -61,13 +62,15 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   label, 
   onClick,
   active,
+  disabled,
   className = '',
 }) => (
   <Tooltip>
     <TooltipTrigger asChild>
       <button
         onClick={onClick}
-        className={`toolbar-btn ${active ? 'active' : ''} ${className}`}
+        disabled={disabled}
+        className={`toolbar-btn ${active ? 'active' : ''} ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
         aria-label={label}
       >
         {icon}
@@ -83,6 +86,36 @@ const Divider = () => (
   <div className="w-px h-5 bg-border mx-1 hidden sm:block" />
 );
 
+// Get the next view mode in cycle: split -> editor -> preview -> split
+const getNextViewMode = (current: ViewMode): ViewMode => {
+  switch (current) {
+    case 'split': return 'editor';
+    case 'editor': return 'preview';
+    case 'preview': return 'split';
+    default: return 'split';
+  }
+};
+
+// Get icon for current view mode
+const getViewModeIcon = (mode: ViewMode, size: number) => {
+  switch (mode) {
+    case 'split': return <Columns size={size} />;
+    case 'editor': return <PanelLeft size={size} />;
+    case 'preview': return <PanelRight size={size} />;
+    default: return <Columns size={size} />;
+  }
+};
+
+// Get label for current view mode
+const getViewModeLabel = (mode: ViewMode): string => {
+  switch (mode) {
+    case 'split': return 'Split View (click to switch to Editor)';
+    case 'editor': return 'Editor Only (click to switch to Preview)';
+    case 'preview': return 'Preview Only (click to switch to Split)';
+    default: return 'Toggle View';
+  }
+};
+
 export const Toolbar: React.FC<ToolbarProps> = ({
   viewMode,
   onViewModeChange,
@@ -92,14 +125,17 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onCopy,
   onShare,
   onTemplateSelect,
-  focusMode,
-  onFocusModeToggle,
-  zenMode,
-  onZenModeToggle,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
 }) => {
-  const iconSize = 18;
   const smallIconSize = 16;
   const navigate = useNavigate();
+
+  const handleViewToggle = () => {
+    onViewModeChange(getNextViewMode(viewMode));
+  };
 
   return (
     <div className="flex items-center gap-1 px-2 sm:px-3 py-2 bg-toolbar-bg border-b border-toolbar-border">
@@ -111,7 +147,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       
       <Divider />
       
-      {/* Templates - Always visible */}
+      {/* Templates */}
       <DropdownMenu>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -140,55 +176,42 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         </DropdownMenuContent>
       </DropdownMenu>
       
-      {/* View Mode - Compact on mobile */}
-      <div className="flex items-center bg-muted rounded-md p-0.5">
+      {/* Undo/Redo */}
+      <div className="flex items-center gap-0.5">
         <ToolbarButton
-          icon={<PanelLeft size={smallIconSize} />}
-          label="Editor Only"
-          onClick={() => onViewModeChange('editor')}
-          active={viewMode === 'editor'}
+          icon={<Undo2 size={smallIconSize} />}
+          label="Undo (Ctrl+Z)"
+          onClick={onUndo}
+          disabled={!canUndo}
         />
         <ToolbarButton
-          icon={<Columns size={smallIconSize} />}
-          label="Split View"
-          onClick={() => onViewModeChange('split')}
-          active={viewMode === 'split'}
-          className="hidden xs:flex"
-        />
-        <ToolbarButton
-          icon={<PanelRight size={smallIconSize} />}
-          label="Preview Only"
-          onClick={() => onViewModeChange('preview')}
-          active={viewMode === 'preview'}
+          icon={<Redo2 size={smallIconSize} />}
+          label="Redo (Ctrl+Y)"
+          onClick={onRedo}
+          disabled={!canRedo}
         />
       </div>
       
-      {/* Focus Modes - Hidden on mobile, shown in More menu */}
-      <div className="hidden sm:flex items-center gap-0.5">
-        <ToolbarButton
-          icon={<Focus size={smallIconSize} />}
-          label="Focus Mode"
-          onClick={onFocusModeToggle}
-          active={focusMode}
-        />
-        <ToolbarButton
-          icon={<Sparkles size={smallIconSize} />}
-          label="Zen Mode"
-          onClick={onZenModeToggle}
-          active={zenMode}
-        />
-      </div>
+      <Divider />
+      
+      {/* Single View Mode Toggle */}
+      <ToolbarButton
+        icon={getViewModeIcon(viewMode, smallIconSize)}
+        label={getViewModeLabel(viewMode)}
+        onClick={handleViewToggle}
+        active={viewMode === 'split'}
+      />
       
       <div className="flex-1" />
       
-      {/* Theme toggle - Always visible */}
+      {/* Theme toggle */}
       <ToolbarButton
         icon={theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
         label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
         onClick={onThemeToggle}
       />
       
-      {/* More actions dropdown - Contains share, copy, export on mobile */}
+      {/* More actions dropdown */}
       <DropdownMenu>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -201,18 +224,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <TooltipContent side="bottom">More</TooltipContent>
         </Tooltip>
         <DropdownMenuContent align="end" className="w-48">
-          {/* Mobile-only options */}
-          <DropdownMenuItem onClick={onFocusModeToggle} className="sm:hidden">
-            <Focus size={14} className="mr-2" />
-            Focus Mode
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={onZenModeToggle} className="sm:hidden">
-            <Sparkles size={14} className="mr-2" />
-            Zen Mode
-          </DropdownMenuItem>
-          <DropdownMenuSeparator className="sm:hidden" />
-          
-          {/* Always visible options */}
           <DropdownMenuItem onClick={onShare}>
             <Share2 size={14} className="mr-2" />
             Share Preview Link

@@ -8,22 +8,22 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 220 15% 15%;
+    --foreground: 220 20% 10%;
     
     --card: 0 0% 98%;
-    --card-foreground: 220 15% 15%;
+    --card-foreground: 220 20% 10%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 220 20% 10%;
     
     --primary: 172 66% 40%;
     --primary-foreground: 0 0% 100%;
     
     --secondary: 220 15% 94%;
-    --secondary-foreground: 220 15% 25%;
+    --secondary-foreground: 220 20% 15%;
     
     --muted: 220 15% 96%;
-    --muted-foreground: 220 10% 45%;
+    --muted-foreground: 220 12% 40%;
     
     --accent: 172 66% 95%;
     --accent-foreground: 172 66% 25%;
@@ -31,29 +31,32 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 15% 90%;
-    --input: 220 15% 90%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
     --ring: 172 66% 40%;
     
     --radius: 0.5rem;
     
-    /* Editor-specific tokens */
-    --editor-bg: 220 15% 98%;
-    --editor-line-number: 220 10% 60%;
-    --editor-gutter: 220 15% 95%;
+    /* Editor-specific tokens - Light mode improved */
+    --editor-bg: 220 15% 99%;
+    --editor-text: 220 20% 12%;
+    --editor-line-number: 220 12% 50%;
+    --editor-gutter: 220 15% 97%;
     --editor-selection: 172 66% 90%;
     --editor-cursor: 172 66% 40%;
+    --editor-placeholder: 220 12% 55%;
     
-    /* Preview tokens */
+    /* Preview tokens - Light mode improved */
     --preview-bg: 0 0% 100%;
-    --preview-code-bg: 220 15% 96%;
+    --preview-code-bg: 220 20% 94%;
+    --preview-code-text: 220 20% 15%;
     --preview-blockquote: 172 66% 40%;
-    --preview-link: 172 66% 35%;
-    --preview-table-border: 220 15% 85%;
+    --preview-link: 172 66% 30%;
+    --preview-table-border: 220 15% 82%;
     
     /* Toolbar tokens */
     --toolbar-bg: 0 0% 100%;
-    --toolbar-border: 220 15% 90%;
+    --toolbar-border: 220 15% 88%;
     --toolbar-hover: 220 15% 96%;
     --toolbar-active: 172 66% 95%;
   }
@@ -89,14 +92,17 @@
     
     /* Editor-specific tokens */
     --editor-bg: 222 20% 6%;
+    --editor-text: 220 15% 88%;
     --editor-line-number: 220 10% 40%;
     --editor-gutter: 222 20% 10%;
     --editor-selection: 172 40% 20%;
     --editor-cursor: 172 66% 50%;
+    --editor-placeholder: 220 10% 45%;
     
     /* Preview tokens */
     --preview-bg: 222 20% 10%;
     --preview-code-bg: 222 20% 14%;
+    --preview-code-text: 220 15% 85%;
     --preview-blockquote: 172 66% 50%;
     --preview-link: 172 66% 60%;
     --preview-table-border: 222 20% 25%;
@@ -123,71 +129,116 @@
 @layer components {
   .editor-textarea {
     @apply w-full h-full resize-none bg-transparent outline-none;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
     line-height: 1.7;
     tab-size: 2;
+    color: hsl(var(--editor-text));
+    caret-color: hsl(var(--editor-cursor));
+  }
+
+  .editor-textarea::placeholder {
+    color: hsl(var(--editor-placeholder));
   }
 
   .editor-textarea::selection {
     background-color: hsl(var(--editor-selection));
   }
 
+  .bg-editor-bg {
+    background-color: hsl(var(--editor-bg));
+  }
+
+  .bg-editor-gutter {
+    background-color: hsl(var(--editor-gutter));
+  }
+
+  .text-editor-lineNumber {
+    color: hsl(var(--editor-line-number));
+  }
+
+  .bg-preview-bg {
+    background-color: hsl(var(--preview-bg));
+  }
+
+  .bg-toolbar-bg {
+    background-color: hsl(var(--toolbar-bg));
+  }
+
+  .border-toolbar-border {
+    border-color: hsl(var(--toolbar-border));
+  }
+
   .markdown-preview {
     @apply prose prose-neutral dark:prose-invert max-w-none;
     font-family: 'Inter', system-ui, sans-serif;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview h1 {
     @apply text-3xl font-bold border-b border-border pb-3 mb-4;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview h2 {
     @apply text-2xl font-semibold border-b border-border pb-2 mb-3 mt-8;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview h3 {
     @apply text-xl font-semibold mb-2 mt-6;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview h4, .markdown-preview h5, .markdown-preview h6 {
     @apply font-semibold mb-2 mt-4;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview p {
     @apply mb-4 leading-relaxed;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview a {
-    @apply text-[hsl(var(--preview-link))] hover:underline font-medium;
+    color: hsl(var(--preview-link));
+    @apply hover:underline font-medium;
   }
 
   .markdown-preview code:not(pre code) {
-    @apply bg-[hsl(var(--preview-code-bg))] px-1.5 py-0.5 rounded text-sm font-mono;
+    background-color: hsl(var(--preview-code-bg));
+    color: hsl(var(--preview-code-text));
+    @apply px-1.5 py-0.5 rounded text-sm font-mono;
   }
 
   .markdown-preview pre {
-    @apply bg-[hsl(var(--preview-code-bg))] p-4 rounded-lg overflow-x-auto my-4;
+    background-color: hsl(var(--preview-code-bg));
+    @apply p-4 rounded-lg overflow-x-auto my-4;
   }
 
   .markdown-preview pre code {
+    color: hsl(var(--preview-code-text));
     @apply text-sm font-mono leading-relaxed;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   }
 
   .markdown-preview blockquote {
-    @apply border-l-4 border-[hsl(var(--preview-blockquote))] pl-4 italic my-4 text-muted-foreground;
+    border-left-color: hsl(var(--preview-blockquote));
+    @apply border-l-4 pl-4 italic my-4 text-muted-foreground;
   }
 
   .markdown-preview ul {
     @apply list-disc pl-6 mb-4 space-y-1;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview ol {
     @apply list-decimal pl-6 mb-4 space-y-1;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview li {
     @apply leading-relaxed;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview table {
@@ -195,7 +246,9 @@
   }
 
   .markdown-preview th, .markdown-preview td {
-    @apply border border-[hsl(var(--preview-table-border))] px-4 py-2 text-left;
+    border-color: hsl(var(--preview-table-border));
+    @apply border px-4 py-2 text-left;
+    color: hsl(var(--foreground));
   }
 
   .markdown-preview th {
@@ -220,6 +273,15 @@
 
   .markdown-preview del {
     @apply text-muted-foreground;
+  }
+
+  .markdown-preview strong {
+    @apply font-bold;
+    color: hsl(var(--foreground));
+  }
+
+  .markdown-preview em {
+    color: hsl(var(--foreground));
   }
 
   /* Mermaid diagrams */
