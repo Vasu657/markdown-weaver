@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeHighlight from 'rehype-highlight';
+import rehypeRaw from 'rehype-raw';
 import mermaid from 'mermaid';
 import { Check, Copy } from 'lucide-react';
 
@@ -94,7 +95,7 @@ export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
       <article className="markdown-preview animate-fade-in">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeHighlight]}
+          rehypePlugins={[rehypeRaw, rehypeKatex, rehypeHighlight]}
           components={{
             code: ({ className, children, ...props }) => {
               const isInline = !className;
@@ -103,6 +104,14 @@ export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
               }
               return <CodeBlock className={className}>{children}</CodeBlock>;
             },
+            // Preserve HTML div elements with their attributes
+            div: ({ node, ...props }) => <div {...props} />,
+            // Preserve img elements with their attributes
+            img: ({ node, ...props }) => <img {...props} />,
+            // Preserve video elements
+            video: ({ node, ...props }) => <video {...props} />,
+            // Preserve anchor elements
+            a: ({ node, ...props }) => <a {...props} />,
           }}
         >
           {content}
