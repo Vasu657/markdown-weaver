@@ -284,6 +284,89 @@
     color: hsl(var(--foreground));
   }
 
+  /* GitHub-style HTML alignment support */
+  .markdown-preview div[align="center"],
+  .markdown-preview p[align="center"] {
+    @apply text-center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .markdown-preview div[align="right"],
+  .markdown-preview p[align="right"] {
+    @apply text-right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .markdown-preview div[align="left"],
+  .markdown-preview p[align="left"] {
+    @apply text-left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* GitHub badge styling */
+  .markdown-preview a img {
+    @apply inline-block my-0 mx-0.5 rounded-none;
+  }
+
+  /* Centered div with badges */
+  .markdown-preview div[align="center"] a img,
+  .markdown-preview p[align="center"] a img {
+    @apply inline-block;
+  }
+
+  /* GitHub-style details/summary */
+  .markdown-preview details {
+    @apply my-4 border border-border rounded-lg;
+  }
+
+  .markdown-preview details summary {
+    @apply cursor-pointer p-3 font-medium hover:bg-muted/50 transition-colors;
+  }
+
+  .markdown-preview details[open] summary {
+    @apply border-b border-border;
+  }
+
+  .markdown-preview details > *:not(summary) {
+    @apply px-3 pb-3;
+  }
+
+  /* GitHub-style kbd element */
+  .markdown-preview kbd {
+    @apply px-1.5 py-0.5 text-xs font-mono border border-border rounded bg-muted shadow-sm;
+  }
+
+  /* GitHub-style sup/sub */
+  .markdown-preview sup {
+    @apply text-xs align-super;
+  }
+
+  .markdown-preview sub {
+    @apply text-xs align-sub;
+  }
+
+  /* Video element support */
+  .markdown-preview video {
+    @apply max-w-full h-auto rounded-lg my-4;
+  }
+
+  /* GitHub-style horizontal alignment for inline content */
+  .markdown-preview [align="center"] {
+    text-align: center !important;
+  }
+
+  .markdown-preview [align="center"] > * {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   /* Mermaid diagrams */
   .mermaid {
     @apply my-4 flex justify-center;
