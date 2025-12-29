@@ -212,7 +212,7 @@ export const MarkdownEditor: React.FC = () => {
       >
         {(viewMode === 'split' || viewMode === 'editor') && (
           <div 
-            className="h-1/2 md:h-full overflow-hidden relative"
+            className={`${viewMode === 'split' ? 'h-1/2 md:h-full' : 'h-full'} overflow-hidden relative`}
             style={{ 
               width: viewMode === 'split' ? undefined : '100%',
               flex: viewMode === 'split' ? `0 0 ${splitPosition}%` : undefined,
@@ -241,7 +241,7 @@ export const MarkdownEditor: React.FC = () => {
         
         {(viewMode === 'split' || viewMode === 'preview') && (
           <div 
-            className="h-1/2 md:h-full overflow-hidden border-t md:border-t-0 md:border-l border-border"
+            className={`${viewMode === 'split' ? 'h-1/2 md:h-full' : 'h-full'} overflow-hidden border-t md:border-t-0 md:border-l border-border`}
             style={{ 
               width: viewMode === 'split' ? undefined : '100%',
               flex: viewMode === 'split' ? `0 0 ${100 - splitPosition}%` : undefined,

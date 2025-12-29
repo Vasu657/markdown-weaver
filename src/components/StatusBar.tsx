@@ -42,18 +42,18 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between px-2 sm:px-4 py-1.5 sm:py-2 bg-muted border-t border-border text-xs text-muted-foreground gap-1.5 sm:gap-0">
+    <div className="flex flex-row items-center justify-between px-2 sm:px-4 py-1.5 sm:py-2 bg-muted border-t border-border text-xs text-muted-foreground gap-1 sm:gap-4 overflow-x-auto whitespace-nowrap">
       {/* Stats */}
-      <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center sm:justify-start">
+      <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
         {saveIndicator}
         
         <div className="w-px h-4 bg-border hidden sm:block" />
         
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1">
-              <Type size={14} />
-              <span>{stats.words} words</span>
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <Type size={12} className="sm:w-3.5 sm:h-3.5" />
+              <span className="whitespace-nowrap">{stats.words}</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>Word count</TooltipContent>
@@ -61,9 +61,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1">
-              <Hash size={14} />
-              <span>{stats.characters} chars</span>
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <Hash size={12} className="sm:w-3.5 sm:h-3.5" />
+              <span className="whitespace-nowrap">{stats.characters}</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>Character count</TooltipContent>
@@ -71,9 +71,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1">
-              <FileText size={14} />
-              <span>{stats.lines} lines</span>
+            <div className="flex items-center gap-0.5 sm:gap-1">
+              <FileText size={12} className="sm:w-3.5 sm:h-3.5" />
+              <span className="whitespace-nowrap">{stats.lines}</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>Line count</TooltipContent>
@@ -81,30 +81,29 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       </div>
       
       {/* Controls */}
-      <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center">
+      <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
         <button
           onClick={() => onShowLineNumbersChange(!showLineNumbers)}
-          className="flex items-center gap-1 hover:text-foreground transition-colors"
+          className="flex items-center gap-0.5 hover:text-foreground transition-colors flex-shrink-0"
+          title="Toggle line numbers"
         >
-          {showLineNumbers ? <ToggleRight size={14} className="text-primary" /> : <ToggleLeft size={14} />}
-          <span className="hidden xs:inline">Line #</span>
+          {showLineNumbers ? <ToggleRight size={12} className="text-primary sm:w-3.5 sm:h-3.5" /> : <ToggleLeft size={12} className="sm:w-3.5 sm:h-3.5" />}
         </button>
         
         <button
           onClick={() => onSyncScrollChange(!syncScroll)}
-          className="flex items-center gap-1 hover:text-foreground transition-colors"
+          className="flex items-center gap-0.5 hover:text-foreground transition-colors flex-shrink-0"
+          title="Toggle sync scroll"
         >
-          {syncScroll ? <ToggleRight size={14} className="text-primary" /> : <ToggleLeft size={14} />}
-          <span className="hidden xs:inline">Sync</span>
+          {syncScroll ? <ToggleRight size={12} className="text-primary sm:w-3.5 sm:h-3.5" /> : <ToggleLeft size={12} className="sm:w-3.5 sm:h-3.5" />}
         </button>
         
-        <div className="flex items-center gap-1 sm:gap-2">
-          <span className="hidden sm:inline">Font:</span>
+        <div className="flex items-center gap-1 flex-shrink-0">
           <Select 
             value={fontSize.toString()} 
             onValueChange={(val) => onFontSizeChange(parseInt(val))}
           >
-            <SelectTrigger className="h-6 sm:h-7 w-14 sm:w-16 text-xs">
+            <SelectTrigger className="h-6 sm:h-7 w-12 sm:w-16 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -122,23 +121,23 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           <TooltipTrigger asChild>
             <button
               onClick={() => navigate('/privacy')}
-              className="flex items-center gap-1 hover:text-foreground transition-colors"
+              className="flex items-center gap-0.5 hover:text-foreground transition-colors flex-shrink-0"
+              title="Privacy & Legal"
             >
-              <Shield size={14} />
-              <span className="hidden sm:inline">Privacy</span>
+              <Shield size={12} className="sm:w-3.5 sm:h-3.5" />
             </button>
           </TooltipTrigger>
           <TooltipContent>Privacy & Legal</TooltipContent>
         </Tooltip>
         
         {/* Developed by */}
-        <div className="hidden md:flex items-center gap-1 text-muted-foreground/70 border-l border-border pl-3">
-          <span>Developed by</span>
+        <div className="hidden md:flex items-center gap-1 text-muted-foreground/70 border-l border-border pl-2 flex-shrink-0">
+          <span className="text-xs">by</span>
           <a 
             href="https://github.com" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-primary hover:underline text-xs"
           >
             Your Name
           </a>

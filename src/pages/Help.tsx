@@ -14,7 +14,8 @@ import {
   Calculator,
   GitBranch,
   AlertTriangle,
-  Keyboard
+  Keyboard,
+  Shield
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -29,12 +30,12 @@ const Help: React.FC = () => {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background border-b border-border px-4 py-6">
         <div className="max-w-4xl mx-auto flex justify-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Help</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Help & Documentation</h1>
         </div>
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Master Markdown in Minutes
@@ -251,13 +252,24 @@ pie title Usage
         {/* Footer */}
         <div className="mt-12 pt-6 border-t border-border">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Button onClick={() => navigate('/')} className="gap-2">
+            <Button onClick={() => navigate('/')} variant="outline" className="gap-2 w-full sm:w-auto">
               <ArrowLeft size={16} />
               Back to Editor
             </Button>
-            <Button variant="outline" onClick={() => navigate('/privacy')} className="gap-2">
-              Privacy & Legal
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <Button onClick={() => navigate('/about')} variant="outline" className="gap-2 w-full sm:w-auto">
+                <FileCode2 size={16} />
+                About
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/privacy')} className="gap-2 w-full sm:w-auto">
+                <Shield size={16} />
+                Privacy Policy
+              </Button>
+            </div>
+          </div>
+          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border mt-4">
+            <p>© {new Date().getFullYear()} MarkdownPro. All rights reserved.</p>
+            <p className="mt-1">Built with ❤️ for developers worldwide</p>
           </div>
         </div>
       </main>

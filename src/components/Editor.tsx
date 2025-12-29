@@ -1,4 +1,4 @@
-import React, { useCallback, KeyboardEvent } from 'react';
+import React, { useCallback, KeyboardEvent, useRef, useEffect } from 'react';
 
 interface EditorProps {
   content: string;
@@ -19,9 +19,9 @@ export const Editor: React.FC<EditorProps> = ({
 }) => {
   const lines = content.split('\n');
   const lineCount = lines.length;
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Handle Tab for indentation
     if (e.key === 'Tab') {
       e.preventDefault();
       const textarea = e.currentTarget;
@@ -37,11 +37,19 @@ export const Editor: React.FC<EditorProps> = ({
     }
   }, [content, onChange]);
 
+  const handleScroll = useCallback(() => {
+    if (editorRef.current && lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = editorRef.current.scrollTop;
+    }
+    onScroll();
+  }, [editorRef, onScroll]);
+
   return (
-    <div className="flex h-full bg-editor-bg relative">
+    <div className="flex h-full bg-editor-bg relative overflow-hidden">
       {showLineNumbers && (
         <div 
-          className="flex-shrink-0 select-none text-right pr-3 pl-3 py-4 bg-editor-gutter text-editor-lineNumber font-mono border-r border-border"
+          ref={lineNumbersRef}
+          className="flex-shrink-0 select-none text-right pr-3 pl-3 py-4 bg-editor-gutter text-editor-lineNumber font-mono border-r border-border overflow-hidden"
           style={{ fontSize: `${fontSize}px`, lineHeight: '1.7' }}
           aria-hidden="true"
         >
@@ -54,9 +62,9 @@ export const Editor: React.FC<EditorProps> = ({
         ref={editorRef}
         value={content}
         onChange={(e) => onChange(e.target.value)}
-        onScroll={onScroll}
+        onScroll={handleScroll}
         onKeyDown={handleKeyDown}
-        className="editor-textarea px-4 py-4 custom-scrollbar"
+        className="editor-textarea px-4 py-4 custom-scrollbar flex-1"
         style={{ fontSize: `${fontSize}px` }}
         spellCheck={false}
         placeholder="Start writing your Markdown here..."

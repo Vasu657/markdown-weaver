@@ -86,9 +86,14 @@ export function useMarkdownEditor() {
     const editor = editorRef.current;
     const preview = previewRef.current;
     
-    const scrollPercentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
-    preview.scrollTop = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
-  }, [syncScroll]);
+    const editorLineHeight = parseFloat(getComputedStyle(editor).lineHeight);
+    const scrolledLines = Math.floor(editor.scrollTop / editorLineHeight);
+    const totalLines = content.split('\n').length;
+    const scrollPercentage = Math.min(scrolledLines / totalLines, 1);
+    
+    const maxPreviewScroll = preview.scrollHeight - preview.clientHeight;
+    preview.scrollTop = scrollPercentage * maxPreviewScroll;
+  }, [syncScroll, content]);
 
   const insertText = useCallback((before: string, after: string = '') => {
     const textarea = editorRef.current;

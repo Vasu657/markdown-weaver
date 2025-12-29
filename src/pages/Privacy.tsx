@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Shield, Lock, Eye, Scale, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Shield, Lock, Eye, Scale, ExternalLink, FileCode2, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
@@ -11,12 +11,12 @@ const Privacy: React.FC = () => {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background border-b border-border px-4 py-6">
         <div className="max-w-4xl mx-auto flex justify-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Privacy</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Privacy & Legal</h1>
         </div>
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Your Privacy Matters
@@ -142,13 +142,24 @@ const Privacy: React.FC = () => {
         {/* Footer */}
         <div className="mt-12 pt-6 border-t border-border">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Button onClick={() => navigate('/')} className="gap-2">
-              <ArrowLeft size={16} />
+            <Button onClick={() => navigate('/')} variant="outline" className="gap-2 w-full sm:w-auto">
+              <FileCode2 size={16} />
               Back to Editor
             </Button>
-            <Button variant="outline" onClick={() => navigate('/help')} className="gap-2">
-              Markdown Guide
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <Button onClick={() => navigate('/about')} variant="outline" className="gap-2 w-full sm:w-auto">
+                <FileCode2 size={16} />
+                About
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/help')} className="gap-2 w-full sm:w-auto">
+                <BookOpen size={16} />
+                Help Guide
+              </Button>
+            </div>
+          </div>
+          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border mt-4">
+            <p>© {new Date().getFullYear()} MarkdownPro. All rights reserved.</p>
+            <p className="mt-1">Built with ❤️ for developers worldwide</p>
           </div>
         </div>
       </main>

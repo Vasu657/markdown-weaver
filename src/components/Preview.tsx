@@ -11,6 +11,7 @@ import { Check, Copy } from 'lucide-react';
 interface PreviewProps {
   content: string;
   previewRef?: React.RefObject<HTMLDivElement>;
+  onScroll?: () => void;
 }
 
 // Initialize mermaid
