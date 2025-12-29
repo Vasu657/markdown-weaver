@@ -139,7 +139,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
             rel="noopener noreferrer"
             className="font-medium text-primary hover:underline text-xs"
           >
-            Your Name
+            Vasu Ghanta ❤️
           </a>
         </div>
       </div>
