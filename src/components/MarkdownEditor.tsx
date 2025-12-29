@@ -11,7 +11,6 @@ import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useUndoRedo } from '@/hooks/useUndoRedo';
-import { generateShareUrl, copyToClipboard } from '@/lib/shareUtils';
 
 const DEFAULT_CONTENT = `# Welcome to MarkdownPro
 
@@ -61,22 +60,6 @@ export const MarkdownEditor: React.FC = () => {
     return { words, characters, lines };
   }, [content]);
 
-  const handleShare = useCallback(async () => {
-    const shareUrl = generateShareUrl(content);
-    try {
-      await copyToClipboard(shareUrl);
-      toast({
-        title: 'Share link copied!',
-        description: 'The read-only preview link has been copied to your clipboard.',
-      });
-    } catch {
-      toast({
-        title: 'Failed to copy',
-        description: 'Could not copy the share link.',
-        variant: 'destructive',
-      });
-    }
-  }, [content, toast]);
 
   const handleTemplateSelect = useCallback((templateContent: string) => {
     setContent(templateContent);
@@ -216,7 +199,6 @@ export const MarkdownEditor: React.FC = () => {
         onThemeToggle={toggleTheme}
         onExport={handleExport}
         onCopy={handleCopy}
-        onShare={handleShare}
         onTemplateSelect={handleTemplateSelect}
         onUndo={undo}
         onRedo={redo}

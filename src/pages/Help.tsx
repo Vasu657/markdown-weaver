@@ -1,16 +1,16 @@
 import React from 'react';
-import { 
-  ArrowLeft, 
-  FileCode2, 
-  Heading, 
-  Bold, 
-  Link, 
-  List, 
-  Code, 
-  Table, 
-  Quote, 
-  Image, 
-  Minus, 
+import {
+  ArrowLeft,
+  FileCode2,
+  Heading,
+  Bold,
+  Link,
+  List,
+  Code,
+  Table,
+  Quote,
+  Image,
+  Minus,
   Calculator,
   GitBranch,
   AlertTriangle,
@@ -22,24 +22,14 @@ import { Button } from '@/components/ui/button';
 const Help: React.FC = () => {
   const navigate = useNavigate();
 
+  // Remove ArrowLeft import as it's no longer needed
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border px-4 py-3">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft size={18} />
-            <span className="hidden sm:inline">Back to Editor</span>
-          </Button>
-          <div className="flex items-center gap-2">
-            <FileCode2 size={22} className="text-primary" />
-            <span className="font-bold text-foreground">MarkdownPro Guide</span>
-          </div>
+      <header className="sticky top-0 z-10 bg-background border-b border-border px-4 py-6">
+        <div className="max-w-4xl mx-auto flex justify-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Help</h1>
         </div>
       </header>
 

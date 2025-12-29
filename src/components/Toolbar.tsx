@@ -11,7 +11,6 @@ import {
   FileCode2,
   Code,
   HelpCircle,
-  Share2,
   Files,
   MoreHorizontal,
   Undo2,
@@ -40,7 +39,6 @@ interface ToolbarProps {
   onThemeToggle: () => void;
   onExport: (format: 'markdown' | 'html') => void;
   onCopy: () => void;
-  onShare: () => void;
   onTemplateSelect: (content: string) => void;
   onUndo: () => void;
   onRedo: () => void;
@@ -123,7 +121,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onThemeToggle,
   onExport,
   onCopy,
-  onShare,
   onTemplateSelect,
   onUndo,
   onRedo,
@@ -224,10 +221,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <TooltipContent side="bottom">More</TooltipContent>
         </Tooltip>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem onClick={onShare}>
-            <Share2 size={14} className="mr-2" />
-            Share Preview Link
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={onCopy}>
             <Copy size={14} className="mr-2" />
             Copy Markdown
@@ -242,6 +235,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             Export as HTML
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate('/about')}>
+            <FileCode2 size={14} className="mr-2" />
+            About MarkdownPro
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate('/help')}>
             <HelpCircle size={14} className="mr-2" />
             Help & Syntax Guide
