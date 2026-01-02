@@ -44,6 +44,7 @@ interface ToolbarProps {
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
+  isMobile?: boolean;
 }
 
 interface ToolbarButtonProps {
@@ -85,7 +86,17 @@ const Divider = () => (
 );
 
 // Get the next view mode in cycle: split -> editor -> preview -> split
-const getNextViewMode = (current: ViewMode): ViewMode => {
+const getNextViewMode = (current: ViewMode, isMobile?: boolean): ViewMode => {
+  if (isMobile) {
+    // On mobile, skip split view and cycle between editor and preview only
+    switch (current) {
+      case 'editor': return 'preview';
+      case 'preview': return 'editor';
+      default: return 'editor';
+    }
+  }
+  
+  // On desktop, include split view in the cycle
   switch (current) {
     case 'split': return 'editor';
     case 'editor': return 'preview';
@@ -105,7 +116,17 @@ const getViewModeIcon = (mode: ViewMode, size: number) => {
 };
 
 // Get label for current view mode
-const getViewModeLabel = (mode: ViewMode): string => {
+const getViewModeLabel = (mode: ViewMode, isMobile?: boolean): string => {
+  if (isMobile) {
+    // On mobile, only editor and preview modes are available
+    switch (mode) {
+      case 'editor': return 'Editor Only (click to switch to Preview)';
+      case 'preview': return 'Preview Only (click to switch to Editor)';
+      default: return 'Toggle View';
+    }
+  }
+  
+  // On desktop, include split view
   switch (mode) {
     case 'split': return 'Split View (click to switch to Editor)';
     case 'editor': return 'Editor Only (click to switch to Preview)';
@@ -126,12 +147,13 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onRedo,
   canUndo,
   canRedo,
+  isMobile = false,
 }) => {
   const smallIconSize = 16;
   const navigate = useNavigate();
 
   const handleViewToggle = () => {
-    onViewModeChange(getNextViewMode(viewMode));
+    onViewModeChange(getNextViewMode(viewMode, isMobile));
   };
 
   return (
@@ -194,7 +216,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {/* Single View Mode Toggle */}
       <ToolbarButton
         icon={getViewModeIcon(viewMode, smallIconSize)}
-        label={getViewModeLabel(viewMode)}
+        label={getViewModeLabel(viewMode, isMobile)}
         onClick={handleViewToggle}
         active={viewMode === 'split'}
       />

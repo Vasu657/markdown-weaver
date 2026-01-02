@@ -11,6 +11,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useUndoRedo } from '@/hooks/useUndoRedo';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const DEFAULT_CONTENT = `# Welcome to MarkdownPro
 
@@ -39,6 +40,16 @@ export const MarkdownEditor: React.FC = () => {
     handleEditorScroll,
     stats,
   } = useMarkdownEditor();
+
+  // Use mobile detection
+  const isMobile = useIsMobile();
+
+  // Automatically switch to editor-only view on mobile devices
+  useEffect(() => {
+    if (isMobile && viewMode === 'split') {
+      setViewMode('editor');
+    }
+  }, [isMobile, viewMode, setViewMode]);
 
   // Initialize undo/redo with stored content or default
   const storedContent = localStorage.getItem('markdown-editor-content') || DEFAULT_CONTENT;
@@ -204,6 +215,7 @@ export const MarkdownEditor: React.FC = () => {
         onRedo={redo}
         canUndo={canUndo}
         canRedo={canRedo}
+        isMobile={isMobile}
       />
       
       <div 
@@ -232,7 +244,7 @@ export const MarkdownEditor: React.FC = () => {
         
         {viewMode === 'split' && (
           <div
-            className="resize-handle hidden md:block"
+            className={`resize-handle ${isMobile ? 'hidden' : 'hidden md:block'}`}
             onMouseDown={handleMouseDown}
             role="separator"
             aria-label="Resize editor and preview"
