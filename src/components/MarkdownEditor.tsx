@@ -93,6 +93,15 @@ export const MarkdownEditor: React.FC = () => {
       const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
       saveAs(blob, 'document.md');
     } else {
+      let previewHTML = document.querySelector('.markdown-preview')?.innerHTML || '<p>No preview available</p>';
+      
+      // Remove copy buttons from exported HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = previewHTML;
+      const copyButtons = tempDiv.querySelectorAll('button[aria-label*="Copy"]');
+      copyButtons.forEach(btn => btn.remove());
+      previewHTML = tempDiv.innerHTML;
+      
       const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,17 +109,39 @@ export const MarkdownEditor: React.FC = () => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Exported Document</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; line-height: 1.6; }
-    pre { background: #1e1e1e; padding: 1rem; border-radius: 8px; overflow-x: auto; }
-    code { font-family: 'Consolas', monospace; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    blockquote { border-left: 4px solid #0d9488; padding-left: 1rem; margin-left: 0; color: #666; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.6; color: #333; background: #fff; }
+    h1, h2, h3, h4, h5, h6 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 600; }
+    h1 { font-size: 2.25rem; }
+    h2 { font-size: 1.875rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.25rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 2rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+    code { background: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'Courier New', monospace; color: #d946ef; }
+    pre { background: #1e1e1e; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; }
+    pre code { background: none; color: #e5e7eb; padding: 0; }
+    .hljs { color: #e5e7eb; background: #1e1e1e; }
+    .hljs-string { color: #86efac; }
+    .hljs-number { color: #fbbf24; }
+    .hljs-literal { color: #60a5fa; }
+    .hljs-attr { color: #f472b6; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th { background: #f3f4f6; font-weight: 600; }
+    th, td { border: 1px solid #d1d5db; padding: 0.75rem; text-align: left; }
+    tr:nth-child(even) { background: #f9fafb; }
+    blockquote { border-left: 4px solid #0d9488; padding-left: 1rem; margin: 1rem 0; color: #666; font-style: italic; }
+    a { color: #0d9488; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; height: auto; margin: 1rem 0; border-radius: 8px; }
+    hr { border: none; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
   </style>
 </head>
 <body>
-  ${document.querySelector('.markdown-preview')?.innerHTML || '<p>No preview available</p>'}
+  ${previewHTML}
 </body>
 </html>`;
       const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });

@@ -8,6 +8,15 @@ import rehypeRaw from 'rehype-raw';
 import mermaid from 'mermaid';
 import { Check, Copy } from 'lucide-react';
 
+const slugify = (text: string): string => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
+
 interface PreviewProps {
   content: string;
   previewRef?: React.RefObject<HTMLDivElement>;
@@ -63,7 +72,7 @@ const CodeBlock: React.FC<{ className?: string; children: React.ReactNode }> = (
   useEffect(() => {
     if (isMermaid && mermaidRef.current) {
       mermaidRef.current.innerHTML = '';
-      mermaid.render(`mermaid-${Math.random().toString(36).substr(2, 9)}`, code)
+      mermaid.render(`mermaid-${Math.random().toString(36).slice(2, 11)}`, code)
         .then(({ svg }) => {
           if (mermaidRef.current) {
             mermaidRef.current.innerHTML = svg;
@@ -88,6 +97,58 @@ const CodeBlock: React.FC<{ className?: string; children: React.ReactNode }> = (
 };
 
 export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
+  const handleAnchorClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    const href = e.currentTarget.getAttribute('href');
+    
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.substring(1);
+      const targetElement = previewRef?.current?.querySelector(`[id="${targetId}"]`) || 
+                           document.querySelector(`[id="${targetId}"]`);
+      
+      if (targetElement) {
+        const container = previewRef?.current || window;
+        const offset = (targetElement as HTMLElement).offsetTop;
+        
+        if (container === window) {
+          window.scrollTo({ top: offset, behavior: 'smooth' });
+        } else {
+          container.scrollTo({ top: offset, behavior: 'smooth' });
+        }
+      }
+    }
+  }, [previewRef]);
+
+  const extractText = (children: React.ReactNode): string => {
+    if (typeof children === 'string') return children;
+    if (Array.isArray(children)) {
+      return children.map(extractText).join('');
+    }
+    if (React.isValidElement(children)) {
+      return extractText(children.props.children);
+    }
+    return '';
+  };
+
+  const createHeadingRenderer = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
+    return (props: any) => {
+      const { children, ...rest } = props;
+      const text = extractText(children);
+      const id = slugify(text);
+      
+      const headingComponents: Record<number, React.ReactNode> = {
+        1: <h1 id={id} {...rest}>{children}</h1>,
+        2: <h2 id={id} {...rest}>{children}</h2>,
+        3: <h3 id={id} {...rest}>{children}</h3>,
+        4: <h4 id={id} {...rest}>{children}</h4>,
+        5: <h5 id={id} {...rest}>{children}</h5>,
+        6: <h6 id={id} {...rest}>{children}</h6>,
+      };
+      
+      return headingComponents[level];
+    };
+  };
+
   return (
     <div
       ref={previewRef}
@@ -105,14 +166,18 @@ export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
               }
               return <CodeBlock className={className}>{children}</CodeBlock>;
             },
-            // Preserve HTML div elements with their attributes
             div: ({ node, ...props }) => <div {...props} />,
-            // Preserve img elements with their attributes
             img: ({ node, ...props }) => <img {...props} />,
-            // Preserve video elements
             video: ({ node, ...props }) => <video {...props} />,
-            // Preserve anchor elements
-            a: ({ node, ...props }) => <a {...props} />,
+            a: ({ node, ...props }) => (
+              <a {...props} onClick={handleAnchorClick} />
+            ),
+            h1: createHeadingRenderer(1),
+            h2: createHeadingRenderer(2),
+            h3: createHeadingRenderer(3),
+            h4: createHeadingRenderer(4),
+            h5: createHeadingRenderer(5),
+            h6: createHeadingRenderer(6),
           }}
         >
           {content}
