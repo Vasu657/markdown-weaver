@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- 
+    UPDATED: High Contrast, Bold, Large 
+  -->
+
+  <!-- Outer Background: White fill with THICK Vibrant Blue Border -->
+  <rect x="4" y="4" width="248" height="248" rx="64" 
+        fill="#ffffff" 
+        stroke="#2563eb" 
+        stroke-width="16"/>
+
+  <!-- The Content Group -->
+  <!-- Translated to center and maximize space -->
+  <g transform="translate(48, 48)">
+    
+    <!-- Left Pillar: Deep Dark Blue for Contrast -->
+    <path d="M32 32 V 112" 
+          stroke="#1e3a8a" 
+          stroke-width="16" 
+          stroke-linecap="round" 
+          fill="none"/>
+
+    <!-- Right Pillar: Deep Dark Blue for Contrast -->
+    <path d="M128 32 V 112" 
+          stroke="#1e3a8a" 
+          stroke-width="16" 
+          stroke-linecap="round" 
+          fill="none"/>
+
+    <!-- The Connecting Curve: Bright Blue -->
+    <path d="M32 32 Q 80 100 128 32" 
+          stroke="#3b82f6" 
+          stroke-width="10" 
+          stroke-linecap="round" 
+          fill="none"/>
+
+    <!-- The Orange Icon: Enlarged for visibility -->
+    <g transform="translate(80, 75)">
+      <!-- Diamond/Needle shape, bigger size -->
+      <path d="M0 -10 L10 8 L-10 8 Z" 
+            fill="#f59e0b" 
+            stroke="#f59e0b" 
+            stroke-width="4" 
+            stroke-linejoin="round"/>
+    </g>
+
+    <!-- Decorative Text Lines at Bottom -->
+    <line x1="32" y1="135" x2="128" y2="135" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+    <line x1="32" y1="150" x2="96" y2="150" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+    
+  </g>
+</svg>
