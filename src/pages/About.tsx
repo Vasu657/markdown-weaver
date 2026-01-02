@@ -60,7 +60,8 @@ import {
   Sun,
   Moon,
   MoreHorizontal,
-  HelpCircle
+  HelpCircle,
+  ArrowLeft
 } from 'lucide-react';
 
 const About: React.FC = () => {
@@ -654,73 +655,28 @@ const About: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="mt-16 pt-8 border-t border-border">
-          <div className="mb-8">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
-              <div>
-                <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-                <div className="space-y-2 text-sm">
-                  <Button
-                    onClick={() => navigate('/')}
-                    variant="link"
-                    className="p-0 h-auto text-muted-foreground hover:text-primary justify-start block"
-                  >
-                    ← Back to Editor
-                  </Button>
-                  <a
-                    href="https://github.com/Vasu657/markdown-weaver"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    GitHub Repository →
-                  </a>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-4">Resources</h3>
-                <div className="space-y-2 text-sm">
-                  <Button
-                    onClick={() => navigate('/help')}
-                    variant="link"
-                    className="p-0 h-auto text-muted-foreground hover:text-primary justify-start block"
-                  >
-                    Help & Documentation
-                  </Button>
-                  <Button
-                    onClick={() => navigate('/privacy')}
-                    variant="link"
-                    className="p-0 h-auto text-muted-foreground hover:text-primary justify-start block"
-                  >
-                    Privacy Policy
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-4">Developer</h3>
-                <div className="space-y-2 text-sm">
-                  <a
-                    href="https://github.com/Vasu657"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Github size={16} />
-                    Vasu Ghanta
-                  </a>
-                </div>
-              </div>
+        <div className="mt-12 pt-6 border-t border-border">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
+            <Button onClick={() => navigate('/')} variant="outline" className="gap-2 w-full sm:w-auto">
+              <ArrowLeft size={16} />
+              Back to Editor
+            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <Button onClick={() => navigate('/help')} variant="outline" className="gap-2 w-full sm:w-auto">
+                <HelpCircle size={16} />
+                Help
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/privacy')} className="gap-2 w-full sm:w-auto">
+                <Shield size={16} />
+                Privacy
+              </Button>
             </div>
           </div>
-          <div className="border-t border-border pt-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">
-              © {new Date().getFullYear()} MarkdownPro. Open source and free forever.
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Made with passion for developers and creators worldwide
-            </p>
+          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border">
+            <p>© {new Date().getFullYear()} MarkdownPro. All rights reserved.</p>
+            <p className="mt-1">Built with ❤️ by <a href="http://vasughanta.netlify.app/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">Vasu Ghanta</a></p>
           </div>
-        </footer>
+        </div>
       </main>
     </div>
   );

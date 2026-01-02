@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Lock, Eye, Scale, ExternalLink, FileCode2, BookOpen, Bell, Sun, Moon, MoreHorizontal, HelpCircle } from 'lucide-react';
+import { Lock, Eye, Scale, ExternalLink, FileCode2, Bell, Sun, Moon, MoreHorizontal, HelpCircle, ArrowLeft } from 'lucide-react';
 
 const Privacy: React.FC = () => {
   const navigate = useNavigate();
@@ -209,9 +209,9 @@ const Privacy: React.FC = () => {
 
         {/* Footer */}
         <div className="mt-12 pt-6 border-t border-border">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
             <Button onClick={() => navigate('/')} variant="outline" className="gap-2 w-full sm:w-auto">
-              <FileCode2 size={16} />
+              <ArrowLeft size={16} />
               Back to Editor
             </Button>
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
@@ -220,14 +220,14 @@ const Privacy: React.FC = () => {
                 About
               </Button>
               <Button variant="outline" onClick={() => navigate('/help')} className="gap-2 w-full sm:w-auto">
-                <BookOpen size={16} />
-                Help Guide
+                <HelpCircle size={16} />
+                Help
               </Button>
             </div>
           </div>
-          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border mt-4">
+          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border">
             <p>© {new Date().getFullYear()} MarkdownPro. All rights reserved.</p>
-            <p className="mt-1">Built with ❤️ for developers worldwide</p>
+            <p className="mt-1">Built with ❤️ by <a href="http://vasughanta.netlify.app/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">Vasu Ghanta</a></p>
           </div>
         </div>
       </main>
