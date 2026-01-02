@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   FileCode2,
   Code,
@@ -43,11 +55,17 @@ import {
   Smile,
   Quote,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Bell,
+  Sun,
+  Moon,
+  MoreHorizontal,
+  HelpCircle
 } from 'lucide-react';
 
 const About: React.FC = () => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
 
@@ -110,13 +128,69 @@ const About: React.FC = () => {
     }
   ];
 
+  const smallIconSize = 16;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background border-b border-border px-4 py-6">
-        <div className="max-w-5xl mx-auto flex justify-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">About MarkdownPro</h1>
+      <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
+        <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
+          <FileCode2 size={20} className="text-primary" />
+          <span className="font-bold text-sm text-foreground hidden md:inline">MarkdownPro</span>
         </div>
+        
+        <div className="flex-1" />
+        
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button className="toolbar-btn" aria-label="Notifications" onClick={() => navigate('/notifications')}>
+              <Bell size={smallIconSize} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Notifications</TooltipContent>
+        </Tooltip>
+        
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={toggleTheme}
+              className="toolbar-btn"
+              aria-label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            >
+              {theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          </TooltipContent>
+        </Tooltip>
+        
+        <DropdownMenu>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <button className="toolbar-btn" aria-label="More actions">
+                  <MoreHorizontal size={smallIconSize} />
+                </button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">More</TooltipContent>
+          </Tooltip>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => navigate('/')}>
+              <FileCode2 size={14} className="mr-2" />
+              Back to Editor
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/help')}>
+              <HelpCircle size={14} className="mr-2" />
+              Help & Syntax Guide
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/privacy')}>
+              <Shield size={14} className="mr-2" />
+              Privacy Policy
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       {/* Content */}

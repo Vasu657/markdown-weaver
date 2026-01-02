@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Download,
   Copy,
   Sun,
   Moon,
@@ -15,6 +14,7 @@ import {
   MoreHorizontal,
   Undo2,
   Redo2,
+  Bell,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -222,6 +222,13 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       />
       
       <div className="flex-1" />
+      
+      {/* Notifications */}
+      <ToolbarButton
+        icon={<Bell size={smallIconSize} />}
+        label="Notifications"
+        onClick={() => navigate('/notifications')}
+      />
       
       {/* Theme toggle */}
       <ToolbarButton
