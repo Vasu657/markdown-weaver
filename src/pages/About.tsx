@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,11 +37,78 @@ import {
   Download,
   Clock,
   AlertCircle,
-  Figma
+  Figma,
+  ArrowRight,
+  Flame,
+  Smile,
+  Quote,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const About: React.FC = () => {
   const navigate = useNavigate();
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+
+  // Auto-slide testimonials
+  useEffect(() => {
+    if (!autoPlay) return;
+    const interval = setInterval(() => {
+      setCurrentReviewIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000); // Change slide every 5 seconds
+    return () => clearInterval(interval);
+  }, [autoPlay]);
+
+  const handleDotClick = (index: number) => {
+    setCurrentReviewIndex(index);
+    setAutoPlay(false);
+  };
+
+  const testimonials = [
+    {
+      quote: "This has become my go-to tool for all my documentation needs. The real-time preview and export options are game-changers!",
+      author: "Alice Johnson",
+      role: "Senior Frontend Developer",
+      rating: 5,
+      color: "blue"
+    },
+    {
+      quote: "Finally, a Markdown editor that gets out of my way. Lightning fast and beautifully designed—perfect for daily use.",
+      author: "Bob Smith",
+      role: "Technical Writer",
+      rating: 5,
+      color: "purple"
+    },
+    {
+      quote: "The Git integration and syntax highlighting make it indispensable for my workflow. Highly recommend!",
+      author: "Carol Davis",
+      role: "Full-Stack Engineer",
+      rating: 4,
+      color: "emerald"
+    },
+    {
+      quote: "I've tried many markdown editors, but this one stands out. The UI is clean, intuitive, and the performance is exceptional.",
+      author: "David Chen",
+      role: "DevOps Engineer",
+      rating: 5,
+      color: "orange"
+    },
+    {
+      quote: "Perfect for technical writing. The export options and customization settings give me exactly what I need.",
+      author: "Emma Wilson",
+      role: "Technical Content Manager",
+      rating: 5,
+      color: "pink"
+    },
+    {
+      quote: "As a student, this tool has made note-taking and assignment writing so much easier. Highly recommended!",
+      author: "Frank Rodriguez",
+      role: "Computer Science Student",
+      rating: 4,
+      color: "cyan"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,7 +151,7 @@ const About: React.FC = () => {
                   </div>
                   <div>
                     <a
-                      href="https://github.com/Vasu657"
+                      href="http://vasughanta.netlify.app/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-bold text-foreground hover:text-primary transition-colors flex items-center gap-2 text-lg"
@@ -107,9 +174,9 @@ const About: React.FC = () => {
                 </div>
               </div>
               <div className="text-center sm:text-right">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-3">Repository</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-3">GitHub</p>
                 <a
-                  href="https://github.com/Vasu657/markdown-weaver"
+                  href="https://github.com/Vasu657"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors"
@@ -199,7 +266,7 @@ const About: React.FC = () => {
               Advanced Capabilities
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Professional-grade tools for power users
+              Take your writing to the next level with professional tools
             </p>
           </div>
 
@@ -259,15 +326,12 @@ const About: React.FC = () => {
               title="Content Import"
               description="Import and convert various formats"
               details={[
-                "Drag & drop file support",
                 "Paste from clipboard",
                 "Multiple format conversion"
               ]}
             />
           </div>
         </section>
-
-
 
         {/* Technology Stack */}
         <section className="mb-16">
@@ -382,56 +446,136 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* Quick Start */}
-        <section className="mb-16 py-12 bg-gradient-to-br from-primary/10 via-transparent to-blue-500/10 rounded-2xl border border-border">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Ready to Get Started?
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              No installation, no sign-up. Just open the editor and start writing immediately.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button
-              onClick={() => navigate('/')}
-              className="gap-2 bg-primary hover:bg-primary/90 px-8 py-6 text-lg"
-            >
-              <Rocket size={20} />
-              Launch Editor
-            </Button>
-            <Button
-              onClick={() => navigate('/help')}
-              variant="outline"
-              className="gap-2 px-8 py-6 text-lg"
-            >
-              <BookOpen size={20} />
-              Learn Syntax
-            </Button>
+        {/* ===== IMPROVED COMBINED CTA SECTION - SIDE BY SIDE ===== */}
+        <section className="mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Primary CTA Card - Launch Editor */}
+            <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-1">
+              <div className="relative bg-background rounded-3xl p-8 sm:p-12">
+                <div className="flex flex-col items-center justify-center text-center h-full">
+                  <div className="mb-6">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-4">
+                      <Rocket size={32} className="text-primary" />
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
+                    <Rocket size={14} className="text-primary" />
+                    <span className="text-xs font-semibold text-primary uppercase tracking-wider">Get Started</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
+                    Ready to Write Better?
+                  </h2>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-6">
+                    No installation needed. No sign-up required. Just open and start creating.
+                  </p>
+                  <div className="flex flex-col gap-3 w-full">
+                    <Button
+                      onClick={() => navigate('/')}
+                      className="gap-2 bg-primary hover:bg-primary/90 px-6 py-5 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl w-full"
+                    >
+                      <Rocket size={18} />
+                      Launch Editor Now
+                    </Button>
+                    <Button
+                      onClick={() => navigate('/help')}
+                      variant="outline"
+                      className="gap-2 px-6 py-5 text-sm font-semibold border-2 border-primary/30 hover:bg-primary/5 hover:border-primary/50 rounded-xl transition-all duration-300 w-full"
+                    >
+                      <BookOpen size={18} />
+                      Learn Markdown
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Secondary CTA Card - Star on GitHub */}
+            <div className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-50/50 dark:from-amber-950/20 via-transparent to-transparent p-1">
+              <div className="relative bg-background rounded-3xl p-8 sm:p-12">
+                <div className="flex flex-col items-center justify-center text-center h-full">
+                  <div className="mb-6">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 rounded-2xl mb-4">
+                      <Star size={32} className="text-amber-500 fill-current" />
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-amber-500/10 rounded-full">
+                    <Star size={14} className="text-amber-500" />
+                    <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Love It?</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
+                    Show Your Support
+                  </h2>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-6">
+                    Star us on GitHub! Your support helps us keep improving.
+                  </p>
+                  <a
+                    href="https://github.com/Vasu657/markdown-weaver"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl text-sm w-full"
+                  >
+                    <Star size={18} className="fill-current" />
+                    Star on GitHub
+                    <ArrowRight size={18} />
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Support Section */}
-        <section className="mb-16 py-10 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-2xl border border-border">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Star size={28} className="text-amber-500" />
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-                Love MarkdownPro?
-              </h2>
+        {/* ===== IMPROVED USER REVIEWS SECTION - AUTO-SLIDING SLIM CARDS ===== */}
+        <section className="mb-16">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
+              <Smile size={16} className="text-primary" />
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Testimonials</span>
             </div>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-6">
-              Show your support by starring us on GitHub!
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+              Loved by Developers Worldwide
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+              Join thousands of developers who trust MarkdownPro for their daily writing needs.
             </p>
-            <a
-              href="https://github.com/Vasu657/markdown-weaver"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors font-semibold"
-            >
-              <Star size={20} />
-              Star on GitHub
-            </a>
+          </div>
+
+          {/* Auto-Sliding Carousel */}
+          <div className="relative max-w-2xl mx-auto">
+            {/* Main Carousel Container */}
+            <div className="overflow-hidden">
+              <div className="flex transition-transform duration-500 ease-out"
+                style={{
+                  transform: `translateX(-${currentReviewIndex * 100}%)`
+                }}>
+                {testimonials.map((testimonial, index) => (
+                  <div key={index} className="w-full flex-shrink-0 px-2 sm:px-4">
+                    <SlimReviewCard
+                      quote={testimonial.quote}
+                      author={testimonial.author}
+                      role={testimonial.role}
+                      rating={testimonial.rating}
+                      color={testimonial.color as any}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Dot Indicators */}
+            <div className="flex justify-center gap-2 mt-6">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  className={`transition-all duration-300 rounded-full ${
+                    index === currentReviewIndex
+                      ? 'bg-primary w-8 h-2'
+                      : 'bg-border w-2 h-2 hover:bg-primary/50'
+                  }`}
+                  aria-label={`Go to review ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -586,10 +730,36 @@ interface TechCardProps {
 }
 
 const TechCard: React.FC<TechCardProps> = ({ name, description, icon }) => (
-  <div className="bg-background p-3 sm:p-4 rounded-lg sm:rounded-xl border border-border text-center hover:shadow-lg transition-shadow">
-    <div className="text-2xl sm:text-3xl mb-2">{icon}</div>
-    <div className="font-medium text-foreground mb-1 text-sm sm:text-base">{name}</div>
-    <div className="text-xs text-muted-foreground">{description}</div>
+  <div className="bg-background p-3 sm:p-4 rounded-lg border border-border hover:border-primary/50 transition-colors">
+    <div className="text-2xl mb-2">{icon}</div>
+    <h3 className="font-semibold text-foreground text-xs sm:text-sm mb-1">{name}</h3>
+    <p className="text-[10px] sm:text-xs text-muted-foreground">{description}</p>
+  </div>
+);
+
+// Component for use case cards
+interface UseCaseCardProps {
+  icon: React.ReactNode;
+  title: string;
+  items: string[];
+}
+
+const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, title, items }) => (
+  <div className="bg-background p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border">
+    <div className="flex items-center gap-3 mb-4">
+      <div className="p-2 bg-primary/5 rounded-lg text-primary">
+        {icon}
+      </div>
+      <h3 className="font-semibold text-foreground">{title}</h3>
+    </div>
+    <ul className="space-y-2">
+      {items.map((item, index) => (
+        <li key={index} className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
+          <CheckCircle2 size={14} className="text-primary/60" />
+          {item}
+        </li>
+      ))}
+    </ul>
   </div>
 );
 
@@ -601,41 +771,86 @@ interface PhilosophyItemProps {
 }
 
 const PhilosophyItem: React.FC<PhilosophyItemProps> = ({ icon, title, description }) => (
-  <div className="bg-muted p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border flex items-start gap-3 sm:gap-4 hover:bg-muted/80 transition-colors">
-    <div className="p-2 sm:p-3 bg-primary/10 rounded-lg text-primary flex-shrink-0">
+  <div className="flex gap-4 p-4 rounded-xl hover:bg-primary/5 transition-colors">
+    <div className="p-3 bg-background border border-border rounded-xl h-fit">
       {icon}
     </div>
     <div>
-      <h3 className="font-semibold text-foreground mb-1 sm:mb-2 text-sm sm:text-base">{title}</h3>
-      <p className="text-muted-foreground text-xs sm:text-sm">{description}</p>
+      <h3 className="font-semibold text-foreground mb-1">{title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
     </div>
   </div>
 );
 
-// Use Case Card Component
-interface UseCaseCardProps {
-  icon: React.ReactNode;
-  title: string;
-  items: string[];
+// Component for slim review cards
+interface SlimReviewCardProps {
+  quote: string;
+  author: string;
+  role: string;
+  rating: number;
+  color?: 'blue' | 'purple' | 'emerald' | 'orange' | 'pink' | 'cyan';
 }
 
-const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, title, items }) => (
-  <div className="bg-background p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border hover:shadow-lg transition-shadow">
-    <div className="flex items-center gap-3 mb-4">
-      <div className="p-2 sm:p-3 bg-primary/5 rounded-lg flex-shrink-0">
-        {icon}
+const SlimReviewCard: React.FC<SlimReviewCardProps> = ({ quote, author, role, rating, color = 'blue' }) => {
+  const colorClasses = {
+    blue: 'from-blue-500/20 to-blue-500/5 border-blue-500/30',
+    purple: 'from-purple-500/20 to-purple-500/5 border-purple-500/30',
+    emerald: 'from-emerald-500/20 to-emerald-500/5 border-emerald-500/30',
+    orange: 'from-orange-500/20 to-orange-500/5 border-orange-500/30',
+    pink: 'from-pink-500/20 to-pink-500/5 border-pink-500/30',
+    cyan: 'from-cyan-500/20 to-cyan-500/5 border-cyan-500/30',
+  };
+
+  const colorDots = {
+    blue: 'bg-blue-500',
+    purple: 'bg-purple-500',
+    emerald: 'bg-emerald-500',
+    orange: 'bg-orange-500',
+    pink: 'bg-pink-500',
+    cyan: 'bg-cyan-500',
+  };
+
+  return (
+    <div className={`group relative overflow-hidden rounded-2xl border ${colorClasses[color]} bg-gradient-to-br p-5 sm:p-6 hover:shadow-xl transition-all duration-300 flex flex-col`}>
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Top accent dot */}
+      <div className={`absolute top-4 right-4 w-2 h-2 ${colorDots[color]} rounded-full opacity-60`} />
+
+      <div className="relative z-10 flex-1 flex flex-col">
+        {/* Rating Stars */}
+        <div className="flex gap-1 mb-3">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              size={14}
+              className={`transition-colors ${i < rating ? 'text-amber-500 fill-current' : 'text-muted-foreground/30'}`}
+            />
+          ))}
+        </div>
+
+        {/* Quote Icon */}
+        <Quote size={16} className="text-muted-foreground/30 mb-2" />
+
+        {/* Quote Text */}
+        <blockquote className="text-foreground text-sm leading-relaxed mb-4 font-medium italic flex-1">
+          "{quote}"
+        </blockquote>
       </div>
-      <h3 className="font-semibold text-foreground text-sm sm:text-base">{title}</h3>
+
+      {/* Author Info - Fixed at bottom */}
+      <div className="relative z-10 flex items-center gap-3 pt-3 border-t border-border/50">
+        <div className={`w-8 h-8 bg-gradient-to-br ${colorDots[color]} rounded-full flex items-center justify-center flex-shrink-0 shadow-md`}>
+          <User size={14} className="text-white" />
+        </div>
+        <div className="text-left">
+          <p className="font-semibold text-foreground text-xs">{author}</p>
+          <p className="text-[10px] text-muted-foreground">{role}</p>
+        </div>
+      </div>
     </div>
-    <ul className="space-y-2">
-      {items.map((item, index) => (
-        <li key={index} className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
-          <span className="w-1 h-1 bg-primary rounded-full" />
-          {item}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+  );
+};
 
 export default About;
