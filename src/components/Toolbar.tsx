@@ -183,41 +183,43 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {/* Logo/Brand */}
       <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
         <FileCode2 size={20} className="text-primary" />
-        <span className="font-bold text-sm text-foreground hidden md:inline">MarkdownPro</span>
+        <span className="font-bold text-sm text-foreground hidden sm:inline md:inline">MarkdownPro</span>
       </div>
       
       <Divider />
       
-      {/* Templates */}
-      <DropdownMenu>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <button className="toolbar-btn" aria-label="Templates">
-                <Files size={smallIconSize} />
-              </button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Templates</TooltipContent>
-        </Tooltip>
-        <DropdownMenuContent align="start" className="w-56">
-          {templates.map((template) => (
-            <DropdownMenuItem 
-              key={template.id}
-              onClick={() => onTemplateSelect(template.content)}
-              className="flex items-start gap-2"
-            >
-              <FileText size={14} className="mt-0.5 flex-shrink-0" />
-              <div className="flex flex-col">
-                <span className="text-sm">{template.name}</span>
-                <span className="text-xs text-muted-foreground">{template.description}</span>
-              </div>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* Templates - Hidden on mobile */}
+      <div className="hidden sm:block">
+        <DropdownMenu>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <button className="toolbar-btn" aria-label="Templates">
+                  <Files size={smallIconSize} />
+                </button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Templates</TooltipContent>
+          </Tooltip>
+          <DropdownMenuContent align="start" className="w-56">
+            {templates.map((template) => (
+              <DropdownMenuItem
+                key={template.id}
+                onClick={() => onTemplateSelect(template.content)}
+                className="flex items-start gap-2"
+              >
+                <FileText size={14} className="mt-0.5 flex-shrink-0" />
+                <div className="flex flex-col">
+                  <span className="text-sm">{template.name}</span>
+                  <span className="text-xs text-muted-foreground">{template.description}</span>
+                </div>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       
-      {/* Undo/Redo */}
+      {/* Undo/Redo - Always visible */}
       <div className="flex items-center gap-0.5">
         <ToolbarButton
           icon={<Undo2 size={smallIconSize} />}
@@ -235,7 +237,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       
       <Divider />
       
-      {/* Single View Mode Toggle */}
+      {/* View Mode Toggle */}
       <ToolbarButton
         icon={getViewModeIcon(viewMode, smallIconSize)}
         label={getViewModeLabel(viewMode, isMobile)}
@@ -245,12 +247,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       
       <div className="flex-1" />
       
-      {/* Notifications */}
-      <ToolbarButton
-        icon={<Bell size={smallIconSize} />}
-        label="Notifications"
-        onClick={() => navigate('/notifications')}
-      />
+      {/* Notifications - Hidden on mobile */}
+      <div className="hidden sm:block">
+        <ToolbarButton
+          icon={<Bell size={smallIconSize} />}
+          label="Notifications"
+          onClick={() => navigate('/notifications')}
+        />
+      </div>
       
       {/* Theme toggle */}
       <ToolbarButton
@@ -272,6 +276,33 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <TooltipContent side="bottom">More</TooltipContent>
         </Tooltip>
         <DropdownMenuContent align="end" className="w-48">
+          {/* Mobile-specific options */}
+          <div className="sm:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="w-full text-left px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground flex items-center">
+                <Files size={14} className="mr-2" />
+                <span className="flex-1">Templates</span>
+                <ChevronRight size={14} className="ml-auto" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {templates.map((template) => (
+                  <DropdownMenuItem
+                    key={template.id}
+                    onClick={() => onTemplateSelect(template.content)}
+                    className="flex items-start gap-2"
+                  >
+                    <FileText size={14} className="mt-0.5 flex-shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="text-sm">{template.name}</span>
+                      <span className="text-xs text-muted-foreground">{template.description}</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DropdownMenuSeparator />
+          </div>
+          
           <DropdownMenuItem onClick={onCopy}>
             <Copy size={14} className="mr-2" />
             Copy Markdown
@@ -328,6 +359,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           }}>
             {syncScroll ? <ToggleRight size={14} className="mr-2" /> : <ToggleLeft size={14} className="mr-2" />}
             {syncScroll ? 'Disable Sync Scroll' : 'Enable Sync Scroll'}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate('/notifications')}>
+            <Bell size={14} className="mr-2" />
+            Notifications
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate('/about')}>

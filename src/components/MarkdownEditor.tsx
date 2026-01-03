@@ -52,7 +52,7 @@ export const MarkdownEditor: React.FC = () => {
   }, [isMobile, viewMode, setViewMode]);
 
   // Initialize undo/redo with stored content or default
-  const storedContent = localStorage.getItem('markdown-editor-content') || DEFAULT_CONTENT;
+  const storedContent = localStorage.getItem('markdown-pro-content') || DEFAULT_CONTENT;
   const { content, setContent, undo, redo, canUndo, canRedo } = useUndoRedo(storedContent);
   
   const { theme, toggleTheme } = useTheme();
