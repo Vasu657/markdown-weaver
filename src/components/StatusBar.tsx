@@ -26,9 +26,11 @@ export const StatusBar: React.FC<StatusBarProps> = ({
     <div className="flex flex-row items-center justify-between px-2 sm:px-4 py-1.5 sm:py-2 bg-muted border-t border-border text-xs text-muted-foreground gap-1 sm:gap-4 overflow-x-auto whitespace-nowrap">
       {/* Stats */}
       <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
-        {saveIndicator}
-        
-        <div className="w-px h-4 bg-border hidden sm:block" />
+        {/* Save indicator and divider on desktop */}
+        <div className="hidden md:flex items-center gap-1 sm:gap-4">
+          {saveIndicator}
+          <div className="w-px h-4 bg-border" />
+        </div>
         
         <Tooltip>
           <TooltipTrigger asChild>
@@ -61,31 +63,33 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         </Tooltip>
       </div>
       
-      {/* Privacy Link */}
-      <Tooltip>
-        <TooltipTrigger asChild>
+      {/* Right section: Privacy/Developer on desktop, save on mobile */}
+      <div className="flex items-center gap-1 text-muted-foreground/70 border-l border-border pl-2 flex-shrink-0">
+        {/* Desktop: Privacy + Developer */}
+        <div className="hidden md:flex items-center gap-2">
           <button
             onClick={() => navigate('/privacy')}
-            className="flex items-center gap-0.5 hover:text-foreground transition-colors flex-shrink-0"
+            className="flex items-center gap-1 hover:text-foreground transition-colors text-xs"
             title="Privacy & Legal"
           >
-            <Shield size={12} className="sm:w-3.5 sm:h-3.5" />
+            <Shield size={12} className="w-3.5 h-3.5" />
+            <span>Privacy</span>
           </button>
-        </TooltipTrigger>
-        <TooltipContent>Privacy & Legal</TooltipContent>
-      </Tooltip>
-       
-      {/* Developed by */}
-      <div className="hidden md:flex items-center gap-1 text-muted-foreground/70 border-l border-border pl-2 flex-shrink-0">
-        <span className="text-xs">by</span>
-        <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-primary hover:underline text-xs"
-        >
-          Vasu Ghanta ❤️
-        </a>
+          <span className="text-xs">by</span>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary hover:underline text-xs"
+          >
+            Vasu Ghanta ❤️
+          </a>
+        </div>
+        
+        {/* Mobile: Auto save indicator */}
+        <div className="md:hidden">
+          {saveIndicator}
+        </div>
       </div>
     </div>
   );

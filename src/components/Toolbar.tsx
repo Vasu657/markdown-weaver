@@ -300,11 +300,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             <Select
               value={fontSize.toString()}
               onValueChange={(val) => onFontSizeChange(parseInt(val))}
+              onOpenChange={(open) => !open}
             >
               <SelectTrigger className="h-7 w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent onPointerDownOutside={(e) => e.preventDefault()}>
                 {[12, 13, 14, 15, 16, 18, 20].map(size => (
                   <SelectItem key={size} value={size.toString()}>
                     {size}px
@@ -314,11 +315,17 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             </Select>
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onShowLineNumbersChange(!showLineNumbers)}>
+          <DropdownMenuItem onSelect={(e) => {
+            e.preventDefault();
+            onShowLineNumbersChange(!showLineNumbers);
+          }}>
             {showLineNumbers ? <ToggleRight size={14} className="mr-2" /> : <ToggleLeft size={14} className="mr-2" />}
             {showLineNumbers ? 'Hide Line Numbers' : 'Show Line Numbers'}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onSyncScrollChange(!syncScroll)}>
+          <DropdownMenuItem onSelect={(e) => {
+            e.preventDefault();
+            onSyncScrollChange(!syncScroll);
+          }}>
             {syncScroll ? <ToggleRight size={14} className="mr-2" /> : <ToggleLeft size={14} className="mr-2" />}
             {syncScroll ? 'Disable Sync Scroll' : 'Enable Sync Scroll'}
           </DropdownMenuItem>
