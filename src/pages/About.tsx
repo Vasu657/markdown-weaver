@@ -63,6 +63,7 @@ import {
   HelpCircle,
   ArrowLeft
 } from 'lucide-react';
+import { Helmet } from "react-helmet-async";
 
 const About: React.FC = () => {
   const navigate = useNavigate();
@@ -133,6 +134,14 @@ const About: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+  <title>About Markdown Weaver – Developer-Friendly Markdown Editor</title>
+  <meta
+    name="description"
+    content="Learn about Markdown Weaver, a modern markdown editor built for developers with live preview, GFM support, and privacy-first design."
+  />
+</Helmet>
+
       {/* Header */}
       <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
         <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">

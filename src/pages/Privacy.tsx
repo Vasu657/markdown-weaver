@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Helmet } from "react-helmet-async";
 import { Lock, Eye, Scale, ExternalLink, FileCode2, Bell, Sun, Moon, MoreHorizontal, HelpCircle, ArrowLeft } from 'lucide-react';
 
 const Privacy: React.FC = () => {
@@ -22,6 +23,14 @@ const Privacy: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+  <title>Privacy Policy – Markdown Weaver</title>
+  <meta
+    name="description"
+    content="Markdown Weaver is a privacy-first markdown editor. No tracking, no analytics, no data collection. Your content stays on your device."
+  />
+</Helmet>
+
       {/* Header */}
       <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
         <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
