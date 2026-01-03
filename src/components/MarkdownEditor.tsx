@@ -6,14 +6,12 @@ import { Editor } from './Editor';
 import { Preview } from './Preview';
 import { StatusBar } from './StatusBar';
 import { SaveIndicator } from './SaveIndicator';
-import { ShareDialog } from './ShareDialog';
 import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useUndoRedo } from '@/hooks/useUndoRedo';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useCollaboration } from '@/hooks/useCollaboration';
 
 const DEFAULT_CONTENT = `# Welcome to MarkdownPro
 
@@ -63,10 +61,7 @@ export const MarkdownEditor: React.FC = () => {
   
   const [isDragOver, setIsDragOver] = useState(false);
   const [splitPosition, setSplitPosition] = useState(50);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const isResizing = useRef(false);
-
-  const collaboration = useCollaboration(content, setContent);
 
   // Calculate stats from content
   const currentStats = React.useMemo(() => {
@@ -84,21 +79,6 @@ export const MarkdownEditor: React.FC = () => {
       description: 'Start editing your new document.',
     });
   }, [setContent, toast]);
-
-  const handleShare = useCallback(() => {
-    if (!collaboration.roomId) {
-      collaboration.shareSession();
-    }
-    setShareDialogOpen(true);
-  }, [collaboration]);
-
-  const handleNewSession = useCallback(() => {
-    collaboration.newSession();
-    toast({
-      title: 'New Session Created',
-      description: 'A new share link has been generated. Previous guests will be disconnected.',
-    });
-  }, [collaboration, toast]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content);
@@ -273,8 +253,6 @@ export const MarkdownEditor: React.FC = () => {
         onShowLineNumbersChange={setShowLineNumbers}
         syncScroll={syncScroll}
         onSyncScrollChange={setSyncScroll}
-        onShare={handleShare}
-        isConnected={collaboration.isConnected}
       />
       
       <div 
@@ -327,16 +305,6 @@ export const MarkdownEditor: React.FC = () => {
       <StatusBar
         stats={currentStats}
         saveIndicator={<SaveIndicator status={saveStatus} />}
-      />
-
-      <ShareDialog
-        isOpen={shareDialogOpen}
-        onOpenChange={setShareDialogOpen}
-        shareUrl={collaboration.shareUrl}
-        roomId={collaboration.roomId}
-        connectedPeers={collaboration.connectedPeers}
-        isConnected={collaboration.isConnected}
-        onNewSession={handleNewSession}
       />
     </div>
   );

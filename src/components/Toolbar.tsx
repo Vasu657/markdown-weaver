@@ -62,8 +62,6 @@ interface ToolbarProps {
   onShowLineNumbersChange: (show: boolean) => void;
   syncScroll: boolean;
   onSyncScrollChange: (sync: boolean) => void;
-  onShare?: () => void;
-  isConnected?: boolean;
 }
 
 interface ToolbarButtonProps {
@@ -173,8 +171,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onShowLineNumbersChange,
   syncScroll,
   onSyncScrollChange,
-  onShare,
-  isConnected = false,
 }) => {
   const smallIconSize = 16;
   const navigate = useNavigate();
@@ -260,16 +256,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           onClick={() => navigate('/notifications')}
         />
       </div>
-
-      {/* Share button */}
-      {onShare && (
-        <ToolbarButton
-          icon={<Share2 size={smallIconSize} />}
-          label="Share Document"
-          onClick={onShare}
-          active={isConnected}
-        />
-      )}
       
       {/* Theme toggle */}
       <ToolbarButton
