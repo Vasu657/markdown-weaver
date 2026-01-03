@@ -16,6 +16,8 @@ import {
   Redo2,
   Bell,
   ChevronRight,
+  ToggleLeft,
+  ToggleRight,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -29,6 +31,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ViewMode } from '@/hooks/useMarkdownEditor';
 import { useNavigate } from 'react-router-dom';
 import { templates } from '@/lib/templates';
@@ -46,6 +55,12 @@ interface ToolbarProps {
   canUndo: boolean;
   canRedo: boolean;
   isMobile?: boolean;
+  fontSize: number;
+  onFontSizeChange: (size: number) => void;
+  showLineNumbers: boolean;
+  onShowLineNumbersChange: (show: boolean) => void;
+  syncScroll: boolean;
+  onSyncScrollChange: (sync: boolean) => void;
 }
 
 interface ToolbarButtonProps {
@@ -149,6 +164,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   canUndo,
   canRedo,
   isMobile = false,
+  fontSize,
+  onFontSizeChange,
+  showLineNumbers,
+  onShowLineNumbersChange,
+  syncScroll,
+  onSyncScrollChange,
 }) => {
   const smallIconSize = 16;
   const navigate = useNavigate();
@@ -273,6 +294,34 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <DropdownMenuSeparator />
+          <div className="px-2 py-1.5">
+            <div className="text-xs font-medium text-muted-foreground mb-1">Font Size</div>
+            <Select
+              value={fontSize.toString()}
+              onValueChange={(val) => onFontSizeChange(parseInt(val))}
+            >
+              <SelectTrigger className="h-7 w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[12, 13, 14, 15, 16, 18, 20].map(size => (
+                  <SelectItem key={size} value={size.toString()}>
+                    {size}px
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => onShowLineNumbersChange(!showLineNumbers)}>
+            {showLineNumbers ? <ToggleRight size={14} className="mr-2" /> : <ToggleLeft size={14} className="mr-2" />}
+            {showLineNumbers ? 'Hide Line Numbers' : 'Show Line Numbers'}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onSyncScrollChange(!syncScroll)}>
+            {syncScroll ? <ToggleRight size={14} className="mr-2" /> : <ToggleLeft size={14} className="mr-2" />}
+            {syncScroll ? 'Disable Sync Scroll' : 'Enable Sync Scroll'}
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate('/about')}>
             <FileCode2 size={14} className="mr-2" />

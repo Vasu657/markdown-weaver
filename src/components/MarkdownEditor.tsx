@@ -247,6 +247,12 @@ export const MarkdownEditor: React.FC = () => {
         canUndo={canUndo}
         canRedo={canRedo}
         isMobile={isMobile}
+        fontSize={fontSize}
+        onFontSizeChange={setFontSize}
+        showLineNumbers={showLineNumbers}
+        onShowLineNumbersChange={setShowLineNumbers}
+        syncScroll={syncScroll}
+        onSyncScrollChange={setSyncScroll}
       />
       
       <div 
@@ -298,12 +304,6 @@ export const MarkdownEditor: React.FC = () => {
       
       <StatusBar
         stats={currentStats}
-        fontSize={fontSize}
-        onFontSizeChange={setFontSize}
-        showLineNumbers={showLineNumbers}
-        onShowLineNumbersChange={setShowLineNumbers}
-        syncScroll={syncScroll}
-        onSyncScrollChange={setSyncScroll}
         saveIndicator={<SaveIndicator status={saveStatus} />}
       />
     </div>
