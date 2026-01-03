@@ -21,6 +21,16 @@ const getUrlParams = (): { room: string | null; peer: string | null } => {
   };
 };
 
+const getPersistentRoomId = (): string => {
+  const stored = localStorage.getItem('collaboration-room-id');
+  if (stored) {
+    return stored;
+  }
+  const newRoomId = generateRoomId();
+  localStorage.setItem('collaboration-room-id', newRoomId);
+  return newRoomId;
+};
+
 export const useCollaboration = (content: string, onContentChange: (content: string) => void) => {
   const [state, setState] = useState<CollaborationState>({
     isConnected: false,
@@ -53,24 +63,24 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   }, []);
 
   const createSession = useCallback(() => {
-    const newRoomId = generateRoomId();
+    const persistentRoomId = getPersistentRoomId();
     
     if (peerIdRef.current) {
-      const shareUrl = createShareUrl(peerIdRef.current, newRoomId);
+      const shareUrl = createShareUrl(peerIdRef.current, persistentRoomId);
       setState((prev) => ({
         ...prev,
-        roomId: newRoomId,
+        roomId: persistentRoomId,
         shareUrl,
       }));
-      return { roomId: newRoomId, shareUrl };
+      return { roomId: persistentRoomId, shareUrl };
     }
     
     setState((prev) => ({
       ...prev,
-      roomId: newRoomId,
+      roomId: persistentRoomId,
       shareUrl: null,
     }));
-    return { roomId: newRoomId, shareUrl: null };
+    return { roomId: persistentRoomId, shareUrl: null };
   }, [createShareUrl]);
 
   const joinSession = useCallback((roomId: string) => {
@@ -148,15 +158,15 @@ export const useCollaboration = (content: string, onContentChange: (content: str
 
       if (urlRoomId) {
         joinSession(urlRoomId);
+        localStorage.setItem('collaboration-room-id', urlRoomId);
       } else {
-        const newRoomId = generateRoomId();
-        const shareUrl = createShareUrl(peerId, newRoomId);
+        const persistentRoomId = getPersistentRoomId();
+        const shareUrl = createShareUrl(peerId, persistentRoomId);
         setState((prev) => ({
           ...prev,
-          roomId: newRoomId,
+          roomId: persistentRoomId,
           shareUrl,
         }));
-        localStorage.setItem('room-id', newRoomId);
       }
     });
 
@@ -170,22 +180,42 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   }, [joinSession, createShareUrl, handleConnection]);
 
   const shareSession = useCallback(() => {
-    if (!state.roomId && peerIdRef.current) {
-      const { roomId, shareUrl } = createSession();
-      return { roomId, shareUrl };
-    }
+    const persistentRoomId = getPersistentRoomId();
     
-    if (state.roomId && !state.shareUrl && peerIdRef.current) {
-      const shareUrl = createShareUrl(peerIdRef.current, state.roomId);
+    if (peerIdRef.current) {
+      const shareUrl = createShareUrl(peerIdRef.current, persistentRoomId);
       setState((prev) => ({
         ...prev,
+        roomId: persistentRoomId,
         shareUrl,
       }));
-      return { roomId: state.roomId, shareUrl };
+      return { roomId: persistentRoomId, shareUrl };
     }
     
-    return { roomId: state.roomId, shareUrl: state.shareUrl };
-  }, [state.roomId, state.shareUrl, createSession, createShareUrl]);
+    return { roomId: persistentRoomId, shareUrl: null };
+  }, [createShareUrl]);
+
+  const newSession = useCallback(() => {
+    localStorage.removeItem('collaboration-room-id');
+    const newRoomId = generateRoomId();
+    localStorage.setItem('collaboration-room-id', newRoomId);
+    
+    if (peerIdRef.current) {
+      const shareUrl = createShareUrl(peerIdRef.current, newRoomId);
+      setState((prev) => ({
+        ...prev,
+        roomId: newRoomId,
+        shareUrl,
+        connectedPeers: 0,
+        isConnected: false,
+      }));
+      connectionsRef.current.forEach((conn) => conn.close());
+      connectionsRef.current.clear();
+      return { roomId: newRoomId, shareUrl };
+    }
+    
+    return { roomId: newRoomId, shareUrl: null };
+  }, [createShareUrl]);
 
   useEffect(() => {
     if (!isInitializedRef.current) {
@@ -231,6 +261,7 @@ export const useCollaboration = (content: string, onContentChange: (content: str
     joinSession,
     connectToPeer,
     shareSession,
+    newSession,
     broadcastUpdate,
   };
 };

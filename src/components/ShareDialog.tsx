@@ -17,6 +17,7 @@ interface ShareDialogProps {
   roomId: string | null;
   connectedPeers: number;
   isConnected: boolean;
+  onNewSession?: () => void;
 }
 
 export const ShareDialog: React.FC<ShareDialogProps> = ({
@@ -26,6 +27,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({
   roomId,
   connectedPeers,
   isConnected,
+  onNewSession,
 }) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -150,6 +152,23 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({
               <li>✓ Works offline within the session</li>
             </ul>
           </div>
+
+          {/* New Session Button */}
+          {onNewSession && (
+            <div className="pt-2 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={onNewSession}
+              >
+                Start New Session
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Creates a new room ID. Previous guests will be disconnected.
+              </p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

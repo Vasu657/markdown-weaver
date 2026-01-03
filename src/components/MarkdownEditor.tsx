@@ -92,6 +92,14 @@ export const MarkdownEditor: React.FC = () => {
     setShareDialogOpen(true);
   }, [collaboration]);
 
+  const handleNewSession = useCallback(() => {
+    collaboration.newSession();
+    toast({
+      title: 'New Session Created',
+      description: 'A new share link has been generated. Previous guests will be disconnected.',
+    });
+  }, [collaboration, toast]);
+
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content);
     toast({
@@ -328,6 +336,7 @@ export const MarkdownEditor: React.FC = () => {
         roomId={collaboration.roomId}
         connectedPeers={collaboration.connectedPeers}
         isConnected={collaboration.isConnected}
+        onNewSession={handleNewSession}
       />
     </div>
   );
