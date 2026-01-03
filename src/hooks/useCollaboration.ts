@@ -13,9 +13,12 @@ const generateRoomId = (): string => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
-const getUrlRoomId = (): string | null => {
+const getUrlParams = (): { room: string | null; peer: string | null } => {
   const params = new URLSearchParams(window.location.search);
-  return params.get('room');
+  return {
+    room: params.get('room'),
+    peer: params.get('peer'),
+  };
 };
 
 export const useCollaboration = (content: string, onContentChange: (content: string) => void) => {
@@ -27,10 +30,12 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   });
 
   const peerRef = useRef<Peer | null>(null);
+  const peerIdRef = useRef<string | null>(null);
   const yDocRef = useRef<Y.Doc>(new Y.Doc());
   const yTextRef = useRef<Y.Text>(yDocRef.current.getText('shared-content'));
   const connectionsRef = useRef<Map<string, DataConnection>>(new Map());
   const isInitializedRef = useRef(false);
+  const hasAutoConnectedRef = useRef(false);
 
   const broadcastUpdate = useCallback((text: string) => {
     if (connectionsRef.current.size > 0) {
@@ -42,19 +47,31 @@ export const useCollaboration = (content: string, onContentChange: (content: str
     }
   }, []);
 
+  const createShareUrl = useCallback((peerId: string, roomId: string): string => {
+    const baseUrl = window.location.origin + window.location.pathname;
+    return `${baseUrl}?room=${roomId}&peer=${peerId}`;
+  }, []);
+
   const createSession = useCallback(() => {
     const newRoomId = generateRoomId();
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?room=${newRoomId}`;
-
+    
+    if (peerIdRef.current) {
+      const shareUrl = createShareUrl(peerIdRef.current, newRoomId);
+      setState((prev) => ({
+        ...prev,
+        roomId: newRoomId,
+        shareUrl,
+      }));
+      return { roomId: newRoomId, shareUrl };
+    }
+    
     setState((prev) => ({
       ...prev,
       roomId: newRoomId,
-      shareUrl,
+      shareUrl: null,
     }));
-
-    return { roomId: newRoomId, shareUrl };
-  }, []);
+    return { roomId: newRoomId, shareUrl: null };
+  }, [createShareUrl]);
 
   const joinSession = useCallback((roomId: string) => {
     setState((prev) => ({
@@ -62,42 +79,6 @@ export const useCollaboration = (content: string, onContentChange: (content: str
       roomId,
     }));
   }, []);
-
-  const initializePeer = useCallback(() => {
-    if (peerRef.current) return;
-
-    const peer = new Peer();
-    peerRef.current = peer;
-
-    const roomId = getUrlRoomId();
-    const currentRoomId = roomId || generateRoomId();
-
-    peer.on('open', (peerId) => {
-      if (roomId) {
-        joinSession(roomId);
-      } else {
-        const newRoomId = generateRoomId();
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = `${baseUrl}?room=${newRoomId}`;
-        setState((prev) => ({
-          ...prev,
-          roomId: newRoomId,
-          shareUrl,
-        }));
-      }
-
-      localStorage.setItem('peer-id', peerId);
-      localStorage.setItem('room-id', roomId || currentRoomId);
-    });
-
-    peer.on('connection', (conn) => {
-      handleConnection(conn, false);
-    });
-
-    peer.on('error', (err) => {
-      console.error('Peer error:', err);
-    });
-  }, [joinSession]);
 
   const handleConnection = useCallback(
     (conn: DataConnection, isInitiator: boolean) => {
@@ -117,10 +98,11 @@ export const useCollaboration = (content: string, onContentChange: (content: str
         }
       });
 
-      conn.on('data', (data: any) => {
-        if (data.type === 'content-update' || data.type === 'content-sync' || data.type === 'initial-content') {
-          if (data.content !== content) {
-            onContentChange(data.content);
+      conn.on('data', (data: unknown) => {
+        const messageData = data as { type: string; content: string };
+        if (messageData.type === 'content-update' || messageData.type === 'content-sync' || messageData.type === 'initial-content') {
+          if (messageData.content !== content) {
+            onContentChange(messageData.content);
           }
         }
       });
@@ -152,13 +134,58 @@ export const useCollaboration = (content: string, onContentChange: (content: str
     [handleConnection]
   );
 
+  const initializePeer = useCallback(() => {
+    if (peerRef.current) return;
+
+    const peer = new Peer();
+    peerRef.current = peer;
+
+    const { room: urlRoomId } = getUrlParams();
+
+    peer.on('open', (peerId) => {
+      peerIdRef.current = peerId;
+      localStorage.setItem('peer-id', peerId);
+
+      if (urlRoomId) {
+        joinSession(urlRoomId);
+      } else {
+        const newRoomId = generateRoomId();
+        const shareUrl = createShareUrl(peerId, newRoomId);
+        setState((prev) => ({
+          ...prev,
+          roomId: newRoomId,
+          shareUrl,
+        }));
+        localStorage.setItem('room-id', newRoomId);
+      }
+    });
+
+    peer.on('connection', (conn) => {
+      handleConnection(conn, false);
+    });
+
+    peer.on('error', (err) => {
+      console.error('Peer error:', err);
+    });
+  }, [joinSession, createShareUrl, handleConnection]);
+
   const shareSession = useCallback(() => {
-    if (!state.roomId) {
+    if (!state.roomId && peerIdRef.current) {
       const { roomId, shareUrl } = createSession();
       return { roomId, shareUrl };
     }
+    
+    if (state.roomId && !state.shareUrl && peerIdRef.current) {
+      const shareUrl = createShareUrl(peerIdRef.current, state.roomId);
+      setState((prev) => ({
+        ...prev,
+        shareUrl,
+      }));
+      return { roomId: state.roomId, shareUrl };
+    }
+    
     return { roomId: state.roomId, shareUrl: state.shareUrl };
-  }, [state.roomId, state.shareUrl, createSession]);
+  }, [state.roomId, state.shareUrl, createSession, createShareUrl]);
 
   useEffect(() => {
     if (!isInitializedRef.current) {
@@ -168,14 +195,35 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   }, [initializePeer]);
 
   useEffect(() => {
+    const { peer: hostPeerId } = getUrlParams();
+    
+    if (
+      hostPeerId && 
+      peerIdRef.current && 
+      peerRef.current && 
+      !hasAutoConnectedRef.current
+    ) {
+      hasAutoConnectedRef.current = true;
+      setTimeout(() => {
+        connectToPeer(hostPeerId);
+      }, 800);
+    }
+  }, [connectToPeer]);
+
+  useEffect(() => {
+    if (connectionsRef.current.size > 0) {
+      broadcastUpdate(content);
+    }
+  }, [content, broadcastUpdate]);
+
+  useEffect(() => {
     yTextRef.current.observe((event) => {
       const newContent = yTextRef.current.toString();
       if (newContent !== content) {
         onContentChange(newContent);
-        broadcastUpdate(newContent);
       }
     });
-  }, [content, onContentChange, broadcastUpdate]);
+  }, [content, onContentChange]);
 
   return {
     ...state,
