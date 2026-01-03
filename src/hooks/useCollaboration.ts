@@ -2,12 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Peer, { DataConnection } from 'peerjs';
 import * as Y from 'yjs';
 
-interface Message {
-  type: 'content-update' | 'content-sync' | 'initial-content' | 'ack';
-  content?: string;
-  id?: number;
-}
-
 interface CollaborationState {
   isConnected: boolean;
   shareUrl: string | null;
@@ -42,42 +36,16 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   const connectionsRef = useRef<Map<string, DataConnection>>(new Map());
   const isInitializedRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const lastContentRef = useRef<string>('');
-  const messageIdRef = useRef<number>(0);
-  const pendingMessagesRef = useRef<Map<number, Message>>(new Map());
-
-  const sendMessage = useCallback((message: Message) => {
-    if (connectionsRef.current.size === 0) return;
-    
-    connectionsRef.current.forEach((conn) => {
-      if (conn.open) {
-        try {
-          conn.send(message);
-        } catch (err) {
-          console.error('Error sending message:', err);
-        }
-      }
-    });
-  }, []);
 
   const broadcastUpdate = useCallback((text: string) => {
-    if (connectionsRef.current.size === 0) return;
-
-    const messageId = ++messageIdRef.current;
-    const message: Message = {
-      type: 'content-update',
-      content: text,
-      id: messageId,
-    };
-
-    pendingMessagesRef.current.set(messageId, message);
-    sendMessage(message);
-
-    setTimeout(() => {
-      pendingMessagesRef.current.delete(messageId);
-    }, 5000);
-  }, [sendMessage]);
+    if (connectionsRef.current.size > 0) {
+      connectionsRef.current.forEach((conn) => {
+        if (conn.open) {
+          conn.send({ type: 'content-update', content: text });
+        }
+      });
+    }
+  }, []);
 
   const createShareUrl = useCallback((peerId: string, roomId: string): string => {
     const baseUrl = window.location.origin + window.location.pathname;
@@ -123,21 +91,17 @@ export const useCollaboration = (content: string, onContentChange: (content: str
           connectedPeers: prev.connectedPeers + 1,
         }));
 
-        const syncMessage: Message = isInitiator
-          ? { type: 'content-sync', content }
-          : { type: 'initial-content', content };
-
-        try {
-          conn.send(syncMessage);
-        } catch (err) {
-          console.error('Error sending sync message:', err);
+        if (isInitiator) {
+          conn.send({ type: 'content-sync', content });
+        } else {
+          conn.send({ type: 'initial-content', content });
         }
       });
 
       conn.on('data', (data: unknown) => {
-        const messageData = data as Message;
+        const messageData = data as { type: string; content: string };
         if (messageData.type === 'content-update' || messageData.type === 'content-sync' || messageData.type === 'initial-content') {
-          if (messageData.content && messageData.content !== content) {
+          if (messageData.content !== content) {
             onContentChange(messageData.content);
           }
         }
@@ -173,16 +137,7 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   const initializePeer = useCallback(() => {
     if (peerRef.current) return;
 
-    const peer = new Peer({
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' },
-          { urls: 'stun:stun2.l.google.com:19302' },
-          { urls: 'stun:stun3.l.google.com:19302' },
-        ],
-      },
-    });
+    const peer = new Peer();
     peerRef.current = peer;
 
     const { room: urlRoomId } = getUrlParams();
@@ -256,25 +211,9 @@ export const useCollaboration = (content: string, onContentChange: (content: str
   }, [connectToPeer]);
 
   useEffect(() => {
-    if (connectionsRef.current.size === 0) return;
-
-    lastContentRef.current = content;
-
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (connectionsRef.current.size > 0) {
+      broadcastUpdate(content);
     }
-
-    debounceTimerRef.current = setTimeout(() => {
-      if (lastContentRef.current === content && connectionsRef.current.size > 0) {
-        broadcastUpdate(content);
-      }
-    }, 150);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
   }, [content, broadcastUpdate]);
 
   useEffect(() => {
@@ -285,14 +224,6 @@ export const useCollaboration = (content: string, onContentChange: (content: str
       }
     });
   }, [content, onContentChange]);
-
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
 
   return {
     ...state,
