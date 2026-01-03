@@ -15,6 +15,7 @@ import {
   Undo2,
   Redo2,
   Bell,
+  ChevronRight,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -255,14 +256,23 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             Copy Markdown
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onExport('markdown')}>
-            <FileText size={14} className="mr-2" />
-            Export as Markdown
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onExport('html')}>
-            <Code size={14} className="mr-2" />
-            Export as HTML
-          </DropdownMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="w-full text-left px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground flex items-center">
+              <FileText size={14} className="mr-2" />
+              <span className="flex-1">Download</span>
+              <ChevronRight size={14} className="ml-auto" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => onExport('markdown')}>
+                <FileText size={14} className="mr-2" />
+                Download as .md
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onExport('html')}>
+                <Code size={14} className="mr-2" />
+                Download as HTML
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate('/about')}>
             <FileCode2 size={14} className="mr-2" />

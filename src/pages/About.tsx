@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
+import { Footer } from '@/components/Footer';
 import {
   Tooltip,
   TooltipContent,
@@ -61,7 +62,9 @@ import {
   Moon,
   MoreHorizontal,
   HelpCircle,
-  ArrowLeft
+  ArrowLeft,
+  Mail,
+  MessageCircle
 } from 'lucide-react';
 import { Helmet } from "react-helmet-async";
 
@@ -129,6 +132,11 @@ const About: React.FC = () => {
       color: "cyan"
     }
   ];
+
+   // Contact Info
+  const email = "vasughanta660@gmail.com"; 
+  const whatsappNumber = "9113808288"; 
+  const prefilledMessage = encodeURIComponent("I would like to discuss a project with you.");
 
   const smallIconSize = 16;
 
@@ -663,29 +671,50 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <div className="mt-12 pt-6 border-t border-border">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
-            <Button onClick={() => navigate('/')} variant="outline" className="gap-2 w-full sm:w-auto">
-              <ArrowLeft size={16} />
-              Back to Editor
-            </Button>
-            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-              <Button onClick={() => navigate('/help')} variant="outline" className="gap-2 w-full sm:w-auto">
-                <HelpCircle size={16} />
-                Help
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/privacy')} className="gap-2 w-full sm:w-auto">
-                <Shield size={16} />
-                Privacy
-              </Button>
+                {/* Contact Me Section */}
+        <section className="mb-16">
+          <div className="bg-gradient-to-br from-primary/10 via-background to-blue-500/10 border border-border rounded-3xl p-8 sm:p-12 text-center">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
+              <MessageSquare size={16} className="text-primary" />
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Get In Touch</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Let's Work Together</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-8">
+              Have a project in mind or just want to say hi? Feel free to reach out to me through any of these platforms.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a
+                href={`mailto:${email}?subject=Project%20Discussion&body=${prefilledMessage}`}
+                className="flex items-center gap-3 px-6 py-4 bg-background border border-border hover:border-primary hover:bg-primary/5 rounded-2xl transition-all duration-300 group shadow-sm hover:shadow-md"
+              >
+                <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:scale-110 transition-transform">
+                  <Mail size={24} />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs text-muted-foreground font-medium">Email Me</p>
+                  <p className="font-bold text-foreground">Send an Email</p>
+                </div>
+              </a>
+              <a
+                href={`https://wa.me/${whatsappNumber}?text=${prefilledMessage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-6 py-4 bg-background border border-border hover:border-green-500 hover:bg-green-500/5 rounded-2xl transition-all duration-300 group shadow-sm hover:shadow-md"
+              >
+                <div className="p-2 bg-green-500/10 rounded-lg text-green-500 group-hover:scale-110 transition-transform">
+                  <MessageCircle size={24} />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs text-muted-foreground font-medium">WhatsApp</p>
+                  <p className="font-bold text-foreground">Chat with Me</p>
+                </div>
+              </a>
             </div>
           </div>
-          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border">
-            <p>© {new Date().getFullYear()} MarkdownPro. All rights reserved.</p>
-            <p className="mt-1">Built with ❤️ by <a href="http://vasughanta.netlify.app/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">Vasu Ghanta</a></p>
-          </div>
-        </div>
+        </section>
+
+        {/* Footer */}
+        <Footer showBackToEditor={true} showAbout={false} showHelp={true} showPrivacy={true} />
       </main>
     </div>
   );

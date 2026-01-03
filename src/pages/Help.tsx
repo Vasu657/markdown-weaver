@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
+import { Footer } from '@/components/Footer';
 import {
   Tooltip,
   TooltipContent,
@@ -329,28 +330,7 @@ pie title Usage
         </Section>
 
         {/* Footer */}
-        <div className="mt-12 pt-6 border-t border-border">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
-            <Button onClick={() => navigate('/')} variant="outline" className="gap-2 w-full sm:w-auto">
-              <ArrowLeft size={16} />
-              Back to Editor
-            </Button>
-            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-              <Button onClick={() => navigate('/about')} variant="outline" className="gap-2 w-full sm:w-auto">
-                <FileCode2 size={16} />
-                About
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/privacy')} className="gap-2 w-full sm:w-auto">
-                <Shield size={16} />
-                Privacy
-              </Button>
-            </div>
-          </div>
-          <div className="text-center py-4 text-sm text-muted-foreground border-t border-border">
-            <p>© {new Date().getFullYear()} MarkdownPro. All rights reserved.</p>
-            <p className="mt-1">Built with ❤️ by <a href="http://vasughanta.netlify.app/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">Vasu Ghanta</a></p>
-          </div>
-        </div>
+        <Footer showBackToEditor={true} showAbout={true} showHelp={false} showPrivacy={true} />
       </main>
     </div>
   );
