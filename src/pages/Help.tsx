@@ -46,22 +46,22 @@ const Help: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-  <title>Help & Markdown Guide – Markdown Weaver</title>
-  <meta
-    name="description"
-    content="Learn markdown syntax, shortcuts, examples, and best practices using Markdown Weaver’s built-in help and documentation."
-  />
-</Helmet>
+        <title>Help & Markdown Guide – Markdown Weaver</title>
+        <meta
+          name="description"
+          content="Learn markdown syntax, shortcuts, examples, and best practices using Markdown Weaver’s built-in help and documentation."
+        />
+      </Helmet>
 
       {/* Header */}
       <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
         <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
           <FileCode2 size={20} className="text-primary" />
-          <span className="font-bold text-sm text-foreground hidden md:inline">MarkdownPro</span>
+          <span className="font-bold text-sm text-foreground hidden md:inline">Markdown Weaver</span>
         </div>
-        
+
         <div className="flex-1" />
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button className="toolbar-btn" aria-label="Notifications" onClick={() => navigate('/notifications')}>
@@ -70,7 +70,7 @@ const Help: React.FC = () => {
           </TooltipTrigger>
           <TooltipContent side="bottom">Notifications</TooltipContent>
         </Tooltip>
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -85,7 +85,7 @@ const Help: React.FC = () => {
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </TooltipContent>
         </Tooltip>
-        
+
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -104,7 +104,7 @@ const Help: React.FC = () => {
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/about')}>
               <FileCode2 size={14} className="mr-2" />
-              About MarkdownPro
+              About Markdown Weaver
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/privacy')}>
               <Shield size={14} className="mr-2" />
@@ -132,8 +132,8 @@ const Help: React.FC = () => {
             <div>
               <h3 className="font-semibold text-foreground mb-1">Important Notice</h3>
               <p className="text-sm text-muted-foreground">
-                Your content is saved locally in your browser. If you clear your browser cookies, cache, or local storage, 
-                <strong className="text-foreground"> all saved content will be permanently deleted</strong>. 
+                Your content is saved locally in your browser. If you clear your browser cookies, cache, or local storage,
+                <strong className="text-foreground"> all saved content will be permanently deleted</strong>.
                 Shared preview links encode content in the URL and will expire if the link is lost or too long for browsers to handle.
                 <strong className="text-foreground"> Always export important documents</strong> using the download feature.
               </p>

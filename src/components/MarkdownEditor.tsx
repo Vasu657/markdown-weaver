@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { saveAs } from 'file-saver';
 import { Upload } from 'lucide-react';
 import { Toolbar } from './Toolbar';
+import { AnnouncementBar } from './AnnouncementBar';
 import { Editor } from './Editor';
 import { Preview } from './Preview';
 import { StatusBar } from './StatusBar';
@@ -13,7 +14,7 @@ import { useAutoSave } from '@/hooks/useAutoSave';
 import { useUndoRedo } from '@/hooks/useUndoRedo';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const DEFAULT_CONTENT = `# Welcome to MarkdownPro
+const DEFAULT_CONTENT = `# Welcome to Markdown Weaver
 
 Start writing your Markdown here. This editor supports:
 
@@ -52,15 +53,16 @@ export const MarkdownEditor: React.FC = () => {
   }, [isMobile, viewMode, setViewMode]);
 
   // Initialize undo/redo with stored content or default
-  const storedContent = localStorage.getItem('markdown-pro-content') || DEFAULT_CONTENT;
+  const storedContent = localStorage.getItem('markdown-weaver-v1-content') || DEFAULT_CONTENT;
   const { content, setContent, undo, redo, canUndo, canRedo } = useUndoRedo(storedContent);
-  
+
   const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
   const saveStatus = useAutoSave(content);
-  
+
   const [isDragOver, setIsDragOver] = useState(false);
   const [splitPosition, setSplitPosition] = useState(50);
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const isResizing = useRef(false);
 
   // Calculate stats from content
@@ -94,14 +96,14 @@ export const MarkdownEditor: React.FC = () => {
       saveAs(blob, 'document.md');
     } else {
       let previewHTML = document.querySelector('.markdown-preview')?.innerHTML || '<p>No preview available</p>';
-      
+
       // Remove copy buttons from exported HTML
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = previewHTML;
       const copyButtons = tempDiv.querySelectorAll('button[aria-label*="Copy"]');
       copyButtons.forEach(btn => btn.remove());
       previewHTML = tempDiv.innerHTML;
-      
+
       const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,7 +158,7 @@ export const MarkdownEditor: React.FC = () => {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    
+
     const file = e.dataTransfer.files[0];
     if (file && (file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.name.endsWith('.txt'))) {
       const reader = new FileReader();
@@ -197,7 +199,7 @@ export const MarkdownEditor: React.FC = () => {
     if (!isResizing.current) return;
     const container = document.getElementById('editor-container');
     if (!container) return;
-    
+
     const rect = container.getBoundingClientRect();
     const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
     setSplitPosition(Math.min(Math.max(newPosition, 20), 80));
@@ -219,7 +221,7 @@ export const MarkdownEditor: React.FC = () => {
   }, [handleMouseMove, handleMouseUp]);
 
   return (
-    <div 
+    <div
       className="flex flex-col h-screen bg-background"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
@@ -233,7 +235,7 @@ export const MarkdownEditor: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <Toolbar
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -254,15 +256,20 @@ export const MarkdownEditor: React.FC = () => {
         syncScroll={syncScroll}
         onSyncScrollChange={setSyncScroll}
       />
-      
-      <div 
+
+      <AnnouncementBar
+        isVisible={showAnnouncement}
+        onClose={() => setShowAnnouncement(false)}
+      />
+
+      <div
         id="editor-container"
         className="flex-1 flex flex-col md:flex-row overflow-hidden relative"
       >
         {(viewMode === 'split' || viewMode === 'editor') && (
-          <div 
+          <div
             className={`${viewMode === 'split' ? 'h-1/2 md:h-full' : 'h-full'} overflow-hidden relative`}
-            style={{ 
+            style={{
               width: viewMode === 'split' ? undefined : '100%',
               flex: viewMode === 'split' ? `0 0 ${splitPosition}%` : undefined,
               minWidth: viewMode === 'split' ? '150px' : undefined,
@@ -278,7 +285,7 @@ export const MarkdownEditor: React.FC = () => {
             />
           </div>
         )}
-        
+
         {viewMode === 'split' && (
           <div
             className={`resize-handle ${isMobile ? 'hidden' : 'hidden md:block'}`}
@@ -287,11 +294,11 @@ export const MarkdownEditor: React.FC = () => {
             aria-label="Resize editor and preview"
           />
         )}
-        
+
         {(viewMode === 'split' || viewMode === 'preview') && (
-          <div 
+          <div
             className={`${viewMode === 'split' ? 'h-1/2 md:h-full' : 'h-full'} overflow-hidden border-t md:border-t-0 md:border-l border-border`}
-            style={{ 
+            style={{
               width: viewMode === 'split' ? undefined : '100%',
               flex: viewMode === 'split' ? `0 0 ${100 - splitPosition}%` : undefined,
               minWidth: viewMode === 'split' ? '150px' : undefined,
@@ -301,7 +308,7 @@ export const MarkdownEditor: React.FC = () => {
           </div>
         )}
       </div>
-      
+
       <StatusBar
         stats={currentStats}
         saveIndicator={<SaveIndicator status={saveStatus} />}

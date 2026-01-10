@@ -133,9 +133,9 @@ const About: React.FC = () => {
     }
   ];
 
-   // Contact Info
-  const email = "vasughanta660@gmail.com"; 
-  const whatsappNumber = "9113808288"; 
+  // Contact Info
+  const email = "vasughanta660@gmail.com";
+  const whatsappNumber = "9113808288";
   const prefilledMessage = encodeURIComponent("I would like to discuss a project with you.");
 
   const smallIconSize = 16;
@@ -143,22 +143,22 @@ const About: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-  <title>About Markdown Weaver – Developer-Friendly Markdown Editor</title>
-  <meta
-    name="description"
-    content="Learn about Markdown Weaver, a modern markdown editor built for developers with live preview, GFM support, and privacy-first design."
-  />
-</Helmet>
+        <title>About Markdown Weaver – Developer-Friendly Markdown Editor</title>
+        <meta
+          name="description"
+          content="Learn about Markdown Weaver, a modern markdown editor built for developers with live preview, GFM support, and privacy-first design."
+        />
+      </Helmet>
 
       {/* Header */}
       <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
         <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
           <FileCode2 size={20} className="text-primary" />
-          <span className="font-bold text-sm text-foreground hidden md:inline">MarkdownPro</span>
+          <span className="font-bold text-sm text-foreground hidden md:inline">Markdown Weaver</span>
         </div>
-        
+
         <div className="flex-1" />
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button className="toolbar-btn" aria-label="Notifications" onClick={() => navigate('/notifications')}>
@@ -167,7 +167,7 @@ const About: React.FC = () => {
           </TooltipTrigger>
           <TooltipContent side="bottom">Notifications</TooltipContent>
         </Tooltip>
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -182,7 +182,7 @@ const About: React.FC = () => {
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </TooltipContent>
         </Tooltip>
-        
+
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -222,7 +222,7 @@ const About: React.FC = () => {
               </div>
               <div>
                 <h2 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                  MarkdownPro
+                  Markdown Weaver
                 </h2>
                 <p className="text-sm text-muted-foreground mt-2">Built for Developers. By Developers.</p>
               </div>
@@ -455,7 +455,7 @@ const About: React.FC = () => {
               Perfect For
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Whatever you're writing, MarkdownPro has you covered
+              Whatever you're writing, Markdown Weaver has you covered
             </p>
           </div>
 
@@ -627,7 +627,7 @@ const About: React.FC = () => {
               Loved by Developers Worldwide
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Join thousands of developers who trust MarkdownPro for their daily writing needs.
+              Join thousands of developers who trust Markdown Weaver for their daily writing needs.
             </p>
           </div>
 
@@ -659,11 +659,10 @@ const About: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => handleDotClick(index)}
-                  className={`transition-all duration-300 rounded-full ${
-                    index === currentReviewIndex
-                      ? 'bg-primary w-8 h-2'
-                      : 'bg-border w-2 h-2 hover:bg-primary/50'
-                  }`}
+                  className={`transition-all duration-300 rounded-full ${index === currentReviewIndex
+                    ? 'bg-primary w-8 h-2'
+                    : 'bg-border w-2 h-2 hover:bg-primary/50'
+                    }`}
                   aria-label={`Go to review ${index + 1}`}
                 />
               ))}
@@ -671,7 +670,7 @@ const About: React.FC = () => {
           </div>
         </section>
 
-                {/* Contact Me Section */}
+        {/* Contact Me Section */}
         <section className="mb-16">
           <div className="bg-gradient-to-br from-primary/10 via-background to-blue-500/10 border border-border rounded-3xl p-8 sm:p-12 text-center">
             <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
@@ -882,7 +881,7 @@ const SlimReviewCard: React.FC<SlimReviewCardProps> = ({ quote, author, role, ra
     <div className={`group relative overflow-hidden rounded-2xl border ${colorClasses[color]} bg-gradient-to-br p-5 sm:p-6 hover:shadow-xl transition-all duration-300 flex flex-col`}>
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
+
       {/* Top accent dot */}
       <div className={`absolute top-4 right-4 w-2 h-2 ${colorDots[color]} rounded-full opacity-60`} />
 

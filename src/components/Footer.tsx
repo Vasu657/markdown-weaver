@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({
                 variant="ghost"
                 size="sm"
                 className="gap-1 px-2 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:shadow-sm flex-shrink-0"
-                aria-label="About MarkdownPro"
+                aria-label="About Markdown Weaver"
               >
                 <FileCode2 size={12} className="shrink-0 sm:w-4 sm:h-4" />
                 <span>About</span>
@@ -87,7 +87,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pt-4 border-t border-border/30">
           <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 text-xs text-muted-foreground">
             <span className="order-2 sm:order-1">
-              © {currentYear} MarkdownPro. All rights reserved.
+              © {currentYear} Markdown Weaver. All rights reserved.
             </span>
             <span className="hidden sm:inline order-2">•</span>
             <div className="flex items-center gap-1 order-1 sm:order-2 text-xs">

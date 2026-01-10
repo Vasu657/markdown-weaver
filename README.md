@@ -1,4 +1,4 @@
-# MarkdownPro
+# Markdown Weaver
 
 A powerful, real-time Markdown editor with live preview and advanced features. Write faster, preview smarter, and create beautifully formatted documents with ease.
 

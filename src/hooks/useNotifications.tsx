@@ -23,7 +23,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
-      title: 'Welcome to MarkdownPro',
+      title: 'Welcome to Markdown Weaver',
       message: 'Thank you for using our markdown editor. Start creating amazing content!',
       type: 'announcement',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),

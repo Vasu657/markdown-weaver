@@ -25,22 +25,22 @@ const Privacy: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-  <title>Privacy Policy – Markdown Weaver</title>
-  <meta
-    name="description"
-    content="Markdown Weaver is a privacy-first markdown editor. No tracking, no analytics, no data collection. Your content stays on your device."
-  />
-</Helmet>
+        <title>Privacy Policy – Markdown Weaver</title>
+        <meta
+          name="description"
+          content="Markdown Weaver is a privacy-first markdown editor. No tracking, no analytics, no data collection. Your content stays on your device."
+        />
+      </Helmet>
 
       {/* Header */}
       <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
         <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
           <FileCode2 size={20} className="text-primary" />
-          <span className="font-bold text-sm text-foreground hidden md:inline">MarkdownPro</span>
+          <span className="font-bold text-sm text-foreground hidden md:inline">Markdown Weaver</span>
         </div>
-        
+
         <div className="flex-1" />
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button className="toolbar-btn" aria-label="Notifications" onClick={() => navigate('/notifications')}>
@@ -49,7 +49,7 @@ const Privacy: React.FC = () => {
           </TooltipTrigger>
           <TooltipContent side="bottom">Notifications</TooltipContent>
         </Tooltip>
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -64,7 +64,7 @@ const Privacy: React.FC = () => {
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </TooltipContent>
         </Tooltip>
-        
+
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -83,7 +83,7 @@ const Privacy: React.FC = () => {
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/about')}>
               <FileCode2 size={14} className="mr-2" />
-              About MarkdownPro
+              About Markdown Weaver
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/help')}>
               <HelpCircle size={14} className="mr-2" />
@@ -113,7 +113,7 @@ const Privacy: React.FC = () => {
           <div className="space-y-4">
             <PolicyItem
               title="No Data Collection"
-              description="MarkdownPro does not collect, track, store, or transmit any of your personal data to external servers. Everything stays on your device."
+              description="Markdown Weaver does not collect, track, store, or transmit any of your personal data to external servers. Everything stays on your device."
             />
             <PolicyItem
               title="Local-Only Editing"
@@ -164,16 +164,16 @@ const Privacy: React.FC = () => {
             <div className="bg-muted rounded-lg p-5 border border-border">
               <h4 className="font-semibold text-foreground mb-3">Intellectual Property</h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                MarkdownPro is protected by copyright and intellectual property laws. The application, including its design, code, and features, 
-                is the property of its creator. Copying, redistributing, reverse-engineering, or cloning this application without explicit written 
+                Markdown Weaver is protected by copyright and intellectual property laws. The application, including its design, code, and features,
+                is the property of its creator. Copying, redistributing, reverse-engineering, or cloning this application without explicit written
                 permission is prohibited and may result in legal action. We kindly ask that you respect the effort that went into creating this tool.
               </p>
             </div>
-            
+
             <div className="bg-muted rounded-lg p-5 border border-border">
               <h4 className="font-semibold text-foreground mb-3">Your Content</h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                You retain full ownership of all content you create using MarkdownPro. We make no claims to your documents, notes, or any other 
+                You retain full ownership of all content you create using Markdown Weaver. We make no claims to your documents, notes, or any other
                 material you write. You are free to use, share, and distribute your own work however you choose.
               </p>
             </div>
@@ -181,7 +181,7 @@ const Privacy: React.FC = () => {
             <div className="bg-muted rounded-lg p-5 border border-border">
               <h4 className="font-semibold text-foreground mb-3">Disclaimer</h4>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                MarkdownPro is provided "as is" without warranty of any kind. We are not responsible for any data loss that may occur 
+                Markdown Weaver is provided "as is" without warranty of any kind. We are not responsible for any data loss that may occur
                 from browser data clearing, device issues, or other circumstances. Always keep backups of important documents.
               </p>
             </div>

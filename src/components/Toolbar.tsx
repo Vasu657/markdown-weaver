@@ -73,9 +73,9 @@ interface ToolbarButtonProps {
   className?: string;
 }
 
-const ToolbarButton: React.FC<ToolbarButtonProps> = ({ 
-  icon, 
-  label, 
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({
+  icon,
+  label,
   onClick,
   active,
   disabled,
@@ -112,7 +112,7 @@ const getNextViewMode = (current: ViewMode, isMobile?: boolean): ViewMode => {
       default: return 'editor';
     }
   }
-  
+
   // On desktop, include split view in the cycle
   switch (current) {
     case 'split': return 'editor';
@@ -142,7 +142,7 @@ const getViewModeLabel = (mode: ViewMode, isMobile?: boolean): string => {
       default: return 'Toggle View';
     }
   }
-  
+
   // On desktop, include split view
   switch (mode) {
     case 'split': return 'Split View (click to switch to Editor)';
@@ -184,11 +184,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {/* Logo/Brand */}
       <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
         <FileCode2 size={20} className="text-primary" />
-        <span className="font-bold text-sm text-foreground hidden sm:inline md:inline">MarkdownPro</span>
+        <span className="font-bold text-sm text-foreground hidden sm:inline md:inline">Markdown Weaver</span>
       </div>
-      
+
       <Divider />
-      
+
       {/* Templates - Hidden on mobile */}
       <div className="hidden sm:block">
         <DropdownMenu>
@@ -219,7 +219,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       {/* Undo/Redo - Always visible */}
       <div className="flex items-center gap-0.5">
         <ToolbarButton
@@ -235,9 +235,9 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           disabled={!canRedo}
         />
       </div>
-      
+
       <Divider />
-      
+
       {/* View Mode Toggle */}
       <ToolbarButton
         icon={getViewModeIcon(viewMode, smallIconSize)}
@@ -245,9 +245,9 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         onClick={handleViewToggle}
         active={viewMode === 'split'}
       />
-      
+
       <div className="flex-1" />
-      
+
       {/* Notifications - Hidden on mobile */}
       <div className="hidden sm:block">
         <ToolbarButton
@@ -256,14 +256,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           onClick={() => navigate('/notifications')}
         />
       </div>
-      
+
       {/* Theme toggle */}
       <ToolbarButton
         icon={theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
         label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
         onClick={onThemeToggle}
       />
-      
+
       {/* More actions dropdown */}
       <DropdownMenu>
         <Tooltip>
@@ -303,7 +303,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             </DropdownMenu>
             <DropdownMenuSeparator />
           </div>
-          
+
           <DropdownMenuItem onClick={onCopy}>
             <Copy size={14} className="mr-2" />
             Copy Markdown
@@ -369,7 +369,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate('/about')}>
             <FileCode2 size={14} className="mr-2" />
-            About MarkdownPro
+            About Markdown Weaver
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate('/help')}>
             <HelpCircle size={14} className="mr-2" />

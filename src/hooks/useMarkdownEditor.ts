@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-const DEFAULT_MARKDOWN = `# Welcome to MarkdownPro Editor
+const DEFAULT_MARKDOWN = `# Welcome to Markdown Weaver Editor
 
 A powerful, real-time Markdown editor with live preview.
 
@@ -70,7 +70,7 @@ export function useMarkdownEditor() {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved || DEFAULT_MARKDOWN;
   });
-  
+
   const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [fontSize, setFontSize] = useState(14);
@@ -82,15 +82,15 @@ export function useMarkdownEditor() {
 
   const handleEditorScroll = useCallback(() => {
     if (!syncScroll || !editorRef.current || !previewRef.current) return;
-    
+
     const editor = editorRef.current;
     const preview = previewRef.current;
-    
+
     const editorLineHeight = parseFloat(getComputedStyle(editor).lineHeight);
     const scrolledLines = Math.floor(editor.scrollTop / editorLineHeight);
     const totalLines = content.split('\n').length;
     const scrollPercentage = Math.min(scrolledLines / totalLines, 1);
-    
+
     const maxPreviewScroll = preview.scrollHeight - preview.clientHeight;
     preview.scrollTop = scrollPercentage * maxPreviewScroll;
   }, [syncScroll, content]);
@@ -102,16 +102,16 @@ export function useMarkdownEditor() {
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = content.substring(start, end);
-    
-    const newContent = 
-      content.substring(0, start) + 
-      before + 
-      selectedText + 
-      after + 
+
+    const newContent =
+      content.substring(0, start) +
+      before +
+      selectedText +
+      after +
       content.substring(end);
-    
+
     setContent(newContent);
-    
+
     // Restore focus and selection
     setTimeout(() => {
       textarea.focus();
