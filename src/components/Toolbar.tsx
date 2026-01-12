@@ -19,7 +19,14 @@ import {
   ToggleLeft,
   ToggleRight,
   Share2,
+  Settings,
+  Sparkles,
+  Wand2,
+  MessageSquare,
+  Loader2,
+  User,
 } from 'lucide-react';
+import { SettingsDialog } from './SettingsDialog';
 import {
   Tooltip,
   TooltipContent,
@@ -62,6 +69,10 @@ interface ToolbarProps {
   onShowLineNumbersChange: (show: boolean) => void;
   syncScroll: boolean;
   onSyncScrollChange: (sync: boolean) => void;
+  onToggleChat?: () => void;
+  isChatOpen?: boolean;
+  onMagicAction?: (action: 'autocomplete' | 'grammar' | 'clarity' | 'tone_professional' | 'tone_casual') => void;
+  isGenerating?: boolean;
 }
 
 interface ToolbarButtonProps {
@@ -171,6 +182,10 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onShowLineNumbersChange,
   syncScroll,
   onSyncScrollChange,
+  onToggleChat,
+  isChatOpen,
+  onMagicAction,
+  isGenerating,
 }) => {
   const smallIconSize = 16;
   const navigate = useNavigate();
@@ -248,6 +263,60 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
       <div className="flex-1" />
 
+      {/* Magic Actions */}
+      <DropdownMenu>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={`toolbar-btn text-purple-500 hover:text-purple-600 ${isGenerating ? 'animate-pulse' : ''}`}
+                disabled={isGenerating}
+              >
+                {isGenerating ? <Loader2 size={smallIconSize} className="animate-spin" /> : <Wand2 size={smallIconSize} />}
+              </button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Magic AI Tools</TooltipContent>
+        </Tooltip>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => onMagicAction?.('autocomplete')}>
+            <Sparkles size={14} className="mr-2" />
+            Continue Writing
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => onMagicAction?.('grammar')}>
+            <FileText size={14} className="mr-2" />
+            Fix Grammar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onMagicAction?.('clarity')}>
+            <FileText size={14} className="mr-2" />
+            Improve Clarity
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => onMagicAction?.('tone_professional')}>
+            <User size={14} className="mr-2" />
+            Make Professional
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onMagicAction?.('tone_casual')}>
+            <User size={14} className="mr-2" />
+            Make Casual
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Chat Button */}
+      {onToggleChat && (
+        <ToolbarButton
+          icon={<MessageSquare size={smallIconSize} />}
+          label="AI Chat Assistant"
+          onClick={onToggleChat}
+          active={isChatOpen}
+          className={isChatOpen ? "text-primary" : ""}
+        />
+      )}
+
+      <Divider />
+
       {/* Notifications - Hidden on mobile */}
       <div className="hidden sm:block">
         <ToolbarButton
@@ -255,6 +324,18 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           label="Notifications"
           onClick={() => navigate('/notifications')}
         />
+      </div>
+
+      <div className="hidden sm:block">
+        <SettingsDialog trigger={
+          <div className='inline-flex'>
+            <ToolbarButton
+              icon={<Settings size={smallIconSize} />}
+              label="AI Settings"
+              onClick={() => { }}
+            />
+          </div>
+        } />
       </div>
 
       {/* Theme toggle */}
@@ -301,6 +382,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            <DropdownMenuSeparator />
+            {/* Mobile Settings */}
+            <SettingsDialog trigger={
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Settings size={14} className="mr-2" />
+                AI Settings
+              </DropdownMenuItem>
+            } />
             <DropdownMenuSeparator />
           </div>
 

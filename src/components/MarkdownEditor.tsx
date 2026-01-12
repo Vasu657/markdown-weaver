@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useUndoRedo } from '@/hooks/useUndoRedo';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ChatSidebar } from './ChatSidebar';
+import { useAI } from '@/hooks/useAI';
 
 const DEFAULT_CONTENT = `# Welcome to Markdown Weaver
 
@@ -220,6 +222,49 @@ export const MarkdownEditor: React.FC = () => {
     };
   }, [handleMouseMove, handleMouseUp]);
 
+  // AI Integration
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const { isGenerating, autocomplete, refactorText } = useAI();
+
+  const handleMagicAction = useCallback((action: 'autocomplete' | 'grammar' | 'clarity' | 'tone_professional' | 'tone_casual') => {
+    const textarea = editorRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    if (action === 'autocomplete') {
+      // Use text before cursor as context
+      const prefix = content.substring(0, end);
+      autocomplete(prefix, (continuingText) => {
+        // Insert at cursor
+        const newContent = content.substring(0, end) + continuingText + content.substring(end);
+        setContent(newContent);
+        toast({ title: 'Autocompleted!', description: 'Text added.' });
+      });
+    } else {
+      // Refactoring actions need selection
+      if (!selectedText.trim()) {
+        toast({ title: 'Selection required', description: 'Please select text to modify.', variant: 'default' }); // using default as warning might not be technically valid in strict types sometimes if not defined
+        return;
+      }
+
+      let instruction = '';
+      switch (action) {
+        case 'grammar': instruction = 'Fix grammar and spelling'; break;
+        case 'clarity': instruction = 'Improve clarity and readability'; break;
+        case 'tone_professional': instruction = 'Rewrite in a professional tone'; break;
+        case 'tone_casual': instruction = 'Rewrite in a casual tone'; break;
+      }
+
+      refactorText(selectedText, instruction, (newText) => {
+        const newContent = content.substring(0, start) + newText + content.substring(end);
+        setContent(newContent);
+      });
+    }
+  }, [content, editorRef, setContent, autocomplete, refactorText, toast]);
+
   return (
     <div
       className="flex flex-col h-screen bg-background"
@@ -255,6 +300,16 @@ export const MarkdownEditor: React.FC = () => {
         onShowLineNumbersChange={setShowLineNumbers}
         syncScroll={syncScroll}
         onSyncScrollChange={setSyncScroll}
+        onToggleChat={() => setIsChatOpen(!isChatOpen)}
+        isChatOpen={isChatOpen}
+        onMagicAction={handleMagicAction}
+        isGenerating={isGenerating}
+      />
+
+      <ChatSidebar
+        open={isChatOpen}
+        onOpenChange={setIsChatOpen}
+        documentContent={content}
       />
 
       <AnnouncementBar

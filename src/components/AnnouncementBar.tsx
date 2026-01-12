@@ -34,10 +34,10 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ isVisible, onC
                             >
                                 <Sparkles size={14} className="text-yellow-300 animate-pulse flex-shrink-0 sm:w-4 sm:h-4" />
                                 <span className="text-xs sm:text-sm md:text-base truncate">
-                                    <span className="inline sm:hidden">Coming Soon: AI Features!</span>
-                                    <span className="hidden sm:inline">Sneak Peek: The AI Revolution is coming to Markdown Weaver!</span>
+                                    <span className="inline sm:hidden">New: AI Features are here!</span>
+                                    <span className="hidden sm:inline">New: The AI Revolution has arrived in Markdown Weaver v1.2.0!</span>
                                 </span>
-                                <span className="hidden lg:inline text-white/80 text-xs sm:text-sm ml-1 sm:ml-2">See what's next</span>
+                                <span className="hidden lg:inline text-white/80 text-xs sm:text-sm ml-1 sm:ml-2">Check them out</span>
                                 <ArrowRight size={14} className="ml-0.5 sm:ml-1 opacity-80 flex-shrink-0 sm:w-4 sm:h-4" />
                             </motion.div>
                         </div>

@@ -16,55 +16,32 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   FileCode2,
-  Code,
-  LayoutTemplate,
   Shield,
   Rocket,
-  Users,
-  GitBranch,
-  Database,
-  Cloud,
-  Lock,
-  Globe,
   Star,
-  Award,
   Zap,
-  Lightbulb,
   BookOpen,
   MessageSquare,
-  Heart,
   User,
   ExternalLink,
   Github,
-  Palette,
-  Copy,
-  Settings,
-  Smartphone,
-  Layers,
-  CheckCircle2,
-  TrendingUp,
-  Feather,
   Sparkles,
-  Terminal,
-  Eye,
-  Download,
-  Clock,
-  AlertCircle,
-  Figma,
-  ArrowRight,
-  Flame,
-  Smile,
-  Quote,
-  ChevronLeft,
-  ChevronRight,
   Bell,
   Sun,
   Moon,
   MoreHorizontal,
   HelpCircle,
-  ArrowLeft,
   Mail,
-  MessageCircle
+  MessageCircle,
+  Wand2,
+  BrainCircuit,
+  Languages,
+  CheckCheck,
+  Type,
+  Coffee,
+  ArrowRight,
+  Quote,
+  CheckCircle2
 } from 'lucide-react';
 import { Helmet } from "react-helmet-async";
 
@@ -79,7 +56,7 @@ const About: React.FC = () => {
     if (!autoPlay) return;
     const interval = setInterval(() => {
       setCurrentReviewIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 5000);
     return () => clearInterval(interval);
   }, [autoPlay]);
 
@@ -90,146 +67,186 @@ const About: React.FC = () => {
 
   const testimonials = [
     {
-      quote: "This has become my go-to tool for all my documentation needs. The real-time preview and export options are game-changers!",
-      author: "Alice Johnson",
-      role: "Senior Frontend Developer",
+      quote: "The new AI features in v1.2.0 are a total game-changer. Fixing grammar and improving clarity happens in seconds now!",
+      author: "Sarah Jenkins",
+      role: "Content Strategist",
       rating: 5,
       color: "blue"
     },
     {
-      quote: "Finally, a Markdown editor that gets out of my way. Lightning fast and beautifully designed—perfect for daily use.",
-      author: "Bob Smith",
+      quote: "Finally, a Markdown editor that actually helps me write. The 'Continue Writing' tool is like having a co-author.",
+      author: "Marcus Thorne",
       role: "Technical Writer",
       rating: 5,
       color: "purple"
     },
     {
-      quote: "The Git integration and syntax highlighting make it indispensable for my workflow. Highly recommend!",
-      author: "Carol Davis",
-      role: "Full-Stack Engineer",
-      rating: 4,
+      quote: "The AI Chat Assistant understands context perfectly. It's the smartest documentation tool I've ever used.",
+      author: "Elena Rodriguez",
+      role: "Software Architect",
+      rating: 5,
       color: "emerald"
-    },
-    {
-      quote: "I've tried many markdown editors, but this one stands out. The UI is clean, intuitive, and the performance is exceptional.",
-      author: "David Chen",
-      role: "DevOps Engineer",
-      rating: 5,
-      color: "orange"
-    },
-    {
-      quote: "Perfect for technical writing. The export options and customization settings give me exactly what I need.",
-      author: "Emma Wilson",
-      role: "Technical Content Manager",
-      rating: 5,
-      color: "pink"
-    },
-    {
-      quote: "As a student, this tool has made note-taking and assignment writing so much easier. Highly recommended!",
-      author: "Frank Rodriguez",
-      role: "Computer Science Student",
-      rating: 4,
-      color: "cyan"
     }
   ];
 
-  // Contact Info
+  const magicTools = [
+    { icon: <Sparkles size={20} />, name: "Continue Writing", desc: "AI predicts and completes your next sentences seamlessly." },
+    { icon: <CheckCheck size={20} />, name: "Fix Grammar", desc: "Instant professional-grade proofreading for your markdown." },
+    { icon: <BrainCircuit size={20} />, name: "Improve Clarity", desc: "Simplifies complex sentences for better readability." },
+    { icon: <Shield size={20} />, name: "Make Professional", desc: "Polishes your tone for business and formal documents." },
+    { icon: <Coffee size={20} />, name: "Make Casual", desc: "Softens the tone for blogs and personal notes." },
+    { icon: <Languages size={20} />, name: "Smart Translation", desc: "Translate content while preserving markdown syntax." }
+  ];
+
   const email = "vasughanta660@gmail.com";
   const whatsappNumber = "9113808288";
   const prefilledMessage = encodeURIComponent("I would like to discuss a project with you.");
-
   const smallIconSize = 16;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background selection:bg-primary/20">
       <Helmet>
-        <title>About Markdown Weaver – Developer-Friendly Markdown Editor</title>
+        <title>About Markdown Weaver v1.2.0 – AI-Powered Markdown Editor</title>
         <meta
           name="description"
-          content="Learn about Markdown Weaver, a modern markdown editor built for developers with live preview, GFM support, and privacy-first design."
+          content="Experience the future of writing with Markdown Weaver v1.2.0. AI-powered tools, live preview, and developer-first design."
         />
       </Helmet>
 
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
-        <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
-          <FileCode2 size={20} className="text-primary" />
-          <span className="font-bold text-sm text-foreground hidden md:inline">Markdown Weaver</span>
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50 flex items-center gap-1 px-4 py-3">
+        <div className="flex items-center gap-2 mr-3 flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
+          <div className="bg-primary p-1.5 rounded-lg">
+            <FileCode2 size={18} className="text-primary-foreground" />
+          </div>
+          <span className="font-bold text-base tracking-tight text-foreground">Markdown Weaver</span>
+          <span className="text-[10px] font-bold bg-primary/10 text-primary px-1.5 py-0.5 rounded-full ml-1">v1.2.0</span>
         </div>
 
         <div className="flex-1" />
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="toolbar-btn" aria-label="Notifications" onClick={() => navigate('/notifications')}>
-              <Bell size={smallIconSize} />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Notifications</TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={toggleTheme}
-              className="toolbar-btn"
-              aria-label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-            >
-              {theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-          </TooltipContent>
-        </Tooltip>
-
-        <DropdownMenu>
+        <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <button className="toolbar-btn" aria-label="More actions">
-                  <MoreHorizontal size={smallIconSize} />
-                </button>
-              </DropdownMenuTrigger>
+              <button className="p-2 hover:bg-accent rounded-full transition-colors" onClick={() => navigate('/notifications')}>
+                <Bell size={smallIconSize} />
+              </button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">More</TooltipContent>
+            <TooltipContent>Notifications</TooltipContent>
           </Tooltip>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => navigate('/')}>
-              <FileCode2 size={14} className="mr-2" />
-              Back to Editor
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/help')}>
-              <HelpCircle size={14} className="mr-2" />
-              Help & Syntax Guide
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/privacy')}>
-              <Shield size={14} className="mr-2" />
-              Privacy Policy
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button onClick={toggleTheme} className="p-2 hover:bg-accent rounded-full transition-colors">
+                {theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</TooltipContent>
+          </Tooltip>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-2 hover:bg-accent rounded-full transition-colors">
+                <MoreHorizontal size={smallIconSize} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 p-2">
+              <DropdownMenuItem onClick={() => navigate('/')} className="rounded-md cursor-pointer">
+                <FileCode2 size={14} className="mr-2" /> Back to Editor
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/help')} className="rounded-md cursor-pointer">
+                <HelpCircle size={14} className="mr-2" /> Help & Guide
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/privacy')} className="rounded-md cursor-pointer">
+                <Shield size={14} className="mr-2" /> Privacy Policy
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </header>
 
-      {/* Content */}
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        {/* Hero Section with Developer Info */}
-        <section className="mb-16">
-          <div className="text-center mb-8">
-            <div className="inline-flex flex-col sm:flex-row items-center gap-4 mb-6">
-              <div className="p-4 bg-primary/10 rounded-2xl">
-                <FileCode2 size={48} className="text-primary" />
-              </div>
-              <div>
-                <h2 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                  Markdown Weaver
-                </h2>
-                <p className="text-sm text-muted-foreground mt-2">Built for Developers. By Developers.</p>
-              </div>
+      <main className="max-w-6xl mx-auto px-6 py-12 space-y-24">
+        {/* Hero Section */}
+        <section className="text-center space-y-6 pt-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest animate-fade-in">
+            <Sparkles size={12} />
+            <span>Introducing Version 1.2.0</span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[1.1]">
+            Write Smarter with <br />
+            <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent">
+              Magic AI Intelligence
+            </span>
+          </h1>
+
+          <div className="flex items-center justify-center gap-3 py-2 animate-fade-in delay-100">
+            <div className="h-px w-12 bg-gradient-to-r from-transparent to-border" />
+            <span className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">Built by developers, for developers</span>
+            <div className="h-px w-12 bg-gradient-to-r from-border to-transparent" />
+          </div>
+
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Markdown Weaver has evolved. We've combined the simplicity of markdown with the power of generative AI to help you create flawless documentation in record time.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 pt-4">
+            <Button onClick={() => navigate('/')} size="lg" className="rounded-full px-8 h-14 text-base font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
+              Start Writing Free <ArrowRight className="ml-2" size={18} />
+            </Button>
+          </div>
+        </section>
+
+        {/* AI Features Grid */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold flex items-center gap-3">
+                <Wand2 className="text-primary" /> Magic AI Tools
+              </h2>
+              <p className="text-muted-foreground">Transform your writing with one-click AI enhancements.</p>
             </div>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
-              The modern Markdown editor that combines powerful features with an intuitive interface. Write faster, preview smarter, and create beautifully formatted documents with ease.
-            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {magicTools.map((tool, i) => (
+                <div key={i} className="group p-6 rounded-2xl border border-border bg-card hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    {tool.icon}
+                  </div>
+                  <h3 className="font-bold text-lg mb-1">{tool.name}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{tool.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Chat Assistant Card */}
+          <div className="relative group overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent p-8 flex flex-col justify-between">
+            <div className="absolute top-0 right-0 p-12 bg-primary/10 blur-[100px] rounded-full -mr-16 -mt-16" />
+            <div className="relative z-10 space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+                <MessageSquare size={28} />
+              </div>
+              <h3 className="text-2xl font-bold">AI Chat Assistant</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Your personal documentation expert. Ask questions about your content, request summaries, or brainstorm ideas directly within the editor.
+              </p>
+              <ul className="space-y-3 pt-4">
+                {['Context-aware responses', 'Instant summaries', 'Idea brainstorming'].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm font-medium">
+                    <CheckCircle2 size={16} className="text-primary" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative z-10 mt-8 p-4 rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 italic text-xs text-muted-foreground">
+              "Hey AI, can you summarize the key points of this technical spec?"
+            </div>
+          </div>
+        </section>
+
+        {/* Developer Info Card (PRESERVED) */}
+        <section className="space-y-8">
+          <div className="text-center space-y-3">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground">The Minds Behind the Code</h2>
+            <p className="text-lg text-muted-foreground">Crafted with passion by independent developers.</p>
           </div>
 
           {/* Developer Info Card */}
@@ -281,334 +298,98 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* Quick Stats */}
-        <section className="mb-16">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <StatCard icon={<Zap size={32} />} value="50+" label="Core Features" />
-            <StatCard icon={<TrendingUp size={32} />} value="100+" label="Total Capabilities" />
-            <StatCard icon={<Award size={32} />} value="99.9%" label="Uptime" />
-            <StatCard icon={<Lock size={32} />} value="∞" label="Privacy Score" />
-          </div>
-        </section>
+        {/* COMBINED SECTION: Testimonials + CTA + Contact */}
+        <section className="relative overflow-hidden rounded-[2.5rem] border border-border bg-card">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.05),transparent)] pointer-events-none" />
 
-        {/* Core Features Section */}
-        <section className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Core Features
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Everything a modern Markdown editor should have and more
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
+            {/* Left Side: Testimonials */}
+            <div className="p-8 md:p-12 space-y-8">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider">
+                  <Star size={12} className="fill-current" />
+                  <span>User Feedback</span>
+                </div>
+                <h3 className="text-3xl font-bold">What Authors Say</h3>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            <FeatureCard
-              icon={<Eye size={24} className="text-blue-500" />}
-              title="Real-time Preview"
-              description="Live preview as you type with instant rendering"
-            />
-            <FeatureCard
-              icon={<Code size={24} className="text-purple-500" />}
-              title="GitHub-Flavored Markdown"
-              description="Tables, task lists, strikethrough & more"
-            />
-            <FeatureCard
-              icon={<Copy size={24} className="text-green-500" />}
-              title="Easy Export"
-              description="Download as Markdown, HTML, or PDF"
-            />
-            <FeatureCard
-              icon={<Database size={24} className="text-orange-500" />}
-              title="Local Storage"
-              description="Auto-save with browser local storage"
-            />
-            <FeatureCard
-              icon={<Terminal size={24} className="text-cyan-500" />}
-              title="Syntax Highlighting"
-              description="Beautiful code highlighting with multiple themes"
-            />
-            <FeatureCard
-              icon={<Palette size={24} className="text-pink-500" />}
-              title="Dark & Light Mode"
-              description="Seamless theme switching for any preference"
-            />
-            <FeatureCard
-              icon={<Settings size={24} className="text-indigo-500" />}
-              title="Customizable Settings"
-              description="Fine-tune font size, line height, and more"
-            />
-            <FeatureCard
-              icon={<Smartphone size={24} className="text-teal-500" />}
-              title="Fully Responsive"
-              description="Works perfectly on desktop, tablet, and mobile"
-            />
-            <FeatureCard
-              icon={<Zap size={24} className="text-yellow-500" />}
-              title="Lightning Fast"
-              description="Optimized for performance and speed"
-            />
-          </div>
-        </section>
-
-        {/* Advanced Features */}
-        <section className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Advanced Capabilities
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Take your writing to the next level with professional tools
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <AdvancedFeature
-              icon={<Globe size={24} className="text-indigo-500" />}
-              title="HTML Support"
-              description="Embed HTML directly in your markdown"
-              details={[
-                "Custom styled HTML elements",
-                "Responsive image handling",
-                "Iframe embedding support"
-              ]}
-            />
-            <AdvancedFeature
-              icon={<GitBranch size={24} className="text-purple-500" />}
-              title="Git Integration"
-              description="Perfect for version control workflows"
-              details={[
-                "GitHub markdown compatibility",
-                "GFM spec compliance",
-                "Frontmatter support"
-              ]}
-            />
-            <AdvancedFeature
-              icon={<Layers size={24} className="text-emerald-500" />}
-              title="Document Structure"
-              description="Intelligent outline and navigation"
-              details={[
-                "Auto-generated table of contents",
-                "Header navigation panel",
-                "Hierarchical document structure"
-              ]}
-            />
-            <AdvancedFeature
-              icon={<BookOpen size={24} className="text-cyan-500" />}
-              title="Comprehensive Help"
-              description="Built-in documentation and guides"
-              details={[
-                "Interactive syntax examples",
-                "Keyboard shortcuts reference",
-                "Best practices documentation"
-              ]}
-            />
-            <AdvancedFeature
-              icon={<CheckCircle2 size={24} className="text-green-500" />}
-              title="Task Management"
-              description="Create and manage task lists"
-              details={[
-                "Checkbox support in lists",
-                "Progress tracking",
-                "Nested task hierarchies"
-              ]}
-            />
-            <AdvancedFeature
-              icon={<Copy size={24} className="text-amber-500" />}
-              title="Content Import"
-              description="Import and convert various formats"
-              details={[
-                "Paste from clipboard",
-                "Multiple format conversion"
-              ]}
-            />
-          </div>
-        </section>
-
-        {/* Technology Stack */}
-        <section className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Built with Modern Technology
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Cutting-edge stack for performance, reliability, and developer experience
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <TechCard name="React 18" description="Modern UI library" icon="⚛️" />
-            <TechCard name="TypeScript" description="Type-safe code" icon="🔷" />
-            <TechCard name="Tailwind CSS" description="Utility-first styling" icon="🎨" />
-            <TechCard name="Vite" description="Lightning-fast builds" icon="⚡" />
-            <TechCard name="React Markdown" description="Markdown rendering" icon="📝" />
-            <TechCard name="Lucide Icons" description="Beautiful icons" icon="🎯" />
-            <TechCard name="Shiki" description="Syntax highlighting" icon="✨" />
-            <TechCard name="Zod" description="Schema validation" icon="🛡️" />
-          </div>
-        </section>
-
-        {/* Use Cases */}
-        <section className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Perfect For
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Whatever you're writing, Markdown Weaver has you covered
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <UseCaseCard
-              icon={<Code size={24} className="text-blue-500" />}
-              title="Developers"
-              items={["Documentation", "README files", "Code comments"]}
-            />
-            <UseCaseCard
-              icon={<BookOpen size={24} className="text-purple-500" />}
-              title="Technical Writers"
-              items={["Guides & tutorials", "API docs", "Wiki pages"]}
-            />
-            <UseCaseCard
-              icon={<Feather size={24} className="text-amber-500" />}
-              title="Content Creators"
-              items={["Blog posts", "Articles", "Stories"]}
-            />
-            <UseCaseCard
-              icon={<Layers size={24} className="text-green-500" />}
-              title="Project Managers"
-              items={["Project notes", "Status reports", "Planning docs"]}
-            />
-            <UseCaseCard
-              icon={<Users size={24} className="text-pink-500" />}
-              title="Students"
-              items={["Study notes", "Research papers", "Assignments"]}
-            />
-            <UseCaseCard
-              icon={<Sparkles size={24} className="text-cyan-500" />}
-              title="Everyone Else"
-              items={["Quick notes", "Journaling", "Ideas"]}
-            />
-          </div>
-        </section>
-
-        {/* Philosophy Section */}
-        <section className="mb-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Our Core Values
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              The principles that guide everything we build
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <PhilosophyItem
-              icon={<Lock size={24} className="text-red-500" />}
-              title="Privacy First"
-              description="Your data belongs to you. No tracking, analytics, or data collection. Everything stays in your browser."
-            />
-            <PhilosophyItem
-              icon={<Zap size={24} className="text-yellow-500" />}
-              title="Performance Obsession"
-              description="Lightning-fast load times and instant responsiveness. Every millisecond matters to us."
-            />
-            <PhilosophyItem
-              icon={<Heart size={24} className="text-pink-500" />}
-              title="Developer Love"
-              description="Built by developers, for developers. We understand your needs and respect your time."
-            />
-            <PhilosophyItem
-              icon={<Award size={24} className="text-amber-500" />}
-              title="Quality Obsession"
-              description="We focus on doing fewer things exceptionally well rather than many things poorly."
-            />
-            <PhilosophyItem
-              icon={<Feather size={24} className="text-blue-500" />}
-              title="Simplicity"
-              description="Clean, intuitive interface. No unnecessary complexity or bloat. Just what you need."
-            />
-            <PhilosophyItem
-              icon={<Globe size={24} className="text-cyan-500" />}
-              title="Open Source"
-              description="Transparent development. Community-driven features. Your contributions matter."
-            />
-          </div>
-        </section>
-
-        {/* ===== IMPROVED COMBINED CTA SECTION - SIDE BY SIDE ===== */}
-        <section className="mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Primary CTA Card - Launch Editor */}
-            <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-1">
-              <div className="relative bg-background rounded-3xl p-8 sm:p-12">
-                <div className="flex flex-col items-center justify-center text-center h-full">
-                  <div className="mb-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-4">
-                      <Rocket size={32} className="text-primary" />
+              <div className="relative min-h-[200px] flex flex-col justify-center">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                  <Quote size={40} className="text-primary/20 absolute -top-4 -left-4" />
+                  <p className="text-xl font-medium italic leading-relaxed relative z-10">
+                    "{testimonials[currentReviewIndex].quote}"
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary`}>
+                      {testimonials[currentReviewIndex].author[0]}
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm">{testimonials[currentReviewIndex].author}</p>
+                      <p className="text-xs text-muted-foreground">{testimonials[currentReviewIndex].role}</p>
                     </div>
                   </div>
-                  <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
-                    <Rocket size={14} className="text-primary" />
-                    <span className="text-xs font-semibold text-primary uppercase tracking-wider">Get Started</span>
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
-                    Ready to Write Better?
-                  </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-6">
-                    No installation needed. No sign-up required. Just open and start creating.
-                  </p>
-                  <div className="flex flex-col gap-3 w-full">
-                    <Button
-                      onClick={() => navigate('/')}
-                      className="gap-2 bg-primary hover:bg-primary/90 px-6 py-5 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl w-full"
-                    >
-                      <Rocket size={18} />
-                      Launch Editor Now
-                    </Button>
-                    <Button
-                      onClick={() => navigate('/help')}
-                      variant="outline"
-                      className="gap-2 px-6 py-5 text-sm font-semibold border-2 border-primary/30 hover:bg-primary/5 hover:border-primary/50 rounded-xl transition-all duration-300 w-full"
-                    >
-                      <BookOpen size={18} />
-                      Learn Markdown
-                    </Button>
-                  </div>
+                </div>
+
+                <div className="flex gap-2 mt-8">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleDotClick(i)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${i === currentReviewIndex ? 'w-8 bg-primary' : 'w-2 bg-border hover:bg-primary/50'}`}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Secondary CTA Card - Star on GitHub */}
-            <div className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-50/50 dark:from-amber-950/20 via-transparent to-transparent p-1">
-              <div className="relative bg-background rounded-3xl p-8 sm:p-12">
-                <div className="flex flex-col items-center justify-center text-center h-full">
-                  <div className="mb-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 rounded-2xl mb-4">
-                      <Star size={32} className="text-amber-500 fill-current" />
-                    </div>
-                  </div>
-                  <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-amber-500/10 rounded-full">
-                    <Star size={14} className="text-amber-500" />
-                    <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Love It?</span>
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 leading-tight">
-                    Show Your Support
-                  </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-6">
-                    Star us on GitHub! Your support helps us keep improving.
-                  </p>
+            {/* Right Side: CTA & Contact */}
+            <div className="p-8 md:p-12 bg-primary/[0.02] flex flex-col justify-center space-y-10">
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold">Ready to start?</h3>
+                <p className="text-muted-foreground">Join the community of developers building the future of documentation.</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button onClick={() => navigate('/')} size="lg" className="flex-1 rounded-2xl h-14 font-bold shadow-lg">
+                    Launch Editor <Rocket className="ml-2" size={18} />
+                  </Button>
                   <a
                     href="https://github.com/Vasu657/markdown-weaver"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl text-sm w-full"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-border hover:bg-accent rounded-2xl transition-all font-bold"
                   >
-                    <Star size={18} className="fill-current" />
-                    Star on GitHub
-                    <ArrowRight size={18} />
+                    <Star size={18} /> Star on GitHub
+                  </a>
+                </div>
+              </div>
+
+              <div className="pt-8 border-t border-border space-y-4">
+                <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Get In Touch</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <a
+                    href={`mailto:${email}?subject=Project%20Discussion&body=${prefilledMessage}`}
+                    className="flex items-center gap-3 p-4 rounded-2xl bg-background border border-border hover:border-primary transition-all group"
+                  >
+                    <div className="p-2 bg-primary/10 rounded-xl text-primary group-hover:scale-110 transition-transform">
+                      <Mail size={20} />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] text-muted-foreground font-bold uppercase">Email</p>
+                      <p className="font-bold text-sm">Send Message</p>
+                    </div>
+                  </a>
+                  <a
+                    href={`https://wa.me/${whatsappNumber}?text=${prefilledMessage}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-4 rounded-2xl bg-background border border-border hover:border-green-500 transition-all group"
+                  >
+                    <div className="p-2 bg-green-500/10 rounded-xl text-green-500 group-hover:scale-110 transition-transform">
+                      <MessageCircle size={20} />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] text-muted-foreground font-bold uppercase">WhatsApp</p>
+                      <p className="font-bold text-sm">Chat Now</p>
+                    </div>
                   </a>
                 </div>
               </div>
@@ -616,306 +397,8 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* ===== IMPROVED USER REVIEWS SECTION - AUTO-SLIDING SLIM CARDS ===== */}
-        <section className="mb-16">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
-              <Smile size={16} className="text-primary" />
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Testimonials</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Loved by Developers Worldwide
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Join thousands of developers who trust Markdown Weaver for their daily writing needs.
-            </p>
-          </div>
-
-          {/* Auto-Sliding Carousel */}
-          <div className="relative max-w-2xl mx-auto">
-            {/* Main Carousel Container */}
-            <div className="overflow-hidden">
-              <div className="flex transition-transform duration-500 ease-out"
-                style={{
-                  transform: `translateX(-${currentReviewIndex * 100}%)`
-                }}>
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="w-full flex-shrink-0 px-2 sm:px-4">
-                    <SlimReviewCard
-                      quote={testimonial.quote}
-                      author={testimonial.author}
-                      role={testimonial.role}
-                      rating={testimonial.rating}
-                      color={testimonial.color as any}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Dot Indicators */}
-            <div className="flex justify-center gap-2 mt-6">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleDotClick(index)}
-                  className={`transition-all duration-300 rounded-full ${index === currentReviewIndex
-                    ? 'bg-primary w-8 h-2'
-                    : 'bg-border w-2 h-2 hover:bg-primary/50'
-                    }`}
-                  aria-label={`Go to review ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Me Section */}
-        <section className="mb-16">
-          <div className="bg-gradient-to-br from-primary/10 via-background to-blue-500/10 border border-border rounded-3xl p-8 sm:p-12 text-center">
-            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-primary/10 rounded-full">
-              <MessageSquare size={16} className="text-primary" />
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Get In Touch</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Let's Work Together</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-8">
-              Have a project in mind or just want to say hi? Feel free to reach out to me through any of these platforms.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href={`mailto:${email}?subject=Project%20Discussion&body=${prefilledMessage}`}
-                className="flex items-center gap-3 px-6 py-4 bg-background border border-border hover:border-primary hover:bg-primary/5 rounded-2xl transition-all duration-300 group shadow-sm hover:shadow-md"
-              >
-                <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:scale-110 transition-transform">
-                  <Mail size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs text-muted-foreground font-medium">Email Me</p>
-                  <p className="font-bold text-foreground">Send an Email</p>
-                </div>
-              </a>
-              <a
-                href={`https://wa.me/${whatsappNumber}?text=${prefilledMessage}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-6 py-4 bg-background border border-border hover:border-green-500 hover:bg-green-500/5 rounded-2xl transition-all duration-300 group shadow-sm hover:shadow-md"
-              >
-                <div className="p-2 bg-green-500/10 rounded-lg text-green-500 group-hover:scale-110 transition-transform">
-                  <MessageCircle size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs text-muted-foreground font-medium">WhatsApp</p>
-                  <p className="font-bold text-foreground">Chat with Me</p>
-                </div>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
         <Footer showBackToEditor={true} showAbout={false} showHelp={true} showPrivacy={true} />
       </main>
-    </div>
-  );
-};
-
-// Component for statistic cards
-interface StatCardProps {
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ icon, value, label }) => (
-  <div className="bg-background p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border text-center hover:shadow-lg transition-shadow">
-    <div className="flex justify-center mb-2 sm:mb-3">
-      <div className="p-2 sm:p-3 bg-primary/10 rounded-lg text-primary">
-        {icon}
-      </div>
-    </div>
-    <div className="text-xl sm:text-2xl font-bold text-foreground mb-1">{value}</div>
-    <div className="text-xs sm:text-sm text-muted-foreground">{label}</div>
-  </div>
-);
-
-// Component for feature cards
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
-
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => (
-  <div className="bg-background p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border hover:shadow-lg transition-shadow">
-    <div className="flex items-start gap-3 sm:gap-4">
-      <div className="p-2 sm:p-3 bg-primary/5 rounded-lg text-primary flex-shrink-0">
-        {icon}
-      </div>
-      <div>
-        <h3 className="font-semibold text-foreground mb-1 sm:mb-2 text-sm sm:text-base">{title}</h3>
-        <p className="text-xs sm:text-sm text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  </div>
-);
-
-// Component for advanced features
-interface AdvancedFeatureProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  details: string[];
-}
-
-const AdvancedFeature: React.FC<AdvancedFeatureProps> = ({ icon, title, description, details }) => (
-  <div className="bg-background p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border">
-    <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-      <div className="p-2 sm:p-3 bg-primary/5 rounded-lg text-primary flex-shrink-0">
-        {icon}
-      </div>
-      <div>
-        <h3 className="font-semibold text-foreground mb-1 sm:mb-2 text-sm sm:text-base">{title}</h3>
-        <p className="text-xs sm:text-sm text-muted-foreground">{description}</p>
-      </div>
-    </div>
-    <ul className="space-y-2 pl-6 sm:pl-8">
-      {details.map((detail, index) => (
-        <li key={index} className="text-xs sm:text-sm text-muted-foreground flex items-start">
-          <span className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 mr-2 sm:mr-3 flex-shrink-0" />
-          {detail}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
-// Component for technology cards
-interface TechCardProps {
-  name: string;
-  description: string;
-  icon: string;
-}
-
-const TechCard: React.FC<TechCardProps> = ({ name, description, icon }) => (
-  <div className="bg-background p-3 sm:p-4 rounded-lg border border-border hover:border-primary/50 transition-colors">
-    <div className="text-2xl mb-2">{icon}</div>
-    <h3 className="font-semibold text-foreground text-xs sm:text-sm mb-1">{name}</h3>
-    <p className="text-[10px] sm:text-xs text-muted-foreground">{description}</p>
-  </div>
-);
-
-// Component for use case cards
-interface UseCaseCardProps {
-  icon: React.ReactNode;
-  title: string;
-  items: string[];
-}
-
-const UseCaseCard: React.FC<UseCaseCardProps> = ({ icon, title, items }) => (
-  <div className="bg-background p-4 sm:p-6 rounded-lg sm:rounded-xl border border-border">
-    <div className="flex items-center gap-3 mb-4">
-      <div className="p-2 bg-primary/5 rounded-lg text-primary">
-        {icon}
-      </div>
-      <h3 className="font-semibold text-foreground">{title}</h3>
-    </div>
-    <ul className="space-y-2">
-      {items.map((item, index) => (
-        <li key={index} className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
-          <CheckCircle2 size={14} className="text-primary/60" />
-          {item}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
-// Component for philosophy items
-interface PhilosophyItemProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
-
-const PhilosophyItem: React.FC<PhilosophyItemProps> = ({ icon, title, description }) => (
-  <div className="flex gap-4 p-4 rounded-xl hover:bg-primary/5 transition-colors">
-    <div className="p-3 bg-background border border-border rounded-xl h-fit">
-      {icon}
-    </div>
-    <div>
-      <h3 className="font-semibold text-foreground mb-1">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-    </div>
-  </div>
-);
-
-// Component for slim review cards
-interface SlimReviewCardProps {
-  quote: string;
-  author: string;
-  role: string;
-  rating: number;
-  color?: 'blue' | 'purple' | 'emerald' | 'orange' | 'pink' | 'cyan';
-}
-
-const SlimReviewCard: React.FC<SlimReviewCardProps> = ({ quote, author, role, rating, color = 'blue' }) => {
-  const colorClasses = {
-    blue: 'from-blue-500/20 to-blue-500/5 border-blue-500/30',
-    purple: 'from-purple-500/20 to-purple-500/5 border-purple-500/30',
-    emerald: 'from-emerald-500/20 to-emerald-500/5 border-emerald-500/30',
-    orange: 'from-orange-500/20 to-orange-500/5 border-orange-500/30',
-    pink: 'from-pink-500/20 to-pink-500/5 border-pink-500/30',
-    cyan: 'from-cyan-500/20 to-cyan-500/5 border-cyan-500/30',
-  };
-
-  const colorDots = {
-    blue: 'bg-blue-500',
-    purple: 'bg-purple-500',
-    emerald: 'bg-emerald-500',
-    orange: 'bg-orange-500',
-    pink: 'bg-pink-500',
-    cyan: 'bg-cyan-500',
-  };
-
-  return (
-    <div className={`group relative overflow-hidden rounded-2xl border ${colorClasses[color]} bg-gradient-to-br p-5 sm:p-6 hover:shadow-xl transition-all duration-300 flex flex-col`}>
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      {/* Top accent dot */}
-      <div className={`absolute top-4 right-4 w-2 h-2 ${colorDots[color]} rounded-full opacity-60`} />
-
-      <div className="relative z-10 flex-1 flex flex-col">
-        {/* Rating Stars */}
-        <div className="flex gap-1 mb-3">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              size={14}
-              className={`transition-colors ${i < rating ? 'text-amber-500 fill-current' : 'text-muted-foreground/30'}`}
-            />
-          ))}
-        </div>
-
-        {/* Quote Icon */}
-        <Quote size={16} className="text-muted-foreground/30 mb-2" />
-
-        {/* Quote Text */}
-        <blockquote className="text-foreground text-sm leading-relaxed mb-4 font-medium italic flex-1">
-          "{quote}"
-        </blockquote>
-      </div>
-
-      {/* Author Info - Fixed at bottom */}
-      <div className="relative z-10 flex items-center gap-3 pt-3 border-t border-border/50">
-        <div className={`w-8 h-8 bg-gradient-to-br ${colorDots[color]} rounded-full flex items-center justify-center flex-shrink-0 shadow-md`}>
-          <User size={14} className="text-white" />
-        </div>
-        <div className="text-left">
-          <p className="font-semibold text-foreground text-xs">{author}</p>
-          <p className="text-[10px] text-muted-foreground">{role}</p>
-        </div>
-      </div>
     </div>
   );
 };
