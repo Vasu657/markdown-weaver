@@ -84,16 +84,60 @@ export function useMarkdownEditor() {
     if (!syncScroll || !editorRef.current || !previewRef.current) return;
 
     const editor = editorRef.current;
+
+    // Calculate current line number based on scroll position
+    // We assume a fixed line height for simplicity in the editor, which is common for code editors
+    // If wrapping is heavily used, this is an approximation
+    const lineHeight = parseFloat(getComputedStyle(editor).lineHeight) || 24;
+    const currentLine = Math.floor(editor.scrollTop / lineHeight) + 1; // +1 because markdown lines are 1-indexed
+
+    // Find the element in the preview that corresponds to this line
     const preview = previewRef.current;
+    const elements = Array.from(preview.querySelectorAll('[data-source-line]'));
 
-    const editorLineHeight = parseFloat(getComputedStyle(editor).lineHeight);
-    const scrolledLines = Math.floor(editor.scrollTop / editorLineHeight);
-    const totalLines = content.split('\n').length;
-    const scrollPercentage = Math.min(scrolledLines / totalLines, 1);
+    // Find the element with the closest source line <= currentLine
+    let targetElement: HTMLElement | null = null;
+    let minDiff = Infinity;
 
-    const maxPreviewScroll = preview.scrollHeight - preview.clientHeight;
-    preview.scrollTop = scrollPercentage * maxPreviewScroll;
-  }, [syncScroll, content]);
+    for (const el of elements) {
+      const sourceLine = parseInt(el.getAttribute('data-source-line') || '0', 10);
+      if (!isNaN(sourceLine)) {
+        // We prefer the element that starts right at or slightly before our line
+        if (sourceLine >= currentLine) {
+          // If we found a line that is >= currentLine, this is likely our target or slightly after
+          const diff = sourceLine - currentLine;
+          if (diff < minDiff) {
+            minDiff = diff;
+            targetElement = el as HTMLElement;
+          }
+          // Optimization: if exact match, break
+          if (diff === 0) break;
+        }
+      }
+    }
+
+    // Fallback: if we are at the end of the document, or couldn't find a close match forward,
+    // look backwards for the last element before currentLine
+    if (!targetElement) {
+      let maxLine = -1;
+      for (const el of elements) {
+        const sourceLine = parseInt(el.getAttribute('data-source-line') || '0', 10);
+        if (sourceLine < currentLine && sourceLine > maxLine) {
+          maxLine = sourceLine;
+          targetElement = el as HTMLElement;
+        }
+      }
+    }
+
+
+    if (targetElement) {
+      // Smooth scroll to the element
+      // We adjust offsetTop by the container's offsetTop to find relative position
+      targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+    } else if (editor.scrollTop === 0) {
+      preview.scrollTop = 0;
+    }
+  }, [syncScroll]);
 
   const insertText = useCallback((before: string, after: string = '') => {
     const textarea = editorRef.current;

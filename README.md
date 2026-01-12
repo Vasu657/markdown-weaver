@@ -35,6 +35,13 @@ A powerful, real-time Markdown editor with live preview and advanced features. W
 - **Fully Responsive** - Works perfectly on desktop, tablet, and mobile
 - **Lightning Fast** - Optimized for performance and speed
 
+### 🤖 New AI Features
+- **AI-Powered Assistance** - Context-aware chat assistant powered by OpenRouter
+- **Refactoring Tools** - Optimize, explain, or refactor code blocks with one click
+- **Bring Your Own Key** - Secure OpenRouter integration (keys stored locally)
+- **Privacy First** - Your data stays in your browser; direct communication with AI providers
+
+
 ### Advanced Capabilities
 - **HTML Support** - Embed HTML directly in your markdown
 - **Git Integration** - Perfect for version control workflows with GitHub markdown compatibility
@@ -48,7 +55,12 @@ A powerful, real-time Markdown editor with live preview and advanced features. W
 - **Word & Character Count** - Real-time statistics of your document
 - **Undo/Redo** - Full undo/redo history
 - **Sync Scroll** - Synchronized scrolling between editor and preview
+- **Undo/Redo** - Full undo/redo history
+- **Sync Scroll** - Synchronized scrolling between editor and preview
 - **Search & Replace** - Find and replace functionality
+- **Release Announcements** - Stay updated with the latest changes
+- **Notifications System** - In-app notifications for important updates
+
 
 ---
 
@@ -80,7 +92,12 @@ A powerful, real-time Markdown editor with live preview and advanced features. W
 - Zod (Schema validation)
 - file-saver (Export functionality)
 - next-themes (Theme management)
+- file-saver (Export functionality)
+- next-themes (Theme management)
 - sonner (Toast notifications)
+- framer-motion (Animations)
+- OpenRouter API (AI Integration)
+
 
 **Build & Development:**
 - ESLint (Code linting)
@@ -225,7 +242,10 @@ markdown-weaver/
 │   │   ├── Preview.tsx      # Preview panel
 │   │   ├── Toolbar.tsx      # Toolbar with actions
 │   │   ├── StatusBar.tsx    # Status information
-│   │   └── SaveIndicator.tsx # Save status indicator
+│   │   ├── SaveIndicator.tsx # Save status indicator
+│   │   ├── SettingsDialog.tsx # AI & App settings
+│   │   ├── ChatSidebar.tsx   # AI Chat interface
+│   │   └── AnnouncementBar.tsx # Release announcements
 │   ├── hooks/
 │   │   ├── useMarkdownEditor.ts # Editor logic
 │   │   ├── useAutoSave.ts       # Auto-save functionality
@@ -239,9 +259,11 @@ markdown-weaver/
 │   │   ├── Help.tsx         # Help and syntax guide
 │   │   ├── Privacy.tsx      # Privacy policy
 │   │   ├── Notifications.tsx # Notifications page
+│   │   ├── ReleaseAnnouncement.tsx # Version announcements
 │   │   └── NotFound.tsx     # 404 page
 │   ├── lib/
-│   │   └── utils.ts         # Utility functions
+│   │   ├── utils.ts         # Utility functions
+│   │   └── ai-service.ts    # OpenRouter AI service
 │   ├── App.tsx              # Main app component
 │   ├── App.css              # App styles
 │   ├── index.css            # Global styles

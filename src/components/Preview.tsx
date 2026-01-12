@@ -99,17 +99,17 @@ const CodeBlock: React.FC<{ className?: string; children: React.ReactNode }> = (
 export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
   const handleAnchorClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const href = e.currentTarget.getAttribute('href');
-    
+
     if (href && href.startsWith('#')) {
       e.preventDefault();
       const targetId = href.substring(1);
-      const targetElement = previewRef?.current?.querySelector(`[id="${targetId}"]`) || 
-                           document.querySelector(`[id="${targetId}"]`);
-      
+      const targetElement = previewRef?.current?.querySelector(`[id="${targetId}"]`) ||
+        document.querySelector(`[id="${targetId}"]`);
+
       if (targetElement) {
         const container = previewRef?.current || window;
         const offset = (targetElement as HTMLElement).offsetTop;
-        
+
         if (container === window) {
           window.scrollTo({ top: offset, behavior: 'smooth' });
         } else {
@@ -130,22 +130,22 @@ export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
     return '';
   };
 
+  const SourceLineWrapper = ({ node, children, ...props }: any) => {
+    const line = node?.position?.start?.line;
+    return React.cloneElement(children as React.ReactElement, {
+      ...props,
+      'data-source-line': line,
+    });
+  };
+
   const createHeadingRenderer = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
-    return (props: any) => {
-      const { children, ...rest } = props;
+    return ({ node, children, ...props }: any) => {
       const text = extractText(children);
       const id = slugify(text);
-      
-      const headingComponents: Record<number, React.ReactNode> = {
-        1: <h1 id={id} {...rest}>{children}</h1>,
-        2: <h2 id={id} {...rest}>{children}</h2>,
-        3: <h3 id={id} {...rest}>{children}</h3>,
-        4: <h4 id={id} {...rest}>{children}</h4>,
-        5: <h5 id={id} {...rest}>{children}</h5>,
-        6: <h6 id={id} {...rest}>{children}</h6>,
-      };
-      
-      return headingComponents[level];
+      const line = node?.position?.start?.line;
+
+      const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+      return <HeadingTag id={id} data-source-line={line} {...props}>{children}</HeadingTag>;
     };
   };
 
@@ -159,18 +159,29 @@ export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeRaw, rehypeKatex, rehypeHighlight]}
           components={{
-            code: ({ className, children, ...props }) => {
+            code: ({ className, children, node, ...props }) => {
+              const ruleProps = { 'data-source-line': node?.position?.start?.line };
               const isInline = !className;
               if (isInline) {
-                return <code {...props}>{children}</code>;
+                return <code {...props} {...ruleProps}>{children}</code>;
               }
-              return <CodeBlock className={className}>{children}</CodeBlock>;
+              return (
+                <div {...ruleProps}>
+                  <CodeBlock className={className}>{children}</CodeBlock>
+                </div>
+              );
             },
-            div: ({ node, ...props }) => <div {...props} />,
-            img: ({ node, ...props }) => <img {...props} />,
-            video: ({ node, ...props }) => <video {...props} />,
+            p: ({ node, ...props }) => <p data-source-line={node?.position?.start?.line} {...props} />,
+            ul: ({ node, ...props }) => <ul data-source-line={node?.position?.start?.line} {...props} />,
+            ol: ({ node, ...props }) => <ol data-source-line={node?.position?.start?.line} {...props} />,
+            li: ({ node, ...props }) => <li data-source-line={node?.position?.start?.line} {...props} />,
+            blockquote: ({ node, ...props }) => <blockquote data-source-line={node?.position?.start?.line} {...props} />,
+            pre: ({ node, ...props }) => <pre data-source-line={node?.position?.start?.line} {...props} />,
+            div: ({ node, ...props }) => <div data-source-line={node?.position?.start?.line} {...props} />,
+            img: ({ node, ...props }) => <img data-source-line={node?.position?.start?.line} {...props} />,
+            video: ({ node, ...props }) => <video data-source-line={node?.position?.start?.line} {...props} />,
             a: ({ node, ...props }) => (
-              <a {...props} onClick={handleAnchorClick} />
+              <a data-source-line={node?.position?.start?.line} {...props} onClick={handleAnchorClick} />
             ),
             h1: createHeadingRenderer(1),
             h2: createHeadingRenderer(2),
