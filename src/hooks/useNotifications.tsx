@@ -23,31 +23,45 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
-      title: 'Welcome to Markdown Weaver',
-      message: 'Thank you for using our markdown editor. Start creating amazing content!',
+      title: 'v1.3.0 - Visualizations & Mind Maps',
+      message: 'New features unlocked! Visualize your documents with the new Mind Map view and present like a pro with AI Presentation Mode.',
       type: 'announcement',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      timestamp: new Date(),
     },
     {
-      id: '2',
-      title: 'New Feature Available',
-      message: 'Split view mode is now available for better editing experience.',
-      type: 'update',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    },
-    {
-      id: '3',
-      title: 'System Update',
-      message: 'Auto-save has been improved for better performance.',
-      type: 'update',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      id: 'magic-tools-launch',
+      title: '✨ Meet the Magic Tools',
+      message: 'Write faster and better with our new AI-powered Magic Tools. Fix grammar, change tone, or ask AI to write for you! Select any text to get started.',
+      type: 'announcement',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
     },
     {
       id: '4',
-      title: 'Important Notice',
-      message: 'Please review the updated privacy policy.',
-      type: 'alert',
-      timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      title: 'Fresh New Look Updated',
+      message: 'We\'ve updated the interface with a fresh new look. Check it out and let us know what you think!',
+      type: 'announcement',
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+    },
+    {
+      id: '2',
+      title: 'v1.2.1 - Privacy & Bug Fixes',
+      message: 'This patch release focuses on privacy improvements, settings updates, and bug fixes to improve stability and compliance.',
+      type: 'update',
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+    },
+    {
+      id: '5',
+      title: 'AI Assistant Launched',
+      message: 'AI superpowers are here. View the dashboard to see what\'s possible with our new AI integration.',
+      type: 'announcement',
+      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+    },
+    {
+      id: '3',
+      title: 'v1.2.0 - Major UI, Editor & AI Integration Update',
+      message: 'This release introduces significant improvements to the UI, markdown editor, and AI-powered features, enhancing usability, performance, and overall experience.',
+      type: 'update',
+      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
     },
   ]);
 

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications, NotificationType } from '@/hooks/useNotifications';
 import { useTheme } from '@/hooks/useTheme';
-import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/Footer';
 import {
   Tooltip,
@@ -16,212 +15,266 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import {
   Bell,
-  AlertCircle,
-  Lightbulb,
-  MessageSquare,
   Sun,
   Moon,
   MoreHorizontal,
   FileCode2,
   HelpCircle,
-  ArrowLeft,
-  Shield,
+  Zap,
+  Star,
+  ShieldCheck,
+  Info,
+  ArrowRight,
+  Sparkles,
+  Rocket
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 
 const Notifications: React.FC = () => {
   const navigate = useNavigate();
   const { notifications } = useNotifications();
   const { theme, toggleTheme } = useTheme();
-  const [activeTab, setActiveTab] = useState<'all' | 'updates' | 'messages'>('all');
 
-  const getNotificationStyles = (type: NotificationType) => {
+  // Highlight the most recent 'announcement' as the "Hero" update
+  const heroNotification = notifications.find(n => n.type === 'announcement') || notifications[0];
+  const otherNotifications = notifications.filter(n => n.id !== heroNotification?.id);
+
+  const getIcon = (type: NotificationType) => {
     switch (type) {
       case 'announcement':
-        return {
-          bg: 'bg-indigo-50 dark:bg-indigo-950/30',
-          border: 'border-indigo-200 dark:border-indigo-800',
-          icon: <MessageSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
-          badge: 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200',
-        };
+        return <Rocket className="w-5 h-5 text-indigo-500" />;
       case 'update':
-        return {
-          bg: 'bg-green-50 dark:bg-green-950/30',
-          border: 'border-green-200 dark:border-green-800',
-          icon: <Lightbulb className="w-5 h-5 text-green-600 dark:text-green-400" />,
-          badge: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
-        };
+        return <Zap className="w-5 h-5 text-amber-500" />;
       case 'alert':
-        return {
-          bg: 'bg-amber-50 dark:bg-amber-950/30',
-          border: 'border-amber-200 dark:border-amber-800',
-          icon: <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />,
-          badge: 'bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200',
-        };
+        return <ShieldCheck className="w-5 h-5 text-emerald-500" />;
       default:
-        return {
-          bg: 'bg-gray-50 dark:bg-gray-950/30',
-          border: 'border-gray-200 dark:border-gray-800',
-          icon: <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />,
-          badge: 'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200',
-        };
+        return <Info className="w-5 h-5 text-blue-500" />;
     }
-  };
-
-  const filteredNotifications = notifications.filter((notification) => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'updates') return notification.type === 'update';
-    if (activeTab === 'messages') return notification.type === 'announcement';
-    return true;
-  });
-
-  const formatTimeAgo = (date: Date): string => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    return date.toLocaleDateString();
   };
 
   const smallIconSize = 16;
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-10 bg-toolbar-bg border-b border-toolbar-border flex items-center gap-1 px-2 sm:px-3 py-2">
-        <div className="flex items-center gap-1.5 mr-1 sm:mr-3 flex-shrink-0">
-          <FileCode2 size={20} className="text-primary" />
-          <span className="font-bold text-sm text-foreground hidden md:inline">Markdown Weaver</span>
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20">
+      {/* Header - Kept exactly as requested */}
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50 flex items-center gap-1 px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-2 mr-4 flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
+          <div className="bg-primary/10 p-1.5 rounded-lg">
+            <FileCode2 size={20} className="text-primary" />
+          </div>
+          <span className="font-bold text-base tracking-tight hidden md:inline">Markdown Weaver</span>
         </div>
 
         <div className="flex-1" />
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="toolbar-btn" aria-label="Notifications">
-              <Bell size={smallIconSize} />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Notifications</TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={toggleTheme}
-              className="toolbar-btn"
-              aria-label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-            >
-              {theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-          </TooltipContent>
-        </Tooltip>
-
-        <DropdownMenu>
+        <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <button className="toolbar-btn" aria-label="More actions">
-                  <MoreHorizontal size={smallIconSize} />
-                </button>
-              </DropdownMenuTrigger>
+              <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted" aria-label="Notifications">
+                <Bell size={smallIconSize} />
+              </Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">More</TooltipContent>
+            <TooltipContent side="bottom">Notifications</TooltipContent>
           </Tooltip>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => navigate('/')}>
-              <FileCode2 size={14} className="mr-2" />
-              Back to Editor
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/about')}>
-              <FileCode2 size={14} className="mr-2" />
-              About Markdown Weaver
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/help')}>
-              <HelpCircle size={14} className="mr-2" />
-              Help & Syntax Guide
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </header>
 
-      <main className="w-full">
-        <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 border-b border-border">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Notifications</h1>
-          <p className="text-sm text-muted-foreground">
-            {filteredNotifications.length > 0 ? `You have ${filteredNotifications.length} notification${filteredNotifications.length !== 1 ? 's' : ''}` : 'No notifications'}
-          </p>
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'all' | 'updates' | 'messages')} className="mt-6">
-            <TabsList className="mx-auto w-fit">
-              <TabsTrigger value="all" className="px-3 py-2 text-sm">All</TabsTrigger>
-              <TabsTrigger value="updates" className="px-3 py-2 text-sm">Updates</TabsTrigger>
-              <TabsTrigger value="messages" className="px-3 py-2 text-sm">Messages</TabsTrigger>
-            </TabsList>
-            <TabsContent value={activeTab} className="mt-6">
-              {filteredNotifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Bell className="w-12 h-12 text-muted-foreground/50 mb-4" />
-                  <h2 className="text-xl font-semibold text-foreground mb-2">All caught up!</h2>
-                  <p className="text-muted-foreground max-w-sm">
-                    You have no new notifications at the moment. Check back later for updates.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredNotifications.map((notification) => {
-                    const styles = getNotificationStyles(notification.type);
-                    return (
-                      <div
-                        key={notification.id}
-                        className={`rounded-xl border ${styles.border} ${styles.bg} p-4 transition-colors shadow-sm`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 mt-0.5">{styles.icon}</div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <h3 className="text-base font-semibold text-foreground flex-1">
-                                {notification.title}
-                              </h3>
-                              <span
-                                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles.badge} capitalize whitespace-nowrap`}
-                              >
-                                {notification.type}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
-                              {notification.message}
-                            </p>
-                            <p className="text-xs text-muted-foreground font-medium">
-                              {formatTimeAgo(notification.timestamp)}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="rounded-full hover:bg-muted"
+                aria-label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              >
+                {theme === 'dark' ? <Sun size={smallIconSize} /> : <Moon size={smallIconSize} />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            </TooltipContent>
+          </Tooltip>
+
+          <DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted" aria-label="More actions">
+                    <MoreHorizontal size={smallIconSize} />
+                  </Button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">More</TooltipContent>
+            </Tooltip>
+            <DropdownMenuContent align="end" className="w-56 p-2">
+              <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer rounded-md">
+                <FileCode2 size={16} className="mr-2 opacity-70" />
+                Back to Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/about')} className="cursor-pointer rounded-md">
+                <FileCode2 size={16} className="mr-2 opacity-70" />
+                About
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/help')} className="cursor-pointer rounded-md">
+                <HelpCircle size={16} className="mr-2 opacity-70" />
+                Help & Syntax Guide
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        {/* Footer */}
-        <Footer showBackToEditor={true} showAbout={true} showHelp={true} showPrivacy={true} />
+      </header>
+
+      <main className="container max-w-5xl mx-auto px-4 py-8 md:py-12">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-10 text-center space-y-2"
+        >
+          <Badge variant="outline" className="mb-2 py-1 px-3 border-primary/20 text-primary bg-primary/5 rounded-full">
+            <Sparkles size={12} className="mr-1 inline-block" /> What's New
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60">
+            Latest Updates
+          </h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Stay updated with the latest features, improvements, and announcements from Markdown Weaver.
+          </p>
+        </motion.div>
+
+        {/* Hero Notification */}
+        {heroNotification && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, type: "spring" }}
+            className="mb-16 relative group"
+          >
+            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-20 blur-xl group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
+            <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card shadow-2xl">
+              <div className="grid md:grid-cols-5 gap-0">
+                <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <Badge className="bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 border-indigo-200 dark:border-indigo-800 dark:text-indigo-300 px-3 py-1">
+                      New Release
+                    </Badge>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+                    {heroNotification.title}
+                  </h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {heroNotification.message}
+                  </p>
+                  <div className="pt-4">
+                    <Button
+                      size="lg"
+                      className="rounded-full shadow-lg hover:shadow-xl transition-all group-hover:translate-x-1"
+                      onClick={() => navigate('/announcements/v1.3.0')}
+                    >
+                      Read Full details <ArrowRight size={16} className="ml-2" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="md:col-span-2 bg-muted/30 relative min-h-[200px] md:min-h-full flex items-center justify-center overflow-hidden">
+                  {/* Decorative Background Elements */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+                  <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl"></div>
+
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+                    className="relative z-10 p-6"
+                  >
+                    <Rocket size={80} className="text-foreground/80 drop-shadow-2xl" strokeWidth={1} />
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        <Separator className="my-12 opacity-50" />
+
+        {/* Timeline / Feed */}
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-xl font-semibold flex items-center gap-2">
+              <div className="h-6 w-1 bg-primary rounded-full"></div>
+              Recent Activity
+            </h3>
+          </div>
+
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="space-y-6"
+          >
+            {otherNotifications.map((notification, index) => (
+              <motion.div
+                key={notification.id}
+                variants={item}
+                className="group relative flex gap-6 p-1 rounded-xl transition-all"
+              >
+                {/* Timeline Line */}
+                {index !== otherNotifications.length - 1 && (
+                  <div className="absolute left-[26px] top-12 bottom-[-24px] w-[2px] bg-border/40 group-hover:bg-primary/20 transition-colors"></div>
+                )}
+
+                <div className="flex-shrink-0 relative z-10 px-2 pt-1">
+                  <div className="w-12 h-12 rounded-2xl bg-muted/50 border border-border group-hover:border-primary/30 group-hover:bg-primary/5 flex items-center justify-center transition-all duration-300 shadow-sm">
+                    {getIcon(notification.type)}
+                  </div>
+                </div>
+
+                <div className="flex-1 pb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                    <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                      {notification.title}
+                    </h4>
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed mb-3">
+                    {notification.message}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-semibold opacity-70">
+                      {notification.type}
+                    </Badge>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {otherNotifications.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              <p>No recent activity to show.</p>
+            </div>
+          )}
+        </div>
       </main>
+
+      <Footer showBackToEditor={true} showAbout={true} showHelp={true} showPrivacy={true} />
     </div>
   );
 };

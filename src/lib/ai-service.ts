@@ -15,7 +15,9 @@ export interface ChatMessage {
     content: string;
 }
 
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1';
+import { CONFIG } from './config';
+
+const OPENROUTER_API_URL = CONFIG.OPENROUTER_API_URL;
 
 export class OpenRouterService {
     private static getHeaders(apiKey: string) {
@@ -57,7 +59,7 @@ export class OpenRouterService {
             // We look for '0' or '0.0' or specific free IDs.
             // Also some models have 'free' in their id or pricing.
 
-            const models: OpenRouterModel[] = (data.data || []).map((m: any) => ({
+            const models: OpenRouterModel[] = (data.data || []).map((m: OpenRouterModel) => ({
                 id: m.id,
                 name: m.name,
                 description: m.description,
@@ -138,6 +140,7 @@ export class OpenRouterService {
                 const data = await response.json();
                 return data.choices[0]?.message?.content || '';
             }
+
 
         } catch (error) {
             console.error('Error generating completion:', error);

@@ -1,11 +1,16 @@
 import React from 'react';
 import { Cloud, Check } from 'lucide-react';
-import { SaveStatus } from '@/hooks/useAutoSave';
+// import { SaveStatus } from '@/hooks/useAutoSave'; // Removed legacy hook
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+
+
+
+export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 interface SaveIndicatorProps {
   status: SaveStatus;

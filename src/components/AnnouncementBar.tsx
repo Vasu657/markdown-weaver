@@ -21,7 +21,7 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ isVisible, onC
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     className="relative bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white overflow-hidden z-40 cursor-pointer"
-                    onClick={() => navigate('/announcements/v1.2.0')}
+                    onClick={() => navigate('/announcements/v1.3.0')}
                 >
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
 
@@ -34,10 +34,10 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ isVisible, onC
                             >
                                 <Sparkles size={14} className="text-yellow-300 animate-pulse flex-shrink-0 sm:w-4 sm:h-4" />
                                 <span className="text-xs sm:text-sm md:text-base truncate">
-                                    <span className="inline sm:hidden">New: AI Features are here!</span>
-                                    <span className="hidden sm:inline">New: The AI Revolution has arrived in Markdown Weaver v1.2.0!</span>
+                                    <span className="inline sm:hidden">New: Magic Tools & AI Slides in v1.3.0!</span>
+                                    <span className="hidden sm:inline">New: Write faster with Magic Tools & AI Presentation Mode in v1.3.0!</span>
                                 </span>
-                                <span className="hidden lg:inline text-white/80 text-xs sm:text-sm ml-1 sm:ml-2">Check them out</span>
+                                <span className="hidden lg:inline text-white/80 text-xs sm:text-sm ml-1 sm:ml-2">See what's new</span>
                                 <ArrowRight size={14} className="ml-0.5 sm:ml-1 opacity-80 flex-shrink-0 sm:w-4 sm:h-4" />
                             </motion.div>
                         </div>

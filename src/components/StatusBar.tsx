@@ -31,7 +31,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           {saveIndicator}
           <div className="w-px h-4 bg-border" />
         </div>
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-0.5 sm:gap-1">
@@ -41,7 +41,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           </TooltipTrigger>
           <TooltipContent>Word count</TooltipContent>
         </Tooltip>
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-0.5 sm:gap-1">
@@ -51,7 +51,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           </TooltipTrigger>
           <TooltipContent>Character count</TooltipContent>
         </Tooltip>
-        
+
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-0.5 sm:gap-1">
@@ -62,7 +62,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           <TooltipContent>Line count</TooltipContent>
         </Tooltip>
       </div>
-      
+
       {/* Right section: Privacy/Developer on desktop, save on mobile */}
       <div className="flex items-center gap-1 text-muted-foreground/70 border-l border-border pl-2 flex-shrink-0">
         {/* Desktop: Privacy + Developer */}
@@ -85,7 +85,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
             Vasu Ghanta ❤️
           </a>
         </div>
-        
+
         {/* Mobile: Auto save indicator */}
         <div className="md:hidden">
           {saveIndicator}

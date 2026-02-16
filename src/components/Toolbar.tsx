@@ -12,9 +12,8 @@ import {
   HelpCircle,
   Files,
   MoreHorizontal,
-  Undo2,
-  Redo2,
   Bell,
+  ChevronLeft,
   ChevronRight,
   ToggleLeft,
   ToggleRight,
@@ -25,6 +24,11 @@ import {
   MessageSquare,
   Loader2,
   User,
+  MonitorPlay,
+  Network,
+  ScrollText,
+  Keyboard,
+  Terminal,
 } from 'lucide-react';
 import { SettingsDialog } from './SettingsDialog';
 import {
@@ -48,20 +52,18 @@ import {
 } from '@/components/ui/select';
 import { ViewMode } from '@/hooks/useMarkdownEditor';
 import { useNavigate } from 'react-router-dom';
-import { templates } from '@/lib/templates';
+
 
 interface ToolbarProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  // ... existing props
+  onBack?: () => void;
   theme: 'light' | 'dark';
   onThemeToggle: () => void;
   onExport: (format: 'markdown' | 'html') => void;
   onCopy: () => void;
   onTemplateSelect: (content: string) => void;
-  onUndo: () => void;
-  onRedo: () => void;
-  canUndo: boolean;
-  canRedo: boolean;
   isMobile?: boolean;
   fontSize: number;
   onFontSizeChange: (size: number) => void;
@@ -73,6 +75,10 @@ interface ToolbarProps {
   isChatOpen?: boolean;
   onMagicAction?: (action: 'autocomplete' | 'grammar' | 'clarity' | 'tone_professional' | 'tone_casual') => void;
   isGenerating?: boolean;
+  onTogglePresentation?: () => void;
+  isPresentationMode?: boolean;
+  isPresentationLoading?: boolean;
+  onOpenCommandPalette?: () => void;
 }
 
 interface ToolbarButtonProps {
@@ -84,6 +90,7 @@ interface ToolbarButtonProps {
   className?: string;
 }
 
+// Helper Components & Functions
 const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   icon,
   label,
@@ -113,22 +120,24 @@ const Divider = () => (
   <div className="w-px h-5 bg-border mx-1 hidden sm:block" />
 );
 
-// Get the next view mode in cycle: split -> editor -> preview -> split
+// Get the next view mode in cycle: split -> editor -> preview -> mindmap -> split
 const getNextViewMode = (current: ViewMode, isMobile?: boolean): ViewMode => {
   if (isMobile) {
-    // On mobile, skip split view and cycle between editor and preview only
+    // On mobile: editor -> preview -> mindmap -> editor
     switch (current) {
       case 'editor': return 'preview';
-      case 'preview': return 'editor';
+      case 'preview': return 'mindmap';
+      case 'mindmap': return 'editor';
       default: return 'editor';
     }
   }
 
-  // On desktop, include split view in the cycle
+  // On desktop
   switch (current) {
     case 'split': return 'editor';
     case 'editor': return 'preview';
-    case 'preview': return 'split';
+    case 'preview': return 'mindmap';
+    case 'mindmap': return 'split';
     default: return 'split';
   }
 };
@@ -139,6 +148,7 @@ const getViewModeIcon = (mode: ViewMode, size: number) => {
     case 'split': return <Columns size={size} />;
     case 'editor': return <PanelLeft size={size} />;
     case 'preview': return <PanelRight size={size} />;
+    case 'mindmap': return <Network size={size} />;
     default: return <Columns size={size} />;
   }
 };
@@ -146,19 +156,19 @@ const getViewModeIcon = (mode: ViewMode, size: number) => {
 // Get label for current view mode
 const getViewModeLabel = (mode: ViewMode, isMobile?: boolean): string => {
   if (isMobile) {
-    // On mobile, only editor and preview modes are available
     switch (mode) {
-      case 'editor': return 'Editor Only (click to switch to Preview)';
-      case 'preview': return 'Preview Only (click to switch to Editor)';
+      case 'editor': return 'Editor Only';
+      case 'preview': return 'Preview Only';
+      case 'mindmap': return 'Mind Map View';
       default: return 'Toggle View';
     }
   }
 
-  // On desktop, include split view
   switch (mode) {
-    case 'split': return 'Split View (click to switch to Editor)';
-    case 'editor': return 'Editor Only (click to switch to Preview)';
-    case 'preview': return 'Preview Only (click to switch to Split)';
+    case 'split': return 'Split View';
+    case 'editor': return 'Editor Only';
+    case 'preview': return 'Preview Only';
+    case 'mindmap': return 'Mind Map View';
     default: return 'Toggle View';
   }
 };
@@ -166,15 +176,13 @@ const getViewModeLabel = (mode: ViewMode, isMobile?: boolean): string => {
 export const Toolbar: React.FC<ToolbarProps> = ({
   viewMode,
   onViewModeChange,
+  onBack,
   theme,
+  // ... existing destructuring
   onThemeToggle,
   onExport,
   onCopy,
   onTemplateSelect,
-  onUndo,
-  onRedo,
-  canUndo,
-  canRedo,
   isMobile = false,
   fontSize,
   onFontSizeChange,
@@ -186,11 +194,65 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   isChatOpen,
   onMagicAction,
   isGenerating,
+  onTogglePresentation,
+  isPresentationMode,
+  isPresentationLoading,
+  onOpenCommandPalette,
 }) => {
   const smallIconSize = 16;
   const navigate = useNavigate();
 
+  // ... hooks ...
+  const [displayedViewMode, setDisplayedViewMode] = React.useState<ViewMode>(viewMode);
+  const [isPaused, setIsPaused] = React.useState(false);
+  const activityTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    if (isPaused) {
+      setDisplayedViewMode(viewMode);
+    }
+  }, [viewMode, isPaused]);
+
+  // ... interaction handlers ...
+  // (Assuming identical implementation to original)
+  React.useEffect(() => {
+    const handleInteraction = () => {
+      setIsPaused(true);
+      setDisplayedViewMode(viewMode);
+
+      if (activityTimerRef.current) clearTimeout(activityTimerRef.current);
+      activityTimerRef.current = setTimeout(() => {
+        setIsPaused(false);
+      }, 5000);
+    };
+
+    window.addEventListener('click', handleInteraction);
+    window.addEventListener('touchstart', handleInteraction);
+    window.addEventListener('keydown', handleInteraction);
+
+    return () => {
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('keydown', handleInteraction);
+      if (activityTimerRef.current) clearTimeout(activityTimerRef.current);
+    };
+  }, [viewMode]);
+
+  React.useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      setDisplayedViewMode(current => getNextViewMode(current, isMobile));
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [isPaused, isMobile]);
+
+
   const handleViewToggle = () => {
+    if (!isPaused) {
+      return;
+    }
     onViewModeChange(getNextViewMode(viewMode, isMobile));
   };
 
@@ -204,105 +266,40 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
       <Divider />
 
-      {/* Templates - Hidden on mobile */}
-      <div className="hidden sm:block">
-        <DropdownMenu>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <button className="toolbar-btn" aria-label="Templates">
-                  <Files size={smallIconSize} />
-                </button>
-              </DropdownMenuTrigger>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Templates</TooltipContent>
-          </Tooltip>
-          <DropdownMenuContent align="start" className="w-56">
-            {templates.map((template) => (
-              <DropdownMenuItem
-                key={template.id}
-                onClick={() => onTemplateSelect(template.content)}
-                className="flex items-start gap-2"
-              >
-                <FileText size={14} className="mt-0.5 flex-shrink-0" />
-                <div className="flex flex-col">
-                  <span className="text-sm">{template.name}</span>
-                  <span className="text-xs text-muted-foreground">{template.description}</span>
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Undo/Redo - Always visible */}
-      <div className="flex items-center gap-0.5">
-        <ToolbarButton
-          icon={<Undo2 size={smallIconSize} />}
-          label="Undo (Ctrl+Z)"
-          onClick={onUndo}
-          disabled={!canUndo}
-        />
-        <ToolbarButton
-          icon={<Redo2 size={smallIconSize} />}
-          label="Redo (Ctrl+Y)"
-          onClick={onRedo}
-          disabled={!canRedo}
-        />
-      </div>
-
-      <Divider />
-
       {/* View Mode Toggle */}
       <ToolbarButton
-        icon={getViewModeIcon(viewMode, smallIconSize)}
-        label={getViewModeLabel(viewMode, isMobile)}
+        icon={getViewModeIcon(displayedViewMode, smallIconSize)}
+        label={getViewModeLabel(displayedViewMode, isMobile)}
         onClick={handleViewToggle}
         active={viewMode === 'split'}
       />
 
+      {onTogglePresentation && (
+        <div className="hidden sm:block">
+          <ToolbarButton
+            icon={isPresentationLoading ? <Loader2 size={smallIconSize} className="animate-spin" /> : <MonitorPlay size={smallIconSize} />}
+            label="AI Presentation Mode"
+            onClick={onTogglePresentation}
+            active={isPresentationMode}
+            disabled={isPresentationLoading}
+          />
+        </div>
+      )}
+
+      {onOpenCommandPalette && (
+        <ToolbarButton
+          icon={<span className="font-mono font-bold text-xs">⌘</span>}
+          label="Command Palette (Ctrl+K)"
+          onClick={onOpenCommandPalette}
+        />
+      )}
+
+
+      <Divider />
+
       <div className="flex-1" />
 
-      {/* Magic Actions */}
-      <DropdownMenu>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <button
-                className={`toolbar-btn text-purple-500 hover:text-purple-600 ${isGenerating ? 'animate-pulse' : ''}`}
-                disabled={isGenerating}
-              >
-                {isGenerating ? <Loader2 size={smallIconSize} className="animate-spin" /> : <Wand2 size={smallIconSize} />}
-              </button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Magic AI Tools</TooltipContent>
-        </Tooltip>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => onMagicAction?.('autocomplete')}>
-            <Sparkles size={14} className="mr-2" />
-            Continue Writing
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onMagicAction?.('grammar')}>
-            <FileText size={14} className="mr-2" />
-            Fix Grammar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onMagicAction?.('clarity')}>
-            <FileText size={14} className="mr-2" />
-            Improve Clarity
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onMagicAction?.('tone_professional')}>
-            <User size={14} className="mr-2" />
-            Make Professional
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onMagicAction?.('tone_casual')}>
-            <User size={14} className="mr-2" />
-            Make Casual
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+
 
       {/* Chat Button */}
       {onToggleChat && (
@@ -358,31 +355,19 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <TooltipContent side="bottom">More</TooltipContent>
         </Tooltip>
         <DropdownMenuContent align="end" className="w-48">
+          {/* Back to Dashboard - Show when available */}
+          {onBack && (
+            <>
+              <DropdownMenuItem onClick={onBack}>
+                <ChevronLeft size={14} className="mr-2" />
+                Back to Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
+
           {/* Mobile-specific options */}
           <div className="sm:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="w-full text-left px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground flex items-center">
-                <Files size={14} className="mr-2" />
-                <span className="flex-1">Templates</span>
-                <ChevronRight size={14} className="ml-auto" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {templates.map((template) => (
-                  <DropdownMenuItem
-                    key={template.id}
-                    onClick={() => onTemplateSelect(template.content)}
-                    className="flex items-start gap-2"
-                  >
-                    <FileText size={14} className="mt-0.5 flex-shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="text-sm">{template.name}</span>
-                      <span className="text-xs text-muted-foreground">{template.description}</span>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DropdownMenuSeparator />
             {/* Mobile Settings */}
             <SettingsDialog trigger={
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -391,6 +376,24 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               </DropdownMenuItem>
             } />
             <DropdownMenuSeparator />
+            {onTogglePresentation && (
+              <>
+                <DropdownMenuItem onClick={onTogglePresentation}>
+                  <MonitorPlay size={14} className="mr-2" />
+                  AI Presentation Mode
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
+            {onOpenCommandPalette && (
+              <>
+                <DropdownMenuItem onClick={onOpenCommandPalette}>
+                  <Terminal size={14} className="mr-2" />
+                  Command Palette
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
           </div>
 
           <DropdownMenuItem onClick={onCopy}>
@@ -458,7 +461,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate('/about')}>
             <FileCode2 size={14} className="mr-2" />
-            About Markdown Weaver
+            About
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate('/help')}>
             <HelpCircle size={14} className="mr-2" />

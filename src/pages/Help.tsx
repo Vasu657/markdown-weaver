@@ -34,9 +34,18 @@ import {
   Sun,
   Moon,
   MoreHorizontal,
-  ArrowLeft
+  ArrowLeft,
+  MonitorPlay,
+  Network,
+  Database,
+  Command,
+  Sparkles,
+  Zap,
+  User,
+  MessageSquare
 } from 'lucide-react';
 import { Helmet } from "react-helmet-async";
+import { GitHubStarCTA } from '@/components/GitHubStarCTA';
 
 const Help: React.FC = () => {
   const navigate = useNavigate();
@@ -98,13 +107,13 @@ const Help: React.FC = () => {
             <TooltipContent side="bottom">More</TooltipContent>
           </Tooltip>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => navigate('/')}>
+            <DropdownMenuItem onClick={() => navigate('/dashboard')}>
               <FileCode2 size={14} className="mr-2" />
-              Back to Editor
+              Back to Dashboard
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/about')}>
               <FileCode2 size={14} className="mr-2" />
-              About Markdown Weaver
+              About
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/privacy')}>
               <Shield size={14} className="mr-2" />
@@ -132,22 +141,83 @@ const Help: React.FC = () => {
             <div>
               <h3 className="font-semibold text-foreground mb-1">Important Notice</h3>
               <p className="text-sm text-muted-foreground">
-                Your content is saved locally in your browser. If you clear your browser cookies, cache, or local storage,
+                Your content is stored in your browser's <strong>IndexedDB</strong> for high performance and reliability. However, if you clear your browser data/site data,
                 <strong className="text-foreground"> all saved content will be permanently deleted</strong>.
                 Shared preview links encode content in the URL and will expire if the link is lost or too long for browsers to handle.
-                <strong className="text-foreground"> Always export important documents</strong> using the download feature.
+                <strong className="text-foreground"> Please regularly use the "Export Backup" feature in Settings</strong> to save your work to your device.
               </p>
             </div>
           </div>
         </div>
 
+        {/* Command Center */}
+        <Section icon={<Command size={20} />} title="Command Center">
+          <p className="text-muted-foreground mb-4">
+            Access powerful tools and navigation instantly with the Command Center.
+            Press <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-xs font-mono">K</kbd> to open.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2">Features</h4>
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                <li>Switch View Modes (Editor, Split, Preview, Mind Map)</li>
+                <li>Toggle Theme (Dark/Light)</li>
+                <li>Export Documents (Markdown, HTML)</li>
+                <li>Navigate Pages (Dashboard, Settings)</li>
+                <li>Toggle Presentation Mode</li>
+              </ul>
+            </div>
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2">Quick Actions</h4>
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                <li><code className="text-xs bg-background px-1 py-0.5 rounded border border-border">Type "View"</code> to filter view modes</li>
+                <li><code className="text-xs bg-background px-1 py-0.5 rounded border border-border">Type "Export"</code> to see export options</li>
+                <li><code className="text-xs bg-background px-1 py-0.5 rounded border border-border">Type "Theme"</code> to toggle dark mode</li>
+              </ul>
+            </div>
+          </div>
+        </Section>
+
+        {/* Data Backup & Restore */}
+        <Section icon={<Database size={20} />} title="Data Backup & Restore">
+          <p className="text-muted-foreground mb-4">
+            Markdown Weaver stores your data locally. To prevent data loss or to move your work to another device, use the Import/Export feature.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <span className="bg-primary/20 text-primary rounded px-2 py-0.5 text-xs">EXPORT</span>
+                Backing Up
+              </h4>
+              <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-1">
+                <li>Go to <strong>Settings</strong> (gear icon).</li>
+                <li>Switch to the <strong>General</strong> tab.</li>
+                <li>Click <strong>Export Backup</strong>.</li>
+                <li>Save the <code>.json</code> file to your device.</li>
+              </ol>
+            </div>
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <span className="bg-green-500/20 text-green-600 rounded px-2 py-0.5 text-xs">IMPORT</span>
+                Restoring
+              </h4>
+              <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-1">
+                <li>Go to <strong>Settings</strong> &gt; <strong>General</strong>.</li>
+                <li>Click <strong>Import Backup</strong>.</li>
+                <li>Select your backup file.</li>
+                <li>Confirm to overwrite and restore data.</li>
+              </ol>
+            </div>
+          </div>
+        </Section>
+
         {/* Keyboard Shortcuts */}
         <Section icon={<Keyboard size={20} />} title="Keyboard Shortcuts">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            <ShortcutItem keys={['Ctrl', 'Z']} description="Undo last change" />
-            <ShortcutItem keys={['Ctrl', 'Y']} description="Redo last change" />
+            <ShortcutItem keys={['Ctrl', 'Z']} description="Undo change" />
+            <ShortcutItem keys={['Ctrl', 'Y']} description="Redo change" />
+            <ShortcutItem keys={['Ctrl', 'K']} description="Open Command Center" />
             <ShortcutItem keys={['Tab']} description="Insert indentation" />
-            <ShortcutItem keys={['Ctrl', 'Shift', 'Z']} description="Redo (alternative)" />
           </div>
         </Section>
 
@@ -329,10 +399,98 @@ pie title Usage
           />
         </Section>
 
+        {/* Advanced Features */}
+        <Section icon={<MonitorPlay size={20} />} title="Presentation & Mind Map">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="flex items-center gap-2 font-bold mb-2">
+                <MonitorPlay className="w-4 h-4 text-primary" /> AI Presentation Mode
+              </h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Turn your document into a slide deck instantly. Ask the AI Assistant to "Create a presentation about..." or use <code className="code-inline">---</code> to separate slides manually.
+              </p>
+              <CodeBlock code={`# Slide 1
+Content...
+
+---
+
+# Slide 2
+More content...`} />
+            </div>
+
+            <div>
+              <h3 className="flex items-center gap-2 font-bold mb-2">
+                <Network className="w-4 h-4 text-primary" /> Mind Map View
+              </h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Visualize your document structure.
+              </p>
+              <ul className="text-sm text-muted-foreground space-y-1 ml-4 list-disc">
+                <li>Headings become main nodes</li>
+                <li>Lists become branches</li>
+                <li>Click <strong>Network Icon</strong> in toolbar to toggle</li>
+              </ul>
+            </div>
+          </div>
+
+        </Section>
+
+        {/* Magic Tools */}
+        <Section icon={<Sparkles size={20} />} title="Magic Tools">
+          <p className="text-muted-foreground mb-4">
+            Select any text to reveal the Magic Tools menu – your AI writing assistant.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <Sparkles size={16} className="text-purple-500" /> Continue Writing
+              </h4>
+              <p className="text-sm text-muted-foreground">AI analyzes your text and writes the next few sentences for you.</p>
+            </div>
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <Shield size={16} className="text-blue-500" /> Fix Grammar
+              </h4>
+              <p className="text-sm text-muted-foreground">Instantly corrects spelling and grammatical errors.</p>
+            </div>
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <Zap size={16} className="text-yellow-500" /> Improve Clarity
+              </h4>
+              <p className="text-sm text-muted-foreground">Rewrites complex sentences to be more readable and concise.</p>
+            </div>
+            <div className="bg-muted rounded-lg p-4 border border-border">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <User size={16} className="text-green-500" /> Change Tone
+              </h4>
+              <p className="text-sm text-muted-foreground">Switch between <strong>Professional</strong> and <strong>Casual</strong> tones.</p>
+            </div>
+            <div className="bg-muted rounded-lg p-4 border border-border md:col-span-2">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <MessageSquare size={16} className="text-primary" /> Ask AI
+              </h4>
+              <p className="text-sm text-muted-foreground">Type your own instructions (e.g., "Translate to Spanish", "Make it funnier").</p>
+            </div>
+          </div>
+        </Section>
+
+        {/* Real-Time Sync */}
+        <Section icon={<Network size={20} />} title="Real-Time Synchronization">
+          <p className="text-muted-foreground mb-4">
+            Markdown Weaver automatically keeps your work in sync across multiple tabs:
+          </p>
+          <ul className="text-sm text-muted-foreground space-y-2 list-disc ml-4">
+            <li><strong>Multi-Tab Editing:</strong> Open the same document in multiple tabs or windows. Changes in one are instantly reflected in others.</li>
+            <li><strong>Dashboard Updates:</strong> Creating, renaming, or deleting files in one tab updates your Dashboard everywhere immediately.</li>
+            <li><strong>Safety Limits:</strong> If you delete a file in the Dashboard, any open editors for that file will alert you to prevent accidental data loss.</li>
+          </ul>
+        </Section>
+
         {/* Footer */}
         <Footer showBackToEditor={true} showAbout={true} showHelp={false} showPrivacy={true} />
-      </main>
-    </div>
+      </main >
+      <GitHubStarCTA />
+    </div >
   );
 };
 

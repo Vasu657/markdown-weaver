@@ -94,13 +94,13 @@ const Privacy: React.FC = () => {
               <TooltipContent side="bottom">More</TooltipContent>
             </Tooltip>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => navigate('/')}>
+              <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                 <FileCode2 size={14} className="mr-2" />
-                Back to Editor
+                Back to Dashboard
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/about')}>
                 <FileCode2 size={14} className="mr-2" />
-                About Markdown Weaver
+                About
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/help')}>
                 <HelpCircle size={14} className="mr-2" />
@@ -148,8 +148,8 @@ const Privacy: React.FC = () => {
               <Section title="Data Collection & Storage" icon={<Database size={20} />}>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <PolicyCard
-                    title="Local Storage"
-                    description="All documents, settings, and preferences are stored exclusively in your browser's Local Storage. We do not have a backend database for user content."
+                    title="Local Database"
+                    description="All documents, settings, and preferences are stored exclusively in your browser's secure IndexedDB database. We do not have a backend database for user content."
                   />
                   <PolicyCard
                     title="No Account Required"
@@ -160,8 +160,8 @@ const Privacy: React.FC = () => {
                     description="We do not use Google Analytics, Mixpanel, or any other tracking software to monitor your behavior."
                   />
                   <PolicyCard
-                    title="Data Ownership"
-                    description="You retain full ownership of all content created. Since we don't host your data, we cannot access, read, or sell it."
+                    title="Data Ownership & Portability"
+                    description="You retain full ownership. You can Export all your data to a JSON file at any time from Settings > General for backup or transfer."
                   />
                 </div>
               </Section>
@@ -169,7 +169,7 @@ const Privacy: React.FC = () => {
               <Section title="AI Features & Third-Party Processing" icon={<Server size={20} />} highlight>
                 <div className="space-y-4 text-muted-foreground">
                   <p>
-                    Markdown Weaver offers optional AI-powered features (e.g., rewriting, summarizing, formatting) which utilize the <strong>OpenRouter API</strong>.
+                    Markdown Weaver offers optional AI-powered features (e.g., rewriting, summarizing, formatting, presentation generation) which utilize the <strong>OpenRouter API</strong>.
                   </p>
                   <ul className="list-disc pl-5 space-y-2">
                     <li>
@@ -190,7 +190,7 @@ const Privacy: React.FC = () => {
 
               <Section title="Cookies & Local Data" icon={<Cookie size={20} />}>
                 <p className="text-muted-foreground mb-4">
-                  We use "Local Storage" technology, which functions similarly to cookies but is more secure and stays on your device.
+                  We use <strong>IndexedDB</strong> technology, which is a robust local database within your browser (superior to cookies or LocalStorage).
                 </p>
                 <div className="bg-muted/50 rounded-lg p-4 border border-border">
                   <table className="w-full text-sm text-left">
@@ -203,7 +203,7 @@ const Privacy: React.FC = () => {
                     <tbody className="text-muted-foreground">
                       <tr className="border-b border-border/50">
                         <td className="py-2 pr-4">Document Content</td>
-                        <td className="py-2">To save your work automatically between sessions.</td>
+                        <td className="py-2">To save your work automatically in IndexedDB. Synchronizes across open tabs instantly.</td>
                       </tr>
                       <tr className="border-b border-border/50">
                         <td className="py-2 pr-4">Theme Preference</td>

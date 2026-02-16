@@ -63,7 +63,7 @@ $$
 
 const STORAGE_KEY = 'markdown-pro-content';
 
-export type ViewMode = 'split' | 'editor' | 'preview';
+export type ViewMode = 'split' | 'editor' | 'preview' | 'mindmap';
 
 export function useMarkdownEditor() {
   const [content, setContent] = useState(() => {
@@ -80,64 +80,117 @@ export function useMarkdownEditor() {
 
   // Note: Auto-save is now handled by useAutoSave hook in MarkdownEditor
 
+  const targetPreviewScrollTop = useRef(0);
+  const targetEditorScrollTop = useRef(0);
+  const isPreviewScrolling = useRef(false);
+  const isEditorScrolling = useRef(false);
+
+  const performSmoothPreviewScroll = useCallback(() => {
+    if (!previewRef.current || !isPreviewScrolling.current) return;
+
+    const currentScrollTop = previewRef.current.scrollTop;
+    const target = targetPreviewScrollTop.current;
+
+    const diff = target - currentScrollTop;
+
+    // Threshold to stop animation
+    if (Math.abs(diff) < 1) {
+      previewRef.current.scrollTop = target;
+      // Delay releasing the lock slightly to let final scroll events flush
+      setTimeout(() => {
+        isPreviewScrolling.current = false;
+      }, 50);
+      return;
+    }
+
+    // Linear interpolation (Lerp)
+    const newScrollTop = currentScrollTop + diff * 0.15;
+    previewRef.current.scrollTop = newScrollTop;
+
+    requestAnimationFrame(performSmoothPreviewScroll);
+  }, []);
+
+  const performSmoothEditorScroll = useCallback(() => {
+    if (!editorRef.current || !isEditorScrolling.current) return;
+
+    const currentScrollTop = editorRef.current.scrollTop;
+    const target = targetEditorScrollTop.current;
+    const diff = target - currentScrollTop;
+
+    if (Math.abs(diff) < 1) {
+      editorRef.current.scrollTop = target;
+      setTimeout(() => {
+        isEditorScrolling.current = false;
+      }, 50);
+      return;
+    }
+
+    const newScrollTop = currentScrollTop + diff * 0.15;
+    editorRef.current.scrollTop = newScrollTop;
+
+    requestAnimationFrame(performSmoothEditorScroll);
+  }, []);
+
   const handleEditorScroll = useCallback(() => {
     if (!syncScroll || !editorRef.current || !previewRef.current) return;
 
+    // Prevent loop: if editor is being scrolled BY the preview sync, don't sync back to preview
+    if (isEditorScrolling.current) return;
+
     const editor = editorRef.current;
-
-    // Calculate current line number based on scroll position
-    // We assume a fixed line height for simplicity in the editor, which is common for code editors
-    // If wrapping is heavily used, this is an approximation
-    const lineHeight = parseFloat(getComputedStyle(editor).lineHeight) || 24;
-    const currentLine = Math.floor(editor.scrollTop / lineHeight) + 1; // +1 because markdown lines are 1-indexed
-
-    // Find the element in the preview that corresponds to this line
     const preview = previewRef.current;
-    const elements = Array.from(preview.querySelectorAll('[data-source-line]'));
 
-    // Find the element with the closest source line <= currentLine
-    let targetElement: HTMLElement | null = null;
-    let minDiff = Infinity;
+    // Calculate target scroll position based on percentage
+    // ratio = editorScroll / editorMax
+    // previewTarget = ratio * previewMax
+    const editorMax = editor.scrollHeight - editor.clientHeight;
+    const previewMax = preview.scrollHeight - preview.clientHeight;
 
-    for (const el of elements) {
-      const sourceLine = parseInt(el.getAttribute('data-source-line') || '0', 10);
-      if (!isNaN(sourceLine)) {
-        // We prefer the element that starts right at or slightly before our line
-        if (sourceLine >= currentLine) {
-          // If we found a line that is >= currentLine, this is likely our target or slightly after
-          const diff = sourceLine - currentLine;
-          if (diff < minDiff) {
-            minDiff = diff;
-            targetElement = el as HTMLElement;
-          }
-          // Optimization: if exact match, break
-          if (diff === 0) break;
-        }
-      }
+    if (editorMax <= 0 || previewMax <= 0) return;
+
+    const percentage = editor.scrollTop / editorMax;
+    const newScrollTop = percentage * previewMax;
+
+    targetPreviewScrollTop.current = newScrollTop;
+
+    if (!isPreviewScrolling.current) {
+      isPreviewScrolling.current = true;
+      requestAnimationFrame(performSmoothPreviewScroll);
     }
+  }, [syncScroll, performSmoothPreviewScroll]);
 
-    // Fallback: if we are at the end of the document, or couldn't find a close match forward,
-    // look backwards for the last element before currentLine
-    if (!targetElement) {
-      let maxLine = -1;
-      for (const el of elements) {
-        const sourceLine = parseInt(el.getAttribute('data-source-line') || '0', 10);
-        if (sourceLine < currentLine && sourceLine > maxLine) {
-          maxLine = sourceLine;
-          targetElement = el as HTMLElement;
-        }
-      }
+  const handlePreviewScroll = useCallback(() => {
+    if (!syncScroll || !editorRef.current || !previewRef.current) return;
+
+    // Prevent loop: if preview is being scrolled BY the editor sync, don't sync back to editor
+    if (isPreviewScrolling.current) return;
+
+    const editor = editorRef.current;
+    const preview = previewRef.current;
+
+    const editorMax = editor.scrollHeight - editor.clientHeight;
+    const previewMax = preview.scrollHeight - preview.clientHeight;
+
+    if (editorMax <= 0 || previewMax <= 0) return;
+
+    const percentage = preview.scrollTop / previewMax;
+    const newScrollTop = percentage * editorMax;
+
+    targetEditorScrollTop.current = newScrollTop;
+
+    if (!isEditorScrolling.current) {
+      isEditorScrolling.current = true;
+      requestAnimationFrame(performSmoothEditorScroll);
     }
+  }, [syncScroll, performSmoothEditorScroll]);
 
+  const handleEditorInteraction = useCallback(() => {
+    isEditorScrolling.current = false;
+  }, []);
 
-    if (targetElement) {
-      // Smooth scroll to the element
-      // We adjust offsetTop by the container's offsetTop to find relative position
-      targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
-    } else if (editor.scrollTop === 0) {
-      preview.scrollTop = 0;
-    }
-  }, [syncScroll]);
+  const handlePreviewInteraction = useCallback(() => {
+    isPreviewScrolling.current = false;
+  }, []);
 
   const insertText = useCallback((before: string, after: string = '') => {
     const textarea = editorRef.current;
@@ -187,6 +240,9 @@ export function useMarkdownEditor() {
     syncScroll,
     setSyncScroll,
     handleEditorScroll,
+    handlePreviewScroll,
+    handleEditorInteraction,
+    handlePreviewInteraction,
     insertText,
     stats,
   };

@@ -19,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
-  const handleBackToEditor = () => navigate('/');
+  const handleBackToEditor = () => navigate('/dashboard');
   const handleAbout = () => navigate('/about');
   const handleHelp = () => navigate('/help');
   const handlePrivacy = () => navigate('/privacy');
@@ -35,10 +35,10 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={handleBackToEditor}
               variant="outline"
               className="gap-2 px-3 py-2 text-xs sm:text-sm font-medium transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] border-border/60 flex-shrink-0"
-              aria-label="Back to Editor"
+              aria-label="Back to Dashboard"
             >
               <ArrowLeft size={14} className="shrink-0" />
-              <span className="hidden sm:inline">Back to Editor</span>
+              <span className="hidden sm:inline">Back to Dashboard</span>
             </Button>
           )}
 

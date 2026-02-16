@@ -22,8 +22,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { OpenRouterService, OpenRouterModel } from '@/lib/ai-service';
 import { useToast } from '@/hooks/use-toast';
+import { exportData, importData } from '@/lib/export_import';
+import { Download, Upload, AlertTriangle } from 'lucide-react';
+import { useRef } from 'react';
 
 interface SettingsDialogProps {
     open?: boolean;
@@ -43,12 +48,17 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
     const [isValidating, setIsValidating] = useState(false);
     const [isValid, setIsValid] = useState<boolean | null>(null);
     const [isInfoExpanded, setIsInfoExpanded] = useState(false);
+    const [enableToc, setEnableToc] = useState(true);
     const { toast } = useToast();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [showImportConfirm, setShowImportConfirm] = useState(false);
+    const [fileToImport, setFileToImport] = useState<File | null>(null);
 
     useEffect(() => {
         // Load from local storage
         const storedKey = localStorage.getItem('openrouter_api_key');
         const storedModel = localStorage.getItem('openrouter_model');
+        const storedToc = localStorage.getItem('enable_toc');
 
         if (storedKey) {
             setApiKey(storedKey);
@@ -60,6 +70,11 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
 
         if (storedModel) {
             setModel(storedModel);
+        }
+
+        // Default to true if not set
+        if (storedToc !== null) {
+            setEnableToc(storedToc === 'true');
         }
     }, []);
 
@@ -132,11 +147,71 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
     const handleSave = () => {
         localStorage.setItem('openrouter_api_key', apiKey);
         localStorage.setItem('openrouter_model', model);
+        localStorage.setItem('enable_toc', String(enableToc));
+
+        // Dispatch custom event to notify listeners
+        window.dispatchEvent(new Event('settings-changed'));
+
         toast({
             title: "Settings Saved",
-            description: "Your AI preferences have been updated.",
+            description: "Your preferences have been updated.",
         });
         onOpenChange?.(false);
+    };
+
+    const handleExport = async () => {
+        const success = await exportData();
+        if (success) {
+            toast({
+                title: "Export Successful",
+                description: "Your backup has been downloaded.",
+            });
+        } else {
+            toast({
+                title: "Export Failed",
+                description: "Could not create backup.",
+                variant: "destructive"
+            });
+        }
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFileToImport(file);
+            setShowImportConfirm(true);
+        }
+    };
+
+    const confirmImport = async () => {
+        if (!fileToImport) return;
+
+        try {
+            await importData(fileToImport);
+            toast({
+                title: "Import Successful",
+                description: "Your backup has been restored. Reloading...",
+            });
+            setShowImportConfirm(false);
+            setFileToImport(null);
+
+            // Reload page to apply changes
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            toast({
+                title: "Import Failed",
+                description: "Could not restore backup. Invalid file format.",
+                variant: "destructive"
+            });
+            setShowImportConfirm(false);
+            setFileToImport(null);
+        }
     };
 
     return (
@@ -150,97 +225,171 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({
                     </DialogDescription>
                 </DialogHeader>
 
-                {/* API Key Explanation */}
-                <div className="bg-muted/50 rounded-lg border border-border text-sm overflow-hidden transition-all duration-200">
-                    <button
-                        onClick={() => setIsInfoExpanded(!isInfoExpanded)}
-                        className="w-full flex items-center justify-between p-4 hover:bg-muted/80 transition-colors text-left"
-                    >
-                        <div className="flex items-center gap-2 font-semibold text-foreground">
-                            <Info size={16} className="text-primary" />
-                            <span>Why do I need my own API Key?</span>
-                        </div>
-                        {isInfoExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </button>
+                <Tabs defaultValue="ai" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="ai">AI Settings</TabsTrigger>
+                        <TabsTrigger value="general">General</TabsTrigger>
+                    </TabsList>
 
-                    {isInfoExpanded && (
-                        <div className="px-4 pb-4 animate-in slide-in-from-top-2 fade-in duration-200">
-                            <p className="text-muted-foreground leading-relaxed mb-3">
-                                Markdown Weaver gives you the power of choice. Using your own OpenRouter key is the smart way to go:
-                            </p>
-                            <ul className="grid gap-2 text-muted-foreground">
-                                <li className="flex items-start gap-2">
-                                    <span className="font-bold text-primary">•</span>
-                                    <span><strong>Cost Transparency:</strong> Providing free AI endpoints incurs significant costs. By using your own key, you avoid our service fees and can choose free models directly.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="font-bold text-primary">•</span>
-                                    <span><strong>One Key, Many Models:</strong> A single key unlocks access to Gemini, Claude, GPT, and Llama.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="font-bold text-primary">•</span>
-                                    <span><strong>Free Forever:</strong> You can choose from many highly capable free models.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="font-bold text-primary">•</span>
-                                    <span><strong>Private & Secure:</strong> Your key is encrypted in your browser's local storage. We never see it.</span>
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
-                <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="apiKey">OpenRouter API Key</Label>
-                        <div className="flex gap-2">
-                            <Input
-                                id="apiKey"
-                                type="password"
-                                value={apiKey}
-                                onChange={(e) => {
-                                    setApiKey(e.target.value);
-                                    setIsValid(null);
-                                }}
-                                placeholder="sk-or-..."
-                                className="flex-1"
-                            />
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={handleValidate}
-                                disabled={isValidating || !apiKey}
-                                title="Validate Key"
+                    <TabsContent value="ai" className="space-y-4 py-4">
+                        {/* API Key Explanation */}
+                        <div className="bg-muted/50 rounded-lg border border-border text-sm overflow-hidden transition-all duration-200">
+                            <button
+                                onClick={() => setIsInfoExpanded(!isInfoExpanded)}
+                                className="w-full flex items-center justify-between p-4 hover:bg-muted/80 transition-colors text-left"
                             >
-                                {isValidating ? <Loader2 className="h-4 w-4 animate-spin" /> :
-                                    isValid === true ? <CheckCircle2 className="h-4 w-4 text-green-500" /> :
-                                        isValid === false ? <AlertCircle className="h-4 w-4 text-red-500" /> :
-                                            <CheckCircle2 className="h-4 w-4 opacity-50" />
-                                }
-                            </Button>
+                                <div className="flex items-center gap-2 font-semibold text-foreground">
+                                    <Info size={16} className="text-primary" />
+                                    <span>Why do I need my own API Key?</span>
+                                </div>
+                                {isInfoExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            </button>
+
+                            {isInfoExpanded && (
+                                <div className="px-4 pb-4 animate-in slide-in-from-top-2 fade-in duration-200">
+                                    <p className="text-muted-foreground leading-relaxed mb-3">
+                                        Markdown Weaver gives you the power of choice. Using your own OpenRouter key is the smart way to go:
+                                    </p>
+                                    <ul className="grid gap-2 text-muted-foreground">
+                                        <li className="flex items-start gap-2">
+                                            <span className="font-bold text-primary">•</span>
+                                            <span><strong>Cost Transparency:</strong> Providing free AI endpoints incurs significant costs. By using your own key, you avoid our service fees and can choose free models directly.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="font-bold text-primary">•</span>
+                                            <span><strong>One Key, Many Models:</strong> A single key unlocks access to Gemini, Claude, GPT, and Llama.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="font-bold text-primary">•</span>
+                                            <span><strong>Free Forever:</strong> You can choose from many highly capable free models.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="font-bold text-primary">•</span>
+                                            <span><strong>Private & Secure:</strong> Your key is encrypted in your browser's local storage. We never see it.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                            Get a key from <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer" className="underline">openrouter.ai</a>
-                        </p>
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="model">Model (Free Only)</Label>
-                        <Select value={model} onValueChange={setModel} disabled={models.length === 0}>
-                            <SelectTrigger>
-                                <SelectValue placeholder={isLoading ? "Loading models..." : "Select a model"} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {models.map((m) => (
-                                    <SelectItem key={m.id} value={m.id}>
-                                        {m.name}
-                                    </SelectItem>
-                                ))}
-                                {models.length === 0 && !isLoading && (
-                                    <SelectItem value="none" disabled>No free models found</SelectItem>
-                                )}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="apiKey">OpenRouter API Key</Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        id="apiKey"
+                                        type="password"
+                                        value={apiKey}
+                                        onChange={(e) => {
+                                            setApiKey(e.target.value);
+                                            setIsValid(null);
+                                        }}
+                                        placeholder="sk-or-..."
+                                        className="flex-1"
+                                    />
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={handleValidate}
+                                        disabled={isValidating || !apiKey}
+                                        title="Validate Key"
+                                    >
+                                        {isValidating ? <Loader2 className="h-4 w-4 animate-spin" /> :
+                                            isValid === true ? <CheckCircle2 className="h-4 w-4 text-green-500" /> :
+                                                isValid === false ? <AlertCircle className="h-4 w-4 text-red-500" /> :
+                                                    <CheckCircle2 className="h-4 w-4 opacity-50" />
+                                        }
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Get a key from <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer" className="underline">openrouter.ai</a>
+                                </p>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="model">Model (Free Only)</Label>
+                                <Select value={model} onValueChange={setModel} disabled={models.length === 0}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={isLoading ? "Loading models..." : "Select a model"} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {models.map((m) => (
+                                            <SelectItem key={m.id} value={m.id}>
+                                                {m.name}
+                                            </SelectItem>
+                                        ))}
+                                        {models.length === 0 && !isLoading && (
+                                            <SelectItem value="none" disabled>No free models found</SelectItem>
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="general" className="space-y-4 py-4">
+                        <div className="flex items-center justify-between space-x-2 border p-3 rounded-md">
+                            <Label htmlFor="toc-mode" className="flex flex-col space-y-1">
+                                <span>Enable Table of Contents</span>
+                                <span className="font-normal leading-snug text-muted-foreground">
+                                    Show a floating navigation sidebar in Preview mode.
+                                </span>
+                            </Label>
+                            <Switch
+                                id="toc-mode"
+                                checked={enableToc}
+                                onCheckedChange={setEnableToc}
+                            />
+                        </div>
+
+                        <div className="grid gap-2 border-t pt-4 mt-2">
+                            <Label className="mb-2">Data Management</Label>
+                            <div className="flex gap-2">
+                                <Button variant="outline" className="flex-1 gap-2" onClick={handleExport}>
+                                    <Download className="h-4 w-4" />
+                                    Export Backup
+                                </Button>
+                                <Button variant="outline" className="flex-1 gap-2" onClick={handleImportClick}>
+                                    <Upload className="h-4 w-4" />
+                                    Import Backup
+                                </Button>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept=".json"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Save your workspace to a file or restore from a backup.
+                            </p>
+                        </div>
+                    </TabsContent>
+                </Tabs>
+
+                {/* Import Confirmation Dialog - Nested or replaced content would be ideal, but let's just use conditional rendering for now or a separate dialog if we could. 
+                    Since we are inside a DialogContent, showing another Dialog on top might be tricky with some libraries, but usually fine.
+                    However, let's keep it simple and just show an alert or a different view.
+                */}
+
+                <Dialog open={showImportConfirm} onOpenChange={setShowImportConfirm}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="flex items-center gap-2 text-destructive">
+                                <AlertTriangle className="h-5 w-5" />
+                                Warning: Overwrite Data
+                            </DialogTitle>
+                            <DialogDescription>
+                                Importing a backup will <strong>permanently delete</strong> all current files and settings.
+                                This action cannot be undone. Are you sure you want to proceed?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button variant="ghost" onClick={() => setShowImportConfirm(false)}>Cancel</Button>
+                            <Button variant="destructive" onClick={confirmImport}>Yes, Overwrite & Import</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
                 <DialogFooter className="gap-2 sm:justify-between items-center">
                     <a
                         href="https://openrouter.ai"

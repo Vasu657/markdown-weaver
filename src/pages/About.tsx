@@ -41,15 +41,53 @@ import {
   Coffee,
   ArrowRight,
   Quote,
-  CheckCircle2
+  CheckCircle2,
+  MonitorPlay,
+  Network,
+  Loader2,
+  PartyPopper
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Helmet } from "react-helmet-async";
+import { GitHubStarCTA } from '@/components/GitHubStarCTA';
 
 const About: React.FC = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
+
+  // Newsletter Logic
+  const [emailSub, setEmailSub] = useState('');
+  const [loadingSub, setLoadingSub] = useState(false);
+  const [submittedSub, setSubmittedSub] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailSub) return;
+    setLoadingSub(true);
+    try {
+      const response = await fetch("https://formspree.io/f/xjggkakp", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailSub })
+      });
+      if (response.ok) {
+        setSubmittedSub(true);
+        toast.success("Welcome to the community!");
+        setEmailSub('');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setLoadingSub(false);
+    }
+  };
 
   // Auto-slide testimonials
   useEffect(() => {
@@ -67,7 +105,7 @@ const About: React.FC = () => {
 
   const testimonials = [
     {
-      quote: "The new AI features in v1.2.0 are a total game-changer. Fixing grammar and improving clarity happens in seconds now!",
+      quote: "The new Mind Map view in v1.3.0 is a game-changer. I can visualize my ideas instantly!",
       author: "Sarah Jenkins",
       role: "Content Strategist",
       rating: 5,
@@ -90,12 +128,14 @@ const About: React.FC = () => {
   ];
 
   const magicTools = [
+    { icon: <MonitorPlay size={20} />, name: "AI Presentation Mode", desc: "Turn markdown into a slide deck instantly with AI-assisted layout and smart splitting." },
+    { icon: <Network size={20} />, name: "Mind Map View", desc: "Visualize your document structure as a dynamic map." },
     { icon: <Sparkles size={20} />, name: "Continue Writing", desc: "AI predicts and completes your next sentences seamlessly." },
     { icon: <CheckCheck size={20} />, name: "Fix Grammar", desc: "Instant professional-grade proofreading for your markdown." },
     { icon: <BrainCircuit size={20} />, name: "Improve Clarity", desc: "Simplifies complex sentences for better readability." },
     { icon: <Shield size={20} />, name: "Make Professional", desc: "Polishes your tone for business and formal documents." },
-    { icon: <Coffee size={20} />, name: "Make Casual", desc: "Softens the tone for blogs and personal notes." },
-    { icon: <Languages size={20} />, name: "Smart Translation", desc: "Translate content while preserving markdown syntax." }
+    { icon: <User size={20} />, name: "Make Casual", desc: "Adjusts tone to be more friendly and relaxed." },
+    { icon: <Sparkles size={20} />, name: "Ask AI", desc: "Give custom instructions to transform your text however you want." },
   ];
 
   const email = "vasughanta660@gmail.com";
@@ -106,10 +146,10 @@ const About: React.FC = () => {
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
       <Helmet>
-        <title>About Markdown Weaver v1.2.0 – AI-Powered Markdown Editor</title>
+        <title>About Markdown Weaver v1.3.0 – AI-Powered Markdown Editor</title>
         <meta
           name="description"
-          content="Experience the future of writing with Markdown Weaver v1.2.0. AI-powered tools, live preview, and developer-first design."
+          content="Experience the future of writing with Markdown Weaver v1.3.0. AI-powered tools, live preview, mind maps, and presentation mode."
         />
       </Helmet>
 
@@ -119,8 +159,10 @@ const About: React.FC = () => {
           <div className="bg-primary p-1.5 rounded-lg">
             <FileCode2 size={18} className="text-primary-foreground" />
           </div>
-          <span className="font-bold text-base tracking-tight text-foreground">Markdown Weaver</span>
-          <span className="text-[10px] font-bold bg-primary/10 text-primary px-1.5 py-0.5 rounded-full ml-1">v1.2.0</span>
+          <div className="flex flex-col">
+            <span className="font-bold text-base leading-none text-foreground">Markdown Weaver</span>
+            <span className="text-[10px] font-medium text-primary leading-none mt-1">v1.3.0</span>
+          </div>
         </div>
 
         <div className="flex-1" />
@@ -151,8 +193,8 @@ const About: React.FC = () => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 p-2">
-              <DropdownMenuItem onClick={() => navigate('/')} className="rounded-md cursor-pointer">
-                <FileCode2 size={14} className="mr-2" /> Back to Editor
+              <DropdownMenuItem onClick={() => navigate('/dashboard')} className="rounded-md cursor-pointer">
+                <FileCode2 size={14} className="mr-2" /> Back to Dashboard
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/help')} className="rounded-md cursor-pointer">
                 <HelpCircle size={14} className="mr-2" /> Help & Guide
@@ -165,31 +207,36 @@ const About: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12 space-y-24">
+      <main className="max-w-6xl mx-auto px-6 py-12 space-y-24 relative">
+        {/* SKIVYX Brand Top */}
+        <div className="text-center absolute top-20 left-1/2 -translate-x-1/2 z-0 w-full select-none pointer-events-none">
+          <h1 className="text-[60px] md:text-[120px] font-black tracking-widest leading-none text-foreground/5 opacity-50 bg-gradient-to-b from-foreground to-transparent bg-clip-text text-transparent">SKIVYX</h1>
+        </div>
+
         {/* Hero Section */}
-        <section className="text-center space-y-6 pt-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest animate-fade-in">
+        <section className="text-center space-y-6 pt-8 relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest animate-fade-in relative z-10">
             <Sparkles size={12} />
-            <span>Introducing Version 1.2.0</span>
+            <span>Introducing Version 1.3.0</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[1.1]">
+          <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-foreground leading-[1.1] relative z-10">
             Write Smarter with <br />
             <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent">
               Magic AI Intelligence
             </span>
           </h1>
 
-          <div className="flex items-center justify-center gap-3 py-2 animate-fade-in delay-100">
+          <div className="flex items-center justify-center gap-3 py-2 animate-fade-in delay-100 relative z-10">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-border" />
             <span className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">Built by developers, for developers</span>
             <div className="h-px w-12 bg-gradient-to-r from-border to-transparent" />
           </div>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed relative z-10">
             Markdown Weaver has evolved. We've combined the simplicity of markdown with the power of generative AI to help you create flawless documentation in record time.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <Button onClick={() => navigate('/')} size="lg" className="rounded-full px-8 h-14 text-base font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 pt-4 relative z-10 px-4">
+            <Button onClick={() => navigate('/dashboard')} size="lg" className="w-full sm:w-auto rounded-full px-8 h-14 text-base font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
               Start Writing Free <ArrowRight className="ml-2" size={18} />
             </Button>
           </div>
@@ -198,9 +245,10 @@ const About: React.FC = () => {
         {/* AI Features Grid */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold flex items-center gap-3">
-                <Wand2 className="text-primary" /> Magic AI Tools
+            <div className="space-y-4 text-center lg:text-left">
+              <h2 className="text-3xl font-bold flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+                <Wand2 className="text-primary hidden sm:block" />
+                <span><Wand2 className="text-primary inline sm:hidden mr-2" />Magic AI Tools</span>
               </h2>
               <p className="text-muted-foreground">Transform your writing with one-click AI enhancements.</p>
             </div>
@@ -254,8 +302,8 @@ const About: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
               <div className="text-center sm:text-left">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-3">Built By</p>
-                <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3 mb-2">
+                  <div className="w-16 h-16 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mb-2 sm:mb-0">
                     <User size={20} className="text-white" />
                   </div>
                   <div>
@@ -347,15 +395,15 @@ const About: React.FC = () => {
               <div className="space-y-6">
                 <h3 className="text-3xl font-bold">Ready to start?</h3>
                 <p className="text-muted-foreground">Join the community of developers building the future of documentation.</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button onClick={() => navigate('/')} size="lg" className="flex-1 rounded-2xl h-14 font-bold shadow-lg">
+                <div className="flex flex-col gap-4">
+                  <Button onClick={() => navigate('/dashboard')} size="lg" className="w-full rounded-2xl h-14 font-bold shadow-lg">
                     Launch Editor <Rocket className="ml-2" size={18} />
                   </Button>
                   <a
                     href="https://github.com/Vasu657/markdown-weaver"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-border hover:bg-accent rounded-2xl transition-all font-bold"
+                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-border hover:bg-accent rounded-2xl transition-all font-bold"
                   >
                     <Star size={18} /> Star on GitHub
                   </a>
@@ -397,8 +445,73 @@ const About: React.FC = () => {
           </div>
         </section>
 
+        {/* Newsletter Section - Creative "Floating Glass" Design */}
+        <section className="relative py-20 px-6">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent blur-3xl -z-10" />
+
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <div className="space-y-4">
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                Stay in the Loop
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
+                Join the community building the future of documentation.
+              </p>
+            </div>
+
+            <div className="relative w-full max-w-md mx-auto">
+              {!submittedSub ? (
+                <div className="group relative rounded-[2rem] p-2 bg-background/50 border border-border/50 shadow-2xl backdrop-blur-xl transition-all hover:border-primary/50 hover:shadow-primary/20 hover:scale-[1.02] duration-300">
+                  <form onSubmit={handleSubscribe} className="flex items-center gap-1 p-1">
+                    <div className="pl-3 text-muted-foreground/50 shrink-0">
+                      <Mail size={18} />
+                    </div>
+                    <input
+                      type="email"
+                      value={emailSub}
+                      onChange={(e) => setEmailSub(e.target.value)}
+                      placeholder="Enter email..."
+                      required
+                      className="flex-1 bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0 py-3 px-2 text-sm md:text-base min-w-0"
+                    />
+                    <Button
+                      type="submit"
+                      disabled={loadingSub}
+                      size="icon"
+                      className="shrink-0 rounded-full w-10 h-10 md:w-auto md:h-auto md:px-6 md:py-6 font-bold shadow-lg transition-all bg-foreground text-background hover:bg-primary hover:text-primary-foreground"
+                    >
+                      {loadingSub ? (
+                        <Loader2 className="animate-spin w-5 h-5" />
+                      ) : (
+                        <>
+                          <span className="hidden md:inline mr-2">Subscribe</span>
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </div>
+              ) : (
+                <div className="max-w-md mx-auto p-4 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 flex items-center justify-center gap-3 animate-in fade-in zoom-in duration-300 backdrop-blur-md">
+                  <PartyPopper size={24} className="animate-bounce" />
+                  <span className="font-bold text-lg">Welcome aboard! Refreshing...</span>
+                </div>
+              )}
+
+              {/* Decorative background glow for the input */}
+              <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full" />
+            </div>
+          </div>
+        </section>
+
         <Footer showBackToEditor={true} showAbout={false} showHelp={true} showPrivacy={true} />
+
+        {/* SKIVYX Brand Bottom */}
+        <div className="flex justify-center pb-8 opacity-20 hover:opacity-100 transition-opacity">
+          <span className="text-[24px] md:text-[40px] font-black tracking-[0.3em] md:tracking-[0.5em] text-foreground uppercase select-none">SKIVYX</span>
+        </div>
       </main>
+      <GitHubStarCTA />
     </div>
   );
 };

@@ -5,10 +5,11 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 import mermaid from 'mermaid';
 import { Check, Copy } from 'lucide-react';
 
-const slugify = (text: string): string => {
+export const slugify = (text: string): string => {
   return text
     .toLowerCase()
     .trim()
@@ -21,6 +22,7 @@ interface PreviewProps {
   content: string;
   previewRef?: React.RefObject<HTMLDivElement>;
   onScroll?: () => void;
+  onInteraction?: () => void;
 }
 
 // Initialize mermaid
@@ -96,7 +98,7 @@ const CodeBlock: React.FC<{ className?: string; children: React.ReactNode }> = (
   );
 };
 
-export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
+export const Preview: React.FC<PreviewProps> = ({ content, previewRef, onScroll, onInteraction }) => {
   const handleAnchorClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const href = e.currentTarget.getAttribute('href');
 
@@ -152,12 +154,16 @@ export const Preview: React.FC<PreviewProps> = ({ content, previewRef }) => {
   return (
     <div
       ref={previewRef}
+      onScroll={onScroll}
+      onWheel={onInteraction}
+      onTouchStart={onInteraction}
+      onMouseDown={onInteraction}
       className="h-full overflow-y-auto px-8 py-6 bg-preview-bg custom-scrollbar"
     >
       <article className="markdown-preview animate-fade-in">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeRaw, rehypeKatex, rehypeHighlight]}
+          rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeKatex, rehypeHighlight]}
           components={{
             code: ({ className, children, node, ...props }) => {
               const ruleProps = { 'data-source-line': node?.position?.start?.line };
